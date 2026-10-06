@@ -5,10 +5,12 @@ import { Navigate, useParams } from "react-router-dom";
 import { FUNDAMENTALS_LESSONS } from "../data/system-design/fundamentals.js";
 import TodoAppLesson from "./TodoAppLesson.jsx";
 import WhatIsASystemLesson from "./WhatIsASystemLesson.jsx";
+import ClientServerLesson from "./ClientServerLesson.jsx";
 
 const LESSON_VIEWS = {
   "todo-app": TodoAppLesson,
   "what-is-a-system": WhatIsASystemLesson,
+  "client-server": ClientServerLesson,
 };
 
 export default function FundamentalsLesson() {

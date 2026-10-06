@@ -11,7 +11,7 @@ export const FUNDAMENTALS_LESSONS = [
     available: true,
   },
   { id: "what-is-a-system", title: "What is a System?", summary: "Parts, connections, goals, and boundaries - what turns a pile of pieces into a system.", available: true },
-  { id: "client-server", title: "Client and Server", available: false },
+  { id: "client-server", title: "Client and Server", summary: "The two roles behind every online interaction: who asks, who answers, and who waits.", available: true },
   { id: "frontend-backend", title: "Frontend vs Backend", available: false },
   { id: "api", title: "API", available: false },
   { id: "database", title: "Database", available: false },
