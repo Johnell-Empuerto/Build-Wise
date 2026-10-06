@@ -1,0 +1,143 @@
+@import "tailwindcss";
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: #020617;
+  color: #f1f5f9;
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- System Design: lightweight entrance + motion keyframes ---- */
+
+@keyframes sd-appear {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.sd-appear {
+  animation: sd-appear 0.35s ease-out both;
+}
+
+/* Flow diagram: the traveling dot inside each 28px connector (h-7). */
+@keyframes flow-dot-down {
+  from {
+    transform: translateY(0);
+    opacity: 0.25;
+  }
+  12% {
+    opacity: 1;
+  }
+  to {
+    transform: translateY(14px);
+    opacity: 1;
+  }
+}
+
+@keyframes flow-dot-up {
+  from {
+    transform: translateY(14px);
+    opacity: 0.25;
+  }
+  88% {
+    opacity: 1;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.flow-dot {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  margin-left: -7px;
+  height: 14px;
+  width: 14px;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 35% 35%, #e0f2fe, #38bdf8 45%, #6366f1);
+  box-shadow: 0 0 10px 2px rgba(56, 189, 248, 0.7);
+  will-change: transform;
+}
+
+.flow-dot-down {
+  animation: flow-dot-down 650ms linear forwards;
+}
+
+.flow-dot-up {
+  animation: flow-dot-up 650ms linear forwards;
+}
+
+@keyframes node-active {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.55);
+  }
+  50% {
+    box-shadow: 0 0 0 7px rgba(56, 189, 248, 0);
+  }
+}
+
+.node-active {
+  animation: node-active 1s ease-in-out infinite;
+}
+
+@keyframes sd-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-5px);
+  }
+  40% {
+    transform: translateX(5px);
+  }
+  60% {
+    transform: translateX(-3px);
+  }
+  80% {
+    transform: translateX(3px);
+  }
+}
+
+.sd-shake {
+  animation: sd-shake 0.4s ease-in-out;
+}
+
+/* Respect the user's motion preferences (WCAG). */
+@media (prefers-reduced-motion: reduce) {
+  .sd-appear,
+  .node-active,
+  .sd-shake {
+    animation: none;
+  }
+  .flow-dot-down,
+  .flow-dot-up {
+    animation-duration: 0.01s;
+  }
+  * {
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,0 +1,2458 @@
+[
+  {
+    "id": 1,
+    "concept_id": 11,
+    "title": "What is JavaScript?",
+    "explanation": "JavaScript is the programming language of the browser. HTML gives a page its structure, CSS gives it colour and layout, and JavaScript gives it behaviour.\n\nWhen you click a button and a menu opens, when you type into a search box and suggestions appear, or when a form shows an error message without reloading the page, that is JavaScript running.\n\nJavaScript also runs outside the browser. Node.js lets you use the same language to build servers, command line tools and desktop apps. Everything you learn here works in both places.",
+    "examples": [
+      {
+        "code": "const name = \"Ana\";\nconsole.log(\"Hello, \" + name);",
+        "title": "A tiny script",
+        "output": "Hello, Ana",
+        "caption": "Declare a value, then print it."
+      }
+    ],
+    "notes": [
+      {
+        "body": "The syntax you learn in the browser is the same syntax a server uses. Focus on the language first, the environment second.",
+        "title": "Same language everywhere"
+      },
+      {
+        "body": "JavaScript treats Name and name as two different things. This trips up every beginner at least once.",
+        "title": "Case sensitive"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "They are different languages. JavaScript is the one that runs in the browser; Java is not involved here.",
+        "problem": "Mixing JavaScript up with Java."
+      },
+      {
+        "fix": "A script runs inside a page. Load it with a script tag, or use the editor on the challenge screens here.",
+        "problem": "Opening a .js file on its own and expecting to see it run."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 2,
+    "concept_id": 11,
+    "title": "How JavaScript runs",
+    "explanation": "You never run JavaScript directly. You write source code, the engine reads it, and turns it into instructions the computer can follow. In the browser this happens in milliseconds.\n\nThere are two useful mental models. A script runs from top to bottom, one line at a time, just like reading a recipe. And whenever something happens, such as a click, the code you registered for that click gets queued up and run afterwards.\n\nThis page has a code editor on the challenge screens. Press Run and your code is executed inside an isolated worker, so a mistake in your code can never break the app itself.",
+    "examples": [
+      {
+        "code": "console.log(\"first\");\nconsole.log(\"second\");\nconsole.log(\"third\");",
+        "title": "Top to bottom",
+        "output": "first\nsecond\nthird",
+        "caption": "Lines run in order, one after another."
+      }
+    ],
+    "notes": [
+      {
+        "body": "A value must be created before you use it. Reading top to bottom is the fastest way to spot a mistake.",
+        "title": "Order matters"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Move the declaration above every line that reads it.",
+        "problem": "Using a variable before the line that creates it."
+      }
+    ],
+    "order_index": 2
+  },
+  {
+    "id": 3,
+    "concept_id": 12,
+    "title": "Statements",
+    "explanation": "A statement is one instruction. Creating a value, printing it or asking a question are all statements. JavaScript separates statements with new lines, so you rarely need a semicolon, but ending a statement with a semicolon is a habit worth keeping.\n\nA block is a group of statements wrapped in curly braces. Blocks are how you group code that belongs together, for example everything that should run inside an if or a loop.",
+    "examples": [
+      {
+        "code": "const score = 7;\nif (score > 5) {\n  console.log(\"pass\");\n  console.log(\"nice work\");\n}",
+        "title": "Two statements inside a block",
+        "output": "pass\nnice work",
+        "caption": "The block runs both statements because score is greater than 5."
+      }
+    ],
+    "notes": [
+      {
+        "body": "Short statements are easier to read and easier to debug than long ones squeezed onto a single line.",
+        "title": "One idea per line"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Give each instruction its own line.",
+        "problem": "Writing two statements on one line and forgetting one of them."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 4,
+    "concept_id": 12,
+    "title": "Comments",
+    "explanation": "A comment is a note for humans. The engine skips it completely, so it can never change what your program does.\n\nTwo slashes start a comment that runs to the end of the line. Slash-star and star-slash wrap a comment across several lines.\n\nGood comments explain why something is done, not what the line obviously does. If a comment is needed to explain what a line does, the line is probably too clever.",
+    "examples": [
+      {
+        "code": "// this line is ignored\nconst total = 2 + 2; /* so is this part */\nconsole.log(total);",
+        "title": "Line and block comments",
+        "output": "4",
+        "caption": "Comments never appear in the output."
+      }
+    ],
+    "notes": [
+      {
+        "body": "Wrapping a line in comment marks is the quickest way to test whether that line is the cause of a bug.",
+        "title": "Comment out to debug"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Always close a block comment with the closing star and slash.",
+        "problem": "Leaving a comment marker open, so the rest of the file is treated as text."
+      }
+    ],
+    "order_index": 2
+  },
+  {
+    "id": 5,
+    "concept_id": 1,
+    "title": "Creating a variable",
+    "explanation": "A variable is a labelled box. You put a value in it, and later you use the label to read the value back.\n\nlet and const both create a variable that only exists from the line where you declare it onwards. const is the default choice: use const unless you know the value has to change.\n\nThe label is the identifier you type after let or const. It must be unique inside its block.",
+    "examples": [
+      {
+        "code": "const score = 42;\nconsole.log(score);",
+        "title": "Store a value",
+        "output": "42",
+        "caption": "score is a label for the value 42."
+      }
+    ],
+    "notes": [
+      {
+        "body": "Readers of your code assume a const never changes. Reaching for let only when needed makes the code easier to follow.",
+        "title": "Prefer const"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Always assign a value on the same line when you declare.",
+        "problem": "Typing the variable label but forgetting the value: let count ;"
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 6,
+    "concept_id": 1,
+    "title": "What goes in a variable",
+    "explanation": "Anything you can work with in JavaScript can be stored: text, numbers, true and false, lists, objects, even other functions.\n\nA variable holds a value, not a type. The same variable can hold a number now and a string later if you used let.\n\nReading a variable that was never created is an error. JavaScript will not guess for you.",
+    "examples": [
+      {
+        "code": "const first = \"Hello\";\nconst second = \"World\";\nconsole.log(first + \" \" + second);",
+        "title": "Two variables combined",
+        "output": "Hello World",
+        "caption": "+ joins two strings together."
+      }
+    ],
+    "notes": [],
+    "common_mistakes": [
+      {
+        "fix": "Check what you assign before you assign it, especially when the value comes from a user.",
+        "problem": "Assuming a variable keeps the type it was first given."
+      }
+    ],
+    "order_index": 2
+  },
+  {
+    "id": 7,
+    "concept_id": 14,
+    "title": "Declaring with let",
+    "explanation": "let creates a variable you can reassign later. Use it when you genuinely do not know the final value up front, such as a running total or a counter.\n\nThe declaration starts where you wrote it. Anything above that line cannot see the variable yet.",
+    "examples": [
+      {
+        "code": "let visits = 0;\nconsole.log(visits);",
+        "title": "Declare then read",
+        "output": "0",
+        "caption": "A let variable starts with the value you gave it."
+      }
+    ],
+    "notes": [
+      {
+        "body": "If you never reassign, const is better. Reaching for let is a signal that the value will change.",
+        "title": "let versus const"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Move the declaration to the top of the block.",
+        "problem": "Reading the variable on the line above its declaration."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 8,
+    "concept_id": 14,
+    "title": "Changing a value",
+    "explanation": "Reassigning means giving an existing let variable a new value. The old value is gone; a variable only holds one value at a time.\n\nThe right-hand side is always evaluated first, using whatever the variable holds right now.",
+    "examples": [
+      {
+        "code": "let total = 10;\ntotal = total + 5;\nconsole.log(total);",
+        "title": "Build up a total",
+        "output": "15",
+        "caption": "Read the old value, add 5, store the result back."
+      }
+    ],
+    "notes": [
+      {
+        "body": "total = 5 puts a value in the variable. total === 5 asks a question and gives you true or false. Mixing them up is the classic slip.",
+        "title": "= stores, === asks"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Write the full expression: total = total + 5.",
+        "problem": "Writing total = + 5 and hoping JavaScript fills in the rest."
+      }
+    ],
+    "order_index": 2
+  },
+  {
+    "id": 9,
+    "concept_id": 14,
+    "title": "let is block scoped",
+    "explanation": "A block is anything wrapped in curly braces. A variable declared with let inside a block disappears when that block ends.\n\nTwo variables with the same name in different blocks are two different variables. The inner one temporarily hides the outer one.\n\nThis is useful: a variable created for one loop or one if statement cannot leak out and break something else.",
+    "examples": [
+      {
+        "code": "let name = \"outer\";\n{\n  let name = \"inner\";\n  console.log(name);\n}\nconsole.log(name);",
+        "title": "The inner variable wins inside the block",
+        "output": "inner\nouter",
+        "caption": "Outside the braces the original variable is back."
+      }
+    ],
+    "notes": [
+      {
+        "body": "if, for, while and plain blocks all introduce a new scope for let and const.",
+        "title": "Curly braces create scope"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Declare it before the block if you need it afterwards.",
+        "problem": "Declaring a variable inside an if block and trying to read it after the closing brace."
+      }
+    ],
+    "order_index": 3
+  },
+  {
+    "id": 10,
+    "concept_id": 14,
+    "title": "let in real code",
+    "explanation": "Most let variables you meet in real code are counters, accumulators and temporary copies of a value you are about to change.\n\nKeeping the temporary in a variable instead of repeating an expression makes the code easier to read and easier to test.",
+    "examples": [
+      {
+        "code": "const words = [\"a\", \"b\", \"c\"];\nlet count = 0;\nfor (const word of words) {\n  count = count + 1;\n}\nconsole.log(count);",
+        "title": "Count words",
+        "output": "3",
+        "caption": "The counter survives each turn of the loop."
+      }
+    ],
+    "notes": [],
+    "common_mistakes": [
+      {
+        "fix": "Declare it once before the loop starts.",
+        "problem": "Declaring the counter inside the loop, so it resets every turn."
+      }
+    ],
+    "order_index": 4
+  },
+  {
+    "id": 11,
+    "concept_id": 15,
+    "title": "Declaring with const",
+    "explanation": "const works exactly like let, except you may not assign to it a second time. The name says constant: this label always points at the same value.\n\nIf you try, JavaScript throws an error rather than silently doing the wrong thing. That is a feature: mistakes become loud.",
+    "examples": [
+      {
+        "code": "const appName = \"Trainer\";\nconsole.log(appName);",
+        "title": "A value that never changes",
+        "output": "Trainer",
+        "caption": "Nothing can reassign appName."
+      }
+    ],
+    "notes": [
+      {
+        "body": "const name; on its own is a syntax error. Declare and assign on the same line, every time.",
+        "title": "const still needs a value"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Either plan the final value first, or use let when the value really will change.",
+        "problem": "Declaring a variable with const and then assigning to it a few lines later."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 12,
+    "concept_id": 15,
+    "title": "Why const refuses to reassign",
+    "explanation": "Reassigning a const throws a TypeError at the moment the line runs. The program stops right there.\n\nThe rule exists to protect values that are meant to be fixed: configuration, identifiers, anything other code is not allowed to change behind your back.\n\nFixing this kind of error means either removing the reassignment or deciding the value really does change and using let from the start.",
+    "examples": [
+      {
+        "code": "const level = 1;\nlevel = 2;\n// TypeError: Assignment to constant variable.",
+        "title": "What the error looks like",
+        "output": "TypeError",
+        "caption": "The second line never gets to run."
+      }
+    ],
+    "notes": [
+      {
+        "body": "When a line throws, everything after it is skipped. That is why a stray assignment can make a whole function return nothing.",
+        "title": "Error before output"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Pick a new name that describes the new value.",
+        "problem": "Reusing a const name later in the same block for a different value."
+      }
+    ],
+    "order_index": 2
+  },
+  {
+    "id": 13,
+    "concept_id": 15,
+    "title": "Changing the contents of a const",
+    "explanation": "const locks the label, not the value inside it. If the value is a list or an object, you may still add, remove or change its contents.\n\nThink of a const box you cannot replace, but whose contents you are free to rearrange.\n\nIn practice this means a const array can be sorted and a const object can gain a new property.",
+    "examples": [
+      {
+        "code": "const colours = [\"red\"];\ncolours.push(\"blue\");\nconsole.log(colours);",
+        "title": "A const list that still grows",
+        "output": "[\"red\", \"blue\"]",
+        "caption": "colours still points at the same list; the list itself changed."
+      }
+    ],
+    "notes": [
+      {
+        "body": "If you must not change the original list, copy it with slice() or the spread operator before you edit.",
+        "title": "Copying first"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Edit the contents, or declare the variable with let if reassignment is what you actually want.",
+        "problem": "Reassigning instead of editing: colours = colours.concat(x)."
+      }
+    ],
+    "order_index": 3
+  },
+  {
+    "id": 14,
+    "concept_id": 16,
+    "title": "Declaring with var",
+    "explanation": "var is how JavaScript declared variables before let and const existed. You will still meet it in older code and in many tutorials from a few years ago.\n\nFor simple cases it behaves like let: you declare a name and assign a value. The differences show up around blocks and repeated declarations.",
+    "examples": [
+      {
+        "code": "var count = 4;\nconsole.log(count);",
+        "title": "var still works",
+        "output": "4",
+        "caption": "Reading it back works the same way as let."
+      }
+    ],
+    "notes": [
+      {
+        "body": "Write const and let in code you write today. Learn var mainly so you can read and repair older code.",
+        "title": "New code"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Pick one style per file, ideally const and let.",
+        "problem": "Mixing var and let in the same function."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 15,
+    "concept_id": 16,
+    "title": "var is function scoped",
+    "explanation": "var ignores curly braces. A var declared inside an if or a for lives as soon as the function starts, and keeps living until the function ends.\n\nThat means the closing brace is not the end of the story: the variable leaks out of the block.\n\nThis surprises people who learned let first. It is the single biggest difference between the two.",
+    "examples": [
+      {
+        "code": "function demo() {\n  if (true) {\n    var ready = true;\n  }\n  return ready;\n}\nconsole.log(demo());",
+        "title": "The variable escapes the block",
+        "output": "true",
+        "caption": "ready is still readable after the if block closed."
+      }
+    ],
+    "notes": [
+      {
+        "body": "Old code often relies on this: the loop variable is still available after the loop finishes.",
+        "title": "Handy in old loops"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Use let when you want the variable to die with the block.",
+        "problem": "Expecting a var to disappear when a block ends, as let does."
+      }
+    ],
+    "order_index": 2
+  },
+  {
+    "id": 16,
+    "concept_id": 16,
+    "title": "Why var was replaced",
+    "explanation": "var has three habits that cause bugs: it leaks out of blocks, you can declare the same name twice without meaning to, and it is hoisted to the top of its function so it exists before the line that creates it.\n\nlet and const remove all three. They only exist after their line runs, they cannot be declared twice, and they respect blocks.\n\nYou do not have to rewrite old code, but new code should never use var.",
+    "examples": [
+      {
+        "code": "var name = \"a\";\nvar name = \"b\";\nconsole.log(name);\n// let name = \"a\"; let name = \"b\";  -> SyntaxError",
+        "title": "Repeating a declaration",
+        "output": "b",
+        "caption": "var quietly accepts the second declaration; let would not."
+      }
+    ],
+    "notes": [
+      {
+        "body": "When you see var, mentally translate it to a variable that lasts for the whole function.",
+        "title": "Reading old code"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Rename one of them so each name means exactly one thing.",
+        "problem": "Declaring the same name with var in two places in one function."
+      }
+    ],
+    "order_index": 3
+  },
+  {
+    "id": 17,
+    "concept_id": 17,
+    "title": "Rules for names",
+    "explanation": "JavaScript has hard rules and soft rules. The hard rules are enforced by the engine: a name may contain letters, digits, $ and _, it may not start with a digit, and it may not be a reserved word such as if or return.\n\nSpaces and dashes are not allowed, which is why box-size must be written as boxSize.\n\nThe soft rules are about people: choose names that make the next line obvious.",
+    "examples": [
+      {
+        "code": "let total2 = 10;\nlet _hidden = 1;\nlet 2nd = 3;   // SyntaxError\nlet box-size = 4; // SyntaxError",
+        "title": "Legal and illegal names",
+        "output": "SyntaxError",
+        "caption": "A name may not start with a digit or contain a dash."
+      }
+    ],
+    "notes": [
+      {
+        "body": "if, else, for, while, return, function, class, const, let, var and new may not be used as names.",
+        "title": "Reserved words"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Put a letter first: firstPlace.",
+        "problem": "Copying a label from a spreadsheet, such as 1stPlace."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 18,
+    "concept_id": 17,
+    "title": "Use camelCase",
+    "explanation": "When a name has more than one word, write the first word in lowercase and capitalise every word after it: itemCount, unitPrice, isVisible.\n\ncamelCase is the convention JavaScript uses everywhere, so following it makes your code look like the libraries you read.\n\nKeep a name the same length and shape wherever it appears. itemCount in one place and item_count in another is two names, not one.",
+    "examples": [
+      {
+        "code": "const cartItems = 3;\nconst pricePerItem = 10;\nconsole.log(cartItems * pricePerItem);",
+        "title": "camelCase in a real line",
+        "output": "30",
+        "caption": "Every word after the first starts with a capital letter."
+      }
+    ],
+    "notes": [],
+    "common_mistakes": [
+      {
+        "fix": "Decide once and reuse the same spelling everywhere.",
+        "problem": "Mixing styles in the same function."
+      }
+    ],
+    "order_index": 2
+  },
+  {
+    "id": 19,
+    "concept_id": 17,
+    "title": "Descriptive names",
+    "explanation": "A reader should be able to tell what a value is without looking at where it came from. days is better than d, expiryDate is better than date2.\n\nLength is not the enemy. A name that takes two seconds to read saves two minutes of confusion later.\n\nName things for what they mean in your problem, not for how they are stored. customerName beats s, even though both are strings.",
+    "examples": [
+      {
+        "code": "const a = 7;\nconst daysInWeek = 7;\nconsole.log(daysInWeek);",
+        "title": "Before and after",
+        "output": "7",
+        "caption": "The second name explains itself."
+      }
+    ],
+    "notes": [],
+    "common_mistakes": [
+      {
+        "fix": "Editors autocomplete. Type three letters and accept the suggestion.",
+        "problem": "Shortening names to save typing."
+      }
+    ],
+    "order_index": 3
+  },
+  {
+    "id": 20,
+    "concept_id": 17,
+    "title": "Consistent names",
+    "explanation": "The most common naming bug is not an illegal character, it is a spelling that changes halfway down the function.\n\nJavaScript never fixes this for you. If you write lenght once and length everywhere else, the first version quietly gives you undefined.\n\nRead names out loud. If two names sound like the same idea, they probably are, and one of them should go.",
+    "examples": [
+      {
+        "code": "const width = 4;\nconst height = 5;\nconsole.log(width * height);",
+        "title": "One spelling per idea",
+        "output": "20",
+        "caption": "width and height are used the same way every time."
+      }
+    ],
+    "notes": [
+      {
+        "body": "A property that comes back undefined almost always means the name was misspelled.",
+        "title": "Undefined is the clue"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Look for the typo when a property returns undefined.",
+        "problem": "Typing length as lenght."
+      }
+    ],
+    "order_index": 4
+  },
+  {
+    "id": 21,
+    "concept_id": 18,
+    "title": "Local and global scope",
+    "explanation": "A variable declared inside a function is local: only that function can read it. A variable declared outside every function is global, and every part of the script can reach it.\n\nLocal beats global. When a local and a global share a name, the local one hides the global one inside that function.\n\nGlobals are risky because any code can change them. Keep values local and pass them in as parameters instead.",
+    "examples": [
+      {
+        "code": "const greeting = \"hi\";\nfunction show() {\n  const greeting = \"hello\";\n  console.log(greeting);\n}\nshow();\nconsole.log(greeting);",
+        "title": "The local copy wins",
+        "output": "hello\nhi",
+        "caption": "Inside the function the local greeting hides the outer one."
+      }
+    ],
+    "notes": [
+      {
+        "body": "The local name only hides the outer one while the function runs. Outside it, the original is exactly as it was.",
+        "title": "Shadowing stops at the closing brace"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Return the value, or pass it in as a parameter.",
+        "problem": "Reading a local variable outside the function that created it."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 22,
+    "concept_id": 18,
+    "title": "Scope inside blocks",
+    "explanation": "Blocks create their own scope for let and const. A variable born inside a block dies at the closing brace.\n\nFunctions create a scope too, and everything inside a function can see everything declared before it in that function.\n\nWhen the same name appears at two levels, the inner one shadows the outer one. Nothing is broken; the outer value is simply hidden until the inner block ends.",
+    "examples": [
+      {
+        "code": "let score = 1;\nfunction change() {\n  score = 2;\n}\nchange();\nconsole.log(score);",
+        "title": "Changing the outer value",
+        "output": "2",
+        "caption": "No declaration inside means the outer score is edited."
+      }
+    ],
+    "notes": [
+      {
+        "body": "let i declared in the for header belongs to that loop alone and cannot be read after the closing brace.",
+        "title": "A loop header creates a scope too"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Declare counters above the loop.",
+        "problem": "Declaring a variable inside a loop by mistake, so it is recreated every turn."
+      }
+    ],
+    "order_index": 2
+  },
+  {
+    "id": 23,
+    "concept_id": 19,
+    "title": "Warm-up",
+    "explanation": "These challenges mix everything from this section. Read the description carefully, decide whether the value changes, then pick const or let.\n\nA good habit is to write the variable names first, then fill in the values.",
+    "examples": [
+      {
+        "code": "const rate = 5;\nlet count = 0;\ncount = count + rate;\nconsole.log(count);",
+        "title": "Pick const or let",
+        "output": "5",
+        "caption": "rate never changes; count is rebuilt."
+      }
+    ],
+    "notes": [
+      {
+        "body": "Reach for const by default. Switch to let only when you can point at the line that reassigns.",
+        "title": "const first"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Start with const. Change it to let only when you can point at the line that reassigns.",
+        "problem": "Reaching for let on every line because it feels safer."
+      },
+      {
+        "fix": "Name them after what they hold: rate, label, fullName.",
+        "problem": "Naming variables after their type, such as text1 or temp2."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 24,
+    "concept_id": 19,
+    "title": "Small real-world tasks",
+    "explanation": "Short functions like these show up everywhere: formatting a price, building a label, checking a condition.\n\nNotice how often the shape is the same. Take some inputs, store them in well named variables, do one small calculation, return the answer.",
+    "examples": [
+      {
+        "code": "const amount = 25;\nconst label = \"$\" + amount;\nconsole.log(label);",
+        "title": "A price label",
+        "output": "$25",
+        "caption": "Two consts, one line of joining."
+      }
+    ],
+    "notes": [],
+    "common_mistakes": [
+      {
+        "fix": "Give the interesting values names; the return line becomes obvious.",
+        "problem": "Doing everything inside the return statement with no names at all."
+      }
+    ],
+    "order_index": 2
+  },
+  {
+    "id": 25,
+    "concept_id": 2,
+    "title": "What strings are",
+    "explanation": "A string is a run of characters wrapped in single quotes, double quotes or backticks. All three mean the same thing; pick one and stay consistent.\n\nStrings are immutable: a method that looks like it changes the text actually returns a new string and leaves the original alone.\n\nThe + operator joins two strings. If one side is not a string, JavaScript converts it for you, which is handy and occasionally surprising.",
+    "examples": [
+      {
+        "code": "const a = 'single';\nconst b = \"double\";\nconst c = `backtick`;\nconsole.log(a + b + c);",
+        "title": "Three ways to write text",
+        "output": "singledoublebacktick",
+        "caption": "Quotes are part of the syntax, never part of the value."
+      }
+    ],
+    "notes": [
+      {
+        "body": "Backticks allow line breaks and ${value} inside the text, which makes long strings easier to read.",
+        "title": "Backticks do more"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Use the other quote type for the outer pair, or escape the inner one with a backslash.",
+        "problem": "Mixing quote styles inside one string."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 26,
+    "concept_id": 2,
+    "title": "Working with strings",
+    "explanation": "Joining is the operation you will use most: + for simple cases, and array methods with join when you have a list of pieces.\n\nRemember that joining never changes the pieces. A new string comes back and the old ones stay exactly as they were.",
+    "examples": [
+      {
+        "code": "const first = \"hello\";\nconst second = \" world\";\nconsole.log(first + second);",
+        "title": "Two pieces become one",
+        "output": "hello world",
+        "caption": "The space lives in the second string."
+      }
+    ],
+    "notes": [],
+    "common_mistakes": [
+      {
+        "fix": "Decide where the space belongs and write it explicitly.",
+        "problem": "Forgetting the space between two joined values."
+      }
+    ],
+    "order_index": 2
+  },
+  {
+    "id": 27,
+    "concept_id": 2,
+    "title": "String methods",
+    "explanation": "Strings come with built-in tools: length counts the characters, toUpperCase returns an upper-case copy, slice cuts out a piece, and includes answers yes or no.\n\nEvery one of these returns a new value. Store it if you want to keep it.",
+    "examples": [
+      {
+        "code": "const word = \"trainer\";\nconsole.log(word.length);\nconsole.log(word.toUpperCase());\nconsole.log(word.slice(0, 3));",
+        "title": "A few common methods",
+        "output": "7\nTRAINER\ntra",
+        "caption": "length is a number, the others are new strings."
+      }
+    ],
+    "notes": [],
+    "common_mistakes": [
+      {
+        "fix": "Assign the result: const upper = word.toUpperCase();",
+        "problem": "Calling toUpperCase() and expecting the original to change."
+      }
+    ],
+    "order_index": 3
+  },
+  {
+    "id": 28,
+    "concept_id": 21,
+    "title": "Whole numbers and decimals",
+    "explanation": "JavaScript has one number type for both whole numbers and decimals: 7 and 7.5 are both numbers.\n\nWhole numbers are called integers. Math.floor rounds down, Math.round rounds to the nearest, and Math.ceil rounds up.\n\nLarge whole numbers stay exact up to a point. Money is usually stored in whole cents to avoid rounding trouble.",
+    "examples": [
+      {
+        "code": "console.log(Math.floor(3.9));\nconsole.log(Math.round(3.5));\nconsole.log(Math.ceil(3.1));",
+        "title": "Rounding",
+        "output": "3\n4\n4",
+        "caption": "Three ways to deal with the decimal part."
+      }
+    ],
+    "notes": [
+      {
+        "body": "Decimals are stored in binary, so some sums land a hair off the answer you expect. Compare with a tolerance, or keep money in whole cents.",
+        "title": "0.1 + 0.2 is not 0.3"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Compare with a small tolerance, or round before you compare.",
+        "problem": "Comparing decimals for exact equality."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 29,
+    "concept_id": 21,
+    "title": "Arithmetic",
+    "explanation": "The usual operators work as expected: + - * and /. Division by zero gives Infinity rather than an error.\n\nPercent remainder, written %, answers: what is left over after dividing. It is how you check whether a number is even, whether a position repeats, and many similar questions.",
+    "examples": [
+      {
+        "code": "console.log(7 % 3);\nconsole.log(7 % 2);",
+        "title": "Remainder",
+        "output": "1\n1",
+        "caption": "7 is 2 groups of 3 with 1 left over."
+      }
+    ],
+    "notes": [
+      {
+        "body": "A number is even when number % 2 === 0.",
+        "title": "Even and odd"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "% is remainder, not percent. Divide by 100 for a percentage.",
+        "problem": "Expecting % to give a percentage."
+      }
+    ],
+    "order_index": 2
+  },
+  {
+    "id": 30,
+    "concept_id": 22,
+    "title": "Boolean values",
+    "explanation": "A boolean is either true or false. Comparisons produce them: 5 > 3 is true, 5 < 3 is false.\n\nConditions read them directly. You rarely need to write === true; if (isReady) is the same thing and reads better.",
+    "examples": [
+      {
+        "code": "const ready = 5 > 3;\nconsole.log(ready);\nconsole.log(!ready);",
+        "title": "Comparison gives a boolean",
+        "output": "true\nfalse",
+        "caption": "! flips a boolean."
+      }
+    ],
+    "notes": [
+      {
+        "body": "true is the boolean. \"true\" is two characters of text, and every piece of text counts as truthy, including \"false\".",
+        "title": "true has no quotes"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Write if (ready). The value is already a boolean.",
+        "problem": "Writing if (ready === true) everywhere."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 31,
+    "concept_id": 22,
+    "title": "null and undefined",
+    "explanation": "undefined means nothing was given: a variable declared but never assigned, a function with no return, a property that does not exist.\n\nnull means nothing is there on purpose. You assign it yourself to say this value is empty.\n\nBoth are falsy, so if (value) treats them the same way. Use == null if you want to catch both in one line.",
+    "examples": [
+      {
+        "code": "let a;\nlet b = null;\nconsole.log(a);\nconsole.log(b);\nconsole.log(a == b);",
+        "title": "Two flavours of nothing",
+        "output": "undefined\nnull\ntrue",
+        "caption": "Loose equality treats them as the same."
+      }
+    ],
+    "notes": [
+      {
+        "body": "Decide in your own code whether missing means null or undefined, and use it consistently.",
+        "title": "Pick one"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Use === when it matters: null === undefined is false.",
+        "problem": "Assuming undefined and null are the same value."
+      }
+    ],
+    "order_index": 2
+  },
+  {
+    "id": 32,
+    "concept_id": 23,
+    "title": "Checking a type",
+    "explanation": "typeof returns a string describing the value: string, number, boolean, object, undefined, function.\n\nIt is the fastest way to find out why an expression behaves strangely. A value that should be text but is actually undefined usually points at a typo.\n\nTwo traps: typeof null is object, and you cannot always tell an array from an object without Array.isArray.",
+    "examples": [
+      {
+        "code": "console.log(typeof \"hi\");\nconsole.log(typeof 42);\nconsole.log(typeof true);\nconsole.log(typeof undefined);",
+        "title": "typeof in action",
+        "output": "string\nnumber\nboolean\nundefined",
+        "caption": "The answer is always a string."
+      }
+    ],
+    "notes": [
+      {
+        "body": "When a value should be text and typeof says undefined, the name was almost certainly misspelled somewhere above.",
+        "title": "Unexpected undefined is a typo"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Use value === null to test for null directly.",
+        "problem": "Expecting typeof null to say null."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 33,
+    "concept_id": 24,
+    "title": "Addition, subtraction and multiplication",
+    "explanation": "+ - and * behave exactly as they do on a calculator. Everything inside one pair of parentheses happens first, then multiplication and division, then addition and subtraction.\n\nWhen you are unsure, add parentheses. Clear code beats clever code.",
+    "examples": [
+      {
+        "code": "console.log(2 + 3 * 4);\nconsole.log((2 + 3) * 4);",
+        "title": "Order of operations",
+        "output": "14\n20",
+        "caption": "Multiplication runs before addition."
+      }
+    ],
+    "notes": [
+      {
+        "body": "2 - 3 + 4 is (2 - 3) + 4 = 3. They have equal rank, so the one on the left goes first.",
+        "title": "Plus and minus run left to right"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Use parentheses to say exactly what you mean.",
+        "problem": "Assuming evaluation runs strictly left to right."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 34,
+    "concept_id": 24,
+    "title": "Remainder and division",
+    "explanation": "/ always produces a number, possibly with a decimal part. % gives the remainder after dividing.\n\nRemainder is the tool behind cycling: the current index, skipping every other row, checking even and odd.",
+    "examples": [
+      {
+        "code": "console.log(7 / 2);\nconsole.log(7 % 2);",
+        "title": "Division and remainder",
+        "output": "3.5\n1",
+        "caption": "Division gives 3.5, remainder gives the leftover 1."
+      }
+    ],
+    "notes": [
+      {
+        "body": "10 / 0 gives Infinity instead of an error. 10 % 0 gives NaN, because there is no remainder to report.",
+        "title": "Dividing by zero"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Ask yourself whether you want the answer or what is left over.",
+        "problem": "Using / when you meant %."
+      }
+    ],
+    "order_index": 2
+  },
+  {
+    "id": 35,
+    "concept_id": 25,
+    "title": "Strict equality",
+    "explanation": "=== asks whether two values are the same value. It never converts types, so 5 === \"5\" is false.\n\n== does convert before comparing, which produces results nobody can predict. Use === and !== always.\n\nComparisons always give you a boolean, ready to be used in an if.",
+    "examples": [
+      {
+        "code": "console.log(5 === 5);\nconsole.log(5 === \"5\");\nconsole.log(5 == \"5\");",
+        "title": "Strict versus loose",
+        "output": "true\nfalse\ntrue",
+        "caption": "Only the loose version converts the string first."
+      }
+    ],
+    "notes": [
+      {
+        "body": "value == null is a concise way to check for null or undefined together. Everywhere else, prefer ===.",
+        "title": "One exception"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Replace every == with === and every != with !==.",
+        "problem": "Using == out of habit."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 36,
+    "concept_id": 25,
+    "title": "Greater and smaller",
+    "explanation": "< > <= and > work on numbers and on text. Comparing text uses alphabetical order, capital letters first.\n\nYou can chain the idea of a range with && : a is above the low end and below the high end.",
+    "examples": [
+      {
+        "code": "const score = 75;\nconst passed = score >= 50 && score <= 100;\nconsole.log(passed);",
+        "title": "A range check",
+        "output": "true",
+        "caption": "Both halves must be true."
+      }
+    ],
+    "notes": [],
+    "common_mistakes": [
+      {
+        "fix": "Split it into two comparisons joined with &&.",
+        "problem": "Writing low < value > high by accident."
+      }
+    ],
+    "order_index": 2
+  },
+  {
+    "id": 37,
+    "concept_id": 26,
+    "title": "and, or and not",
+    "explanation": "&& requires both sides to be true. || needs only one. ! flips a boolean.\n\nJavaScript stops reading as soon as the answer is decided. With || it skips the right side when the left is already true.\n\nThat shortcut is useful: you can write value || \"default\" and the default only appears when the value is falsy.",
+    "examples": [
+      {
+        "code": "const age = 20;\nconst hasTicket = true;\nconsole.log(age >= 18 && hasTicket);\nconsole.log(age < 18 || !hasTicket);",
+        "title": "Combining checks",
+        "output": "true\nfalse",
+        "caption": "&& needs both, || needs one."
+      }
+    ],
+    "notes": [
+      {
+        "body": "a || b returns a when a is truthy and b otherwise, which is why it works as a default setter. It is not limited to true and false.",
+        "title": "They hand back a value"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Use && and || in JavaScript.",
+        "problem": "Writing & and | by habit from other languages."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 38,
+    "concept_id": 26,
+    "title": "Negating a condition",
+    "explanation": "The ! operator turns true into false and the other way round. It reads as: it is not the case that...\n\nNegated conditions are often easier to read than a double negative, and they let you handle the unusual case first and return early.",
+    "examples": [
+      {
+        "code": "function check(value) {\n  if (!value) return \"empty\";\n  return \"ok\";\n}\nconsole.log(check(\"\"));",
+        "title": "Handle the odd case first",
+        "output": "empty",
+        "caption": "The early return keeps the rest of the function flat."
+      }
+    ],
+    "notes": [],
+    "common_mistakes": [
+      {
+        "fix": "Use Boolean(value), or just test the value directly in the condition.",
+        "problem": "Writing !!value and hoping it explains itself."
+      }
+    ],
+    "order_index": 2
+  },
+  {
+    "id": 39,
+    "concept_id": 3,
+    "title": "The if statement",
+    "explanation": "An if takes an expression. When the expression is true the block runs, otherwise JavaScript skips straight past the closing brace.\n\nThe condition does not have to be an explicit true or false. Any truthy value counts as true, any falsy value as false.",
+    "examples": [
+      {
+        "code": "const score = 7;\nif (score > 5) {\n  console.log(\"pass\");\n}\nconsole.log(\"done\");",
+        "title": "A single branch",
+        "output": "pass\ndone",
+        "caption": "The second line runs either way."
+      }
+    ],
+    "notes": [
+      {
+        "body": "Only one statement is allowed without them, and leaving them out is how lines get attached to the wrong branch. Always write the braces.",
+        "title": "Braces are not optional in practice"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Always wrap the condition in parentheses.",
+        "problem": "Writing if score > 5 without parentheses."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 40,
+    "concept_id": 3,
+    "title": "Chaining conditions",
+    "explanation": "When the block must run only if several things are true, join the checks with &&. When any one of them is enough, use ||.\n\nKeep each check simple. A long chain of && and || is hard to read; give the pieces names first.",
+    "examples": [
+      {
+        "code": "const age = 20;\nconst hasTicket = true;\nif (age >= 18 && hasTicket) {\n  console.log(\"welcome\");\n}",
+        "title": "Two requirements",
+        "output": "welcome",
+        "caption": "Both conditions had to be true."
+      }
+    ],
+    "notes": [],
+    "common_mistakes": [
+      {
+        "fix": "Group the parts you want evaluated together.",
+        "problem": "Mixing && and || without parentheses."
+      }
+    ],
+    "order_index": 2
+  },
+  {
+    "id": 41,
+    "concept_id": 4,
+    "title": "Choosing with if/else",
+    "explanation": "The else block runs when the condition is false. Exactly one of the two blocks ever runs, which keeps the two outcomes clearly paired.\n\nPut the most likely or most urgent case first so the reader does not have to hunt for it.",
+    "examples": [
+      {
+        "code": "const age = 15;\nif (age >= 18) {\n  console.log(\"adult\");\n} else {\n  console.log(\"minor\");\n}",
+        "title": "Two outcomes",
+        "output": "minor",
+        "caption": "One branch runs, the other is skipped."
+      }
+    ],
+    "notes": [
+      {
+        "body": "It simply runs when the if above it did not. If you find yourself wanting a condition on the else, you want else if.",
+        "title": "else carries no condition"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Use if / else when the outcomes are exclusive.",
+        "problem": "Two separate ifs where an else was needed, so both blocks can run."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 42,
+    "concept_id": 4,
+    "title": "else if chains",
+    "explanation": "Three or more outcomes are handled by stacking else if conditions. JavaScript checks them from the top and stops at the first one that is true.\n\nBecause it stops early, order matters. Put the narrow, specific cases before the broad catch-all.\n\nFinish with a plain else to handle everything the earlier lines did not mention.",
+    "examples": [
+      {
+        "code": "const score = 85;\nif (score >= 90) {\n  console.log(\"A\");\n} else if (score >= 80) {\n  console.log(\"B\");\n} else {\n  console.log(\"F\");\n}",
+        "title": "A grade scale",
+        "output": "B",
+        "caption": "85 is not at least 90, so the second branch wins."
+      }
+    ],
+    "notes": [
+      {
+        "body": "Move the >= 80 check above >= 90 and everyone scores an A.",
+        "title": "Order matters"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Always give the chain a default branch.",
+        "problem": "Forgetting the final else, so unexpected input produces nothing."
+      }
+    ],
+    "order_index": 2
+  },
+  {
+    "id": 43,
+    "concept_id": 29,
+    "title": "Truthiness in practice",
+    "explanation": "Falsy values are: false, 0, \"\", null, undefined and NaN. Everything else counts as true, including \"0\" and [].\n\nThat means you can write if (name) instead of if (name !== \"\"), and it works for empty strings, missing values and null alike.",
+    "examples": [
+      {
+        "code": "console.log(Boolean(\"\"));\nconsole.log(Boolean(\"x\"));\nconsole.log(Boolean(0));",
+        "title": "Empty values fail the test",
+        "output": "false\ntrue\nfalse",
+        "caption": "Only the empty cases are false."
+      }
+    ],
+    "notes": [
+      {
+        "body": "if (name) asks whether there is a name. Wrapping it as if (Boolean(name)) says the same thing with more characters.",
+        "title": "Test the meaning, not the conversion"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Test 0 explicitly when it is a valid value, such as if (count === 0).",
+        "problem": "Treating 0 as missing."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 44,
+    "concept_id": 29,
+    "title": "Nested conditions",
+    "explanation": "An if can sit inside another if. Use it when the second question only makes sense after the first one is true.\n\nKeep nesting to two levels. Deeper chains are easier to read as separate ifs with early returns.",
+    "examples": [
+      {
+        "code": "const n = 4;\nif (n > 0) {\n  if (n % 2 === 0) {\n    console.log(\"positive even\");\n  }\n}",
+        "title": "One question inside another",
+        "output": "positive even",
+        "caption": "The inner block only runs when the outer one is true."
+      }
+    ],
+    "notes": [],
+    "common_mistakes": [
+      {
+        "fix": "Write both braces first, then fill in the middle.",
+        "problem": "Forgetting a closing brace in a nested block."
+      }
+    ],
+    "order_index": 2
+  },
+  {
+    "id": 45,
+    "concept_id": 5,
+    "title": "The for loop",
+    "explanation": "A for loop has three parts separated by semicolons: where the counter starts, what keeps it going, and how it moves.\n\nThe block runs once per turn. JavaScript checks the middle part before every turn and stops as soon as it is false.\n\nThe counter declared with let inside the loop is a fresh variable each turn, which is exactly what you want when the block captures its value.",
+    "examples": [
+      {
+        "code": "for (let i = 1; i <= 3; i++) {\n  console.log(i);\n}",
+        "title": "One line per number",
+        "output": "1\n2\n3",
+        "caption": "Start at 1, stop after 3, add one each time."
+      }
+    ],
+    "notes": [
+      {
+        "body": "< stops one early and <= includes the end. Check which one you meant.",
+        "title": "Off by one"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Make sure the third part changes the value used in the condition.",
+        "problem": "Forgetting to move the counter, so the loop never ends."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 46,
+    "concept_id": 5,
+    "title": "Loop totals",
+    "explanation": "Most loops build something: a total, a list, a count. Create the accumulator before the loop starts, then update it inside.\n\nGoing backwards is the same idea with i-- and a condition that runs while i is still above zero.",
+    "examples": [
+      {
+        "code": "let total = 0;\nfor (let i = 1; i <= 4; i++) {\n  total = total + i;\n}\nconsole.log(total);",
+        "title": "Running total",
+        "output": "10",
+        "caption": "1 + 2 + 3 + 4."
+      }
+    ],
+    "notes": [
+      {
+        "body": "Start, condition, step. Read them in that order and you can say exactly when the loop stops before you run it.",
+        "title": "Read the three parts in order"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Declare it on the line above the for.",
+        "problem": "Creating the accumulator inside the loop, so it resets every turn."
+      }
+    ],
+    "order_index": 2
+  },
+  {
+    "id": 47,
+    "concept_id": 31,
+    "title": "The while loop",
+    "explanation": "A while loop only has a condition. Use it when you do not know how many turns you need, only when to stop.\n\nEverything the condition depends on must change inside the block, or the loop runs forever.\n\nA common shape is a counter that you update by hand, which is exactly what the for loop does for you.",
+    "examples": [
+      {
+        "code": "let n = 10;\nwhile (n > 1) {\n  n = n / 2;\n}\nconsole.log(n);",
+        "title": "Repeat while there is room",
+        "output": "1",
+        "caption": "The condition shrinks each turn."
+      }
+    ],
+    "notes": [
+      {
+        "body": "If the condition can never become false, the browser or worker will hang. Always know what makes the loop stop.",
+        "title": "Safety first"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Change exactly the value the while is testing.",
+        "problem": "Updating a different variable from the one in the condition."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 48,
+    "concept_id": 31,
+    "title": "Loop until a condition",
+    "explanation": "Sometimes the loop is not counting, it is searching: keep going until you find the answer, then stop.\n\nA function can return from inside a loop, which ends the loop immediately. That reads very clearly for a search.",
+    "examples": [
+      {
+        "code": "const items = [4, 8, 15];\nfor (const n of items) {\n  if (n > 10) {\n    console.log(n);\n    break;\n  }\n}",
+        "title": "Stop as soon as you find it",
+        "output": "15",
+        "caption": "break leaves the loop at once."
+      }
+    ],
+    "notes": [
+      {
+        "body": "A return inside a loop ends both the loop and the function, so a break written after it can never run.",
+        "title": "return already leaves the loop"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Return or break the moment the condition is met.",
+        "problem": "Continuing after the answer was found."
+      }
+    ],
+    "order_index": 2
+  },
+  {
+    "id": 49,
+    "concept_id": 6,
+    "title": "Looping with for...of",
+    "explanation": "for...of hands you each value directly, so you never have to manage an index. It works on arrays, strings and anything else you can iterate.\n\nUse it when you care about the values. Use a plain for when you need the position as well.",
+    "examples": [
+      {
+        "code": "for (const colour of [\"red\", \"blue\"]) {\n  console.log(colour);\n}",
+        "title": "One value at a time",
+        "output": "red\nblue",
+        "caption": "No index, no arithmetic."
+      }
+    ],
+    "notes": [
+      {
+        "body": "for...in walks the keys instead, which is why it is wrong for arrays and right for objects.",
+        "title": "for...of gives values"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Use for...of for arrays.",
+        "problem": "Using for...in on an array, which walks over the keys."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 50,
+    "concept_id": 6,
+    "title": "Looping and building",
+    "explanation": "The usual pattern is: start with an empty array, loop over the source, push a transformed value, return the new array.\n\nThe original list is never touched. Each turn produces a new piece for the result.",
+    "examples": [
+      {
+        "code": "const out = [];\nfor (const n of [1, 2]) {\n  out.push(n * 2);\n}\nconsole.log(out);",
+        "title": "Transform every item",
+        "output": "[2, 4]",
+        "caption": "Two inputs in, two transformed values out."
+      }
+    ],
+    "notes": [],
+    "common_mistakes": [
+      {
+        "fix": "const result = []; is always the first line.",
+        "problem": "Forgetting to create the empty array before the loop."
+      }
+    ],
+    "order_index": 2
+  },
+  {
+    "id": 51,
+    "concept_id": 9,
+    "title": "What is a function?",
+    "explanation": "A function is a named piece of code that you can run whenever you like. Writing it once and calling it many times is the single biggest source of reuse in JavaScript.\n\nDeclaring a function does not run it. Only a call, with the parentheses, actually executes the body.\n\nFunctions can return one value with the return keyword. Without a return, they give back undefined.",
+    "examples": [
+      {
+        "code": "function greet() {\n  return \"hello\";\n}\nconsole.log(greet());",
+        "title": "Declare, then call",
+        "output": "hello",
+        "caption": "The body only runs when greet() is called."
+      }
+    ],
+    "notes": [
+      {
+        "body": "You can call a function declaration before the line where it is written. That is convenient, but keeping definitions above their uses still reads better.",
+        "title": "Declarations are hoisted"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Check that the name is followed by parentheses somewhere.",
+        "problem": "Defining a function but never calling it."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 52,
+    "concept_id": 9,
+    "title": "Calling a function",
+    "explanation": "A call passes arguments that fill the parameters, left to right. Too few arguments arrive as undefined rather than as an error.\n\nThe value after return leaves the function immediately; nothing below it runs.\n\nKeeping functions small makes them easy to name, easy to test and easy to reuse.",
+    "examples": [
+      {
+        "code": "function label(count) {\n  if (count === 0) return \"none\";\n  return \"items: \" + count;\n}\nconsole.log(label(0));\nconsole.log(label(2));",
+        "title": "An early return",
+        "output": "none\nitems: 2",
+        "caption": "The second return never ran for the first call."
+      }
+    ],
+    "notes": [
+      {
+        "body": "A function declaration can be called from anywhere in the script, even on the line above it. A function stored in a const cannot.",
+        "title": "Declarations are hoisted"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Return is final. Structure the function so only one return runs.",
+        "problem": "Writing two return statements and expecting both to happen."
+      }
+    ],
+    "order_index": 2
+  },
+  {
+    "id": 53,
+    "concept_id": 10,
+    "title": "Parameters and return",
+    "explanation": "Parameters are the names listed in the definition; arguments are the values you pass at the call site. They line up by position.\n\nreturn hands a value back to the caller. Everything the function does must be captured in that value, because nothing else escapes.\n\nA function should do one thing and report it clearly. If you need several results, return an object.",
+    "examples": [
+      {
+        "code": "function greet(name) {\n  return \"Hello, \" + name + \"!\";\n}\nconsole.log(greet(\"Ana\"));",
+        "title": "In and out",
+        "output": "Hello, Ana!",
+        "caption": "The argument fills the parameter."
+      }
+    ],
+    "notes": [
+      {
+        "body": "Nothing below it runs. Put an early return at the top for the cases you want to reject, then the normal path stays unindented.",
+        "title": "return ends the function"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "The caller cannot use a console.log. Return the value.",
+        "problem": "Logging the answer instead of returning it."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 54,
+    "concept_id": 10,
+    "title": "Multiple parameters",
+    "explanation": "More than one parameter is normal. Keep the order logical and document anything that is not obvious.\n\nIf you are passing many related values, consider passing an object instead so the order stops mattering.",
+    "examples": [
+      {
+        "code": "function clamp(value, low, high) {\n  if (value < low) return low;\n  if (value > high) return high;\n  return value;\n}\nconsole.log(clamp(15, 0, 10));",
+        "title": "Three inputs, one output",
+        "output": "10",
+        "caption": "Two checks and a fallback."
+      }
+    ],
+    "notes": [
+      {
+        "body": "Call f(1) on function f(a, b) and b is undefined rather than an error. Any arguments passed beyond the last parameter are ignored.",
+        "title": "A missing argument is undefined"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Use named constants at the call site, or pass an object.",
+        "problem": "Swapping two arguments at the call site."
+      }
+    ],
+    "order_index": 2
+  },
+  {
+    "id": 55,
+    "concept_id": 35,
+    "title": "Arrow syntax",
+    "explanation": "An arrow function is written as (parameters) => value. When the body is a single expression, you can drop the braces and the return keyword.\n\nWith exactly one parameter you may drop the parentheses too: n => n * 2.\n\nThe result is the same function, just written with fewer characters.",
+    "examples": [
+      {
+        "code": "const double1 = function (n) { return n * 2; };\nconst double2 = function (n) { return n * 2; };\nconst double3 = (n) => n * 2;\nconsole.log(double3(4));",
+        "title": "Three spellings",
+        "output": "8",
+        "caption": "The last one is the arrow version."
+      }
+    ],
+    "notes": [
+      {
+        "body": "A short arrow body holds one expression. Use braces when you need several lines.",
+        "title": "Expressions only"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Inside braces you must write return yourself.",
+        "problem": "Expecting braces to return automatically."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 56,
+    "concept_id": 35,
+    "title": "When to use arrows",
+    "explanation": "Arrows shine for small callbacks: sorting a list, mapping values, handling a click. In those places the short form keeps the focus on the data.\n\nFor anything with several lines, or for a function you want to name and document, a normal declaration is clearer.\n\nArrows also treat this differently from normal functions. That matters in classes and event handlers, and it is covered later.",
+    "examples": [
+      {
+        "code": "const numbers = [1, 2, 3];\nconst doubled = numbers.map((n) => n * 2);\nconsole.log(doubled);",
+        "title": "A short callback",
+        "output": "[2, 4, 6]",
+        "caption": "The arrow is the whole body of the callback."
+      }
+    ],
+    "notes": [],
+    "common_mistakes": [
+      {
+        "fix": "If it needs more than one line, use a function declaration.",
+        "problem": "Using a long multi-line arrow where a declaration would read better."
+      }
+    ],
+    "order_index": 2
+  },
+  {
+    "id": 57,
+    "concept_id": 7,
+    "title": "Reading values by index",
+    "explanation": "An array stores values in order, each with a position called an index. Counting starts at zero, so the first item is numbers[0].\n\nAn index that does not exist gives undefined rather than an error, which is how you can test for a position safely.\n\nlength tells you how many items are there, and the last item is always at length - 1.",
+    "examples": [
+      {
+        "code": "const items = [10, 20, 30];\nconsole.log(items[0]);\nconsole.log(items[2]);\nconsole.log(items.length);",
+        "title": "Zero-based positions",
+        "output": "10\n30\n3",
+        "caption": "Index 2 is the third item."
+      }
+    ],
+    "notes": [
+      {
+        "body": "Every off-by-one bug in a loop eventually comes back to index 0.",
+        "title": "Remember the zero"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "The last valid index is items.length - 1.",
+        "problem": "Reading items[length] and getting undefined."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 58,
+    "concept_id": 7,
+    "title": "Array basics",
+    "explanation": "Reading is only half the job. Summing, finding the last item and counting are all small loops over the same positions.\n\nBuild the answer in a variable you create before the loop, then return it once the loop is finished.",
+    "examples": [
+      {
+        "code": "const numbers = [1, 2, 3];\nlet total = 0;\nfor (const n of numbers) {\n  total = total + n;\n}\nconsole.log(total);",
+        "title": "Sum with a loop",
+        "output": "6",
+        "caption": "One turn per value."
+      }
+    ],
+    "notes": [],
+    "common_mistakes": [
+      {
+        "fix": "Declare it above the loop so it survives each turn.",
+        "problem": "Creating the total inside the loop."
+      }
+    ],
+    "order_index": 2
+  },
+  {
+    "id": 59,
+    "concept_id": 8,
+    "title": "Filtering an array",
+    "explanation": "filter walks the array and keeps the items where your test returns true. It returns a brand new array and never changes the original.\n\nThe test is a function that receives one item and answers yes or no.\n\nBecause the original is untouched, you can filter as often as you like without fear.",
+    "examples": [
+      {
+        "code": "const numbers = [5, 25, 30];\nconst big = numbers.filter((n) => n > 20);\nconsole.log(big);",
+        "title": "Keep the big ones",
+        "output": "[25, 30]",
+        "caption": "A new array comes back."
+      }
+    ],
+    "notes": [
+      {
+        "body": "filter((item) => item.price > 10) works as soon as the items are objects. The rule is whatever the callback returns.",
+        "title": "The test can look at more than the value"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "const big = numbers.filter(...). filter alone does nothing visible.",
+        "problem": "Forgetting to assign the result."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 60,
+    "concept_id": 8,
+    "title": "More array methods",
+    "explanation": "The same shape appears everywhere: map transforms each item, filter keeps some, find returns the first match, and some and every answer yes or no.\n\nEach one takes a small function. Learning the four of them removes most hand-written loops.",
+    "examples": [
+      {
+        "code": "const numbers = [1, 8, 12];\nconst first = numbers.find((n) => n > 5);\nconsole.log(first);",
+        "title": "find returns the first match",
+        "output": "8",
+        "caption": "It stops at the first item that passes."
+      }
+    ],
+    "notes": [
+      {
+        "body": "find returns undefined when nothing passes, and filter returns an empty array.",
+        "title": "No match"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "find gives one item; filter gives a list.",
+        "problem": "Using find when you wanted every match."
+      }
+    ],
+    "order_index": 2
+  },
+  {
+    "id": 159,
+    "concept_id": 81,
+    "title": "What is type conversion?",
+    "explanation": "Every value in JavaScript has a type: text, number, boolean. Operations often need one particular type, so a value sometimes has to be changed from its own type into another one. That change is called conversion.\n\nThere are two kinds. Implicit conversion happens when JavaScript changes the type for you because the operator demands it. Explicit conversion is when you ask for the change yourself with Number(), String() or Boolean().\n\nPlus is the operator to watch. If either side of + is text, the answer is text, so the numbers are joined instead of added. The other arithmetic operators always calculate, which is why \"5\" - 1 gives 4 while \"5\" + 1 gives \"51\".",
+    "examples": [
+      {
+        "code": "const text = \"5\";\nconsole.log(text + 1);\nconsole.log(text - 1);",
+        "title": "Two operators, two answers",
+        "output": "51\n4",
+        "caption": "+ joins text, - does maths. Same input, different rule."
+      },
+      {
+        "code": "console.log(Number(\"5\") + 1);\nconsole.log(String(5) + 1);",
+        "title": "Convert on purpose",
+        "output": "6\n51",
+        "caption": "Number() makes the addition happen, String() forces the join."
+      }
+    ],
+    "notes": [
+      {
+        "body": "+ joins text whenever either side is text. - * and / always calculate. That single difference explains most beginner confusion about types.",
+        "title": "Plus is the odd one out"
+      },
+      {
+        "body": "A conversion you write can be read and checked. A conversion JavaScript performs behind your back is where bugs come from.",
+        "title": "Convert yourself"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Convert first: Number(\"5\") + 1.",
+        "problem": "Expecting \"5\" + 1 to give 6."
+      },
+      {
+        "fix": "Convert both sides yourself, then compare with ===.",
+        "problem": "Using == to compare a number with text and hoping JavaScript sorts it out."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 160,
+    "concept_id": 81,
+    "title": "Number, String and Boolean",
+    "explanation": "Three functions do almost all of the explicit conversion you will ever need. Number(value) asks for a number, String(value) asks for text, and Boolean(value) asks for true or false.\n\nNumber() is strict: the whole value must make sense as a number or you get NaN. String() never fails, because anything can be written as text. Boolean() never fails either, because every value is either truthy or falsy.\n\nString(25) gives \"25\", String(true) gives \"true\", String(null) gives \"null\". The text is exactly what a person would see on screen, which makes String() the right choice when you are building something to display.",
+    "examples": [
+      {
+        "code": "console.log(Number(\"25\"));\nconsole.log(String(25));\nconsole.log(Boolean(1));\nconsole.log(Boolean(0));",
+        "title": "The three converters",
+        "output": "25\n25\ntrue\nfalse",
+        "caption": "One function per target type."
+      }
+    ],
+    "notes": [
+      {
+        "body": "String() will happily turn an object or an error into text. Number() is the one that can come back empty-handed as NaN.",
+        "title": "String never throws"
+      },
+      {
+        "body": "Conversion always produces a new value. The variable you converted from still holds what it held before.",
+        "title": "Keep the original"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Either clean the text first or use parseInt, which reads only the leading digits.",
+        "problem": "Using Number() on text that has extra words, such as Number(\"12 apples\")."
+      },
+      {
+        "fix": "Check the function name matches the type you actually need.",
+        "problem": "Adding 1 to a string because String() was used by mistake."
+      }
+    ],
+    "order_index": 2
+  },
+  {
+    "id": 161,
+    "concept_id": 82,
+    "title": "Number and parseInt",
+    "explanation": "Number(text) looks at the whole string. If every character of it forms a valid number the answer comes back, otherwise the answer is NaN. Number(\"25\") is 25, Number(\"25 apples\") is NaN, and Number(\"\") is 0.\n\nparseInt(text) works differently: it reads digits from the front and stops at the first character it cannot use. parseInt(\"25 apples\") gives 25, and parseInt(\"hello\") gives NaN because there were no digits at the start at all.\n\nparseInt takes a second argument, the radix, which is the base of the number. Always pass 10 for ordinary decimal numbers. Writing parseInt(text, 10) out loud means \"base ten\", and it stops an old engine from reading a leading zero as base eight.",
+    "examples": [
+      {
+        "code": "console.log(Number(\"25\"));\nconsole.log(Number(\"25 apples\"));\nconsole.log(parseInt(\"25 apples\"));",
+        "title": "Whole text versus the front",
+        "output": "25\nNaN\n25",
+        "caption": "Number needs the whole text to be valid, parseInt stops at the first bad character."
+      },
+      {
+        "code": "console.log(parseInt(\"1010\", 10));\nconsole.log(parseInt(\"1010\", 2));",
+        "title": "The radix",
+        "output": "1010\n10",
+        "caption": "The same digits, read in two different bases."
+      }
+    ],
+    "notes": [
+      {
+        "body": "parseInt(\"10\", 10) makes the base obvious to whoever reads your code next, which is usually future you.",
+        "title": "Always write the radix"
+      },
+      {
+        "body": "parseInt(\"12abc\") is 12, but parseInt(\"abc12\") is NaN. The digits have to be at the very front.",
+        "title": "parseInt reads from the left"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Write parseInt(text, 10) every time.",
+        "problem": "Forgetting the radix on parseInt."
+      },
+      {
+        "fix": "Check the result with Number.isNaN before you use it.",
+        "problem": "Trusting parseInt with text that has no digits at the front."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 162,
+    "concept_id": 82,
+    "title": "Decimals and parseFloat",
+    "explanation": "parseFloat works like parseInt but allows one decimal point, so it keeps the part that parseInt throws away. parseFloat(\"3.14 dollars\") gives 3.14, parseFloat(\"3\") gives 3, and parseFloat(\"abc\") gives NaN.\n\nThe three functions line up like this. Number is strict and wants the whole value to be clean. parseFloat reads as much as it can from the front and stops. parseInt reads only whole digits and stops at the decimal point.\n\nPick Number() when the value is already clean, and the parsing functions when the value carries extra words around the number.",
+    "examples": [
+      {
+        "code": "console.log(Number(\"3.14\"));\nconsole.log(parseFloat(\"3.14 dollars\"));\nconsole.log(parseInt(\"3.14\"));",
+        "title": "Three ways to read 3.14",
+        "output": "3.14\n3.14\n3",
+        "caption": "Number needs clean text, parseFloat reads until it must stop, parseInt ignores the decimals."
+      }
+    ],
+    "notes": [
+      {
+        "body": "parseFloat(\"1.2.3\") stops at the second dot and returns 1.2 rather than complaining.",
+        "title": "Only one decimal point"
+      },
+      {
+        "body": "Keep the full decimal while you calculate and round only when you display the answer, otherwise the rounding errors pile up.",
+        "title": "Round once, at the end"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Use parseFloat for decimals and Number when the whole value is already clean.",
+        "problem": "Using parseInt on a price and losing the cents."
+      },
+      {
+        "fix": "Round the final answer only.",
+        "problem": "Rounding every step of a calculation."
+      }
+    ],
+    "order_index": 2
+  },
+  {
+    "id": 163,
+    "concept_id": 83,
+    "title": "NaN and failed conversions",
+    "explanation": "When a conversion cannot produce a real number JavaScript hands you back NaN, which is short for Not a Number. It is still of type number, which is the first surprise for most people.\n\nNumber(\"hello\") is NaN, Number(\"12 34\") is NaN because the space sits in the middle, and parseInt(\"hello\") is NaN because there were no digits at the front.\n\nNaN has one very strange property: it is not even equal to itself. The check value === NaN is always false, even when value really is NaN. The only reliable test is Number.isNaN(value).\n\nThe empty string is a quieter trap. Number(\"\") gives 0, so a blank form field silently becomes zero and ends up inside your totals. Check the text before you convert it.",
+    "examples": [
+      {
+        "code": "const total = Number(\"hello\");\nconsole.log(total);\nconsole.log(total + 5);\nconsole.log(Number.isNaN(total));",
+        "title": "One bad conversion spreads",
+        "output": "NaN\nNaN\ntrue",
+        "caption": "Every calculation after a NaN is NaN as well."
+      },
+      {
+        "code": "console.log(Number(\"\"));\nconsole.log(Number(\"   \"));\nconsole.log(parseInt(\"\"));",
+        "title": "The empty string trap",
+        "output": "0\n0\nNaN",
+        "caption": "Blank text quietly becomes zero with Number()."
+      }
+    ],
+    "notes": [
+      {
+        "body": "Once a NaN enters a calculation everything after it is NaN too. Test the conversion before you start using the result.",
+        "title": "NaN is sticky"
+      },
+      {
+        "body": "Number(text.trim()) removes spaces that would otherwise be hiding at either end of the value.",
+        "title": "Trim before you convert"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Use Number.isNaN(value).",
+        "problem": "Writing value === NaN and never getting true."
+      },
+      {
+        "fix": "Check for empty text before you convert.",
+        "problem": "Letting Number(\"\") turn an empty field into zero."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 164,
+    "concept_id": 83,
+    "title": "Truthy and falsy values",
+    "explanation": "Boolean(value) never fails. Every value in JavaScript is either truthy, meaning it becomes true, or falsy, meaning it becomes false. Knowing the short list of falsy values is enough to predict almost any condition.\n\nThe complete list is: false, 0, \"\", null, undefined and NaN. Everything else is truthy, including \"false\", \"0\", -1 and an empty array. The quotes are what make those two look-alikes truthy: they are text, and text of any length counts as true.\n\nThis is why if (count) is false when count is 0, and why if (name) is false when name is an empty string. It is also why a blank field can quietly pass a check you thought was strict.",
+    "examples": [
+      {
+        "code": "console.log(Boolean(\"\"));\nconsole.log(Boolean(\"false\"));\nconsole.log(Boolean(0));\nconsole.log(Boolean(\"0\"));",
+        "title": "The traps in the list",
+        "output": "false\ntrue\nfalse\ntrue",
+        "caption": "Text is truthy even when it spells false or 0."
+      }
+    ],
+    "notes": [
+      {
+        "body": "false, 0, \"\", null, undefined, NaN. If a value is not one of those six, it is truthy.",
+        "title": "Six falsy values, nothing else"
+      },
+      {
+        "body": "Comparisons already produce booleans. Write if (count > 0), not if (Boolean(count > 0)).",
+        "title": "Booleans do not need converting"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Convert first: Boolean(text) is true for any non-empty text, including \"false\".",
+        "problem": "Assuming \"false\" as text behaves like false."
+      },
+      {
+        "fix": "Check the meaning instead: if (count > 0).",
+        "problem": "Checking a number with if (count === true)."
+      }
+    ],
+    "order_index": 2
+  },
+  {
+    "id": 165,
+    "concept_id": 84,
+    "title": "Converting in real code",
+    "explanation": "Real conversion code follows one shape almost every time: read the value, check that it converted, do the calculation, then put the answer back into the form it started in.\n\nOrder matters more than anything else. Convert first, calculate second, format last. If you calculate while the value is still text, + will join instead of add and every later step inherits the mistake.\n\nFormat at the edge only. Keep numbers as numbers for as long as you can, and convert to text at the moment the value is about to be shown to a person.",
+    "examples": [
+      {
+        "code": "const raw = \"19.5\";\nconst price = Number(raw);\nconst withFee = price + 3;\nconsole.log(String(withFee));",
+        "title": "Read, calculate, format",
+        "output": "22.5",
+        "caption": "Text in, number for the maths, text out again."
+      }
+    ],
+    "notes": [
+      {
+        "body": "Convert as early as you can, then the rest of the code can assume it is working with a real number.",
+        "title": "One place to convert"
+      },
+      {
+        "body": "A variable called price holds text until you convert it. Naming it rawPrice or priceText is a cheap way to stop the mistake happening at all.",
+        "title": "Keep the type visible"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Convert with Number() before you add anything.",
+        "problem": "Adding a fee to a text price and getting string repetition instead."
+      },
+      {
+        "fix": "Format last, right before you display or return the answer.",
+        "problem": "Formatting too early and losing decimal places you still needed."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 188,
+    "concept_id": 96,
+    "title": "What is an object?",
+    "explanation": "An array keeps its values in order and reaches them by number: 0, 1, 2. An object reaches them by name. Instead of positions you choose the keys yourself, such as name, price or city, and each key holds one value.\n\nAn object literal is a pair of curly braces with key: value pairs inside, separated by commas: const user = { name: \"Ada\", age: 36 };. The value can be any type, and the key is written without quotes unless it contains spaces.\n\nRead a value with a dot and the key: user.name. When the key is not there you get undefined rather than an error, which is how a missing property is told apart from one that holds false or 0.",
+    "examples": [
+      {
+        "code": "const user = { name: \"Ada\", age: 36 };\nconsole.log(user.name);\nconsole.log(user.age);",
+        "title": "An object with two properties",
+        "output": "Ada\n36",
+        "caption": "The keys are name and age; the dot reaches each one."
+      },
+      {
+        "code": "const user = { name: \"Ada\" };\nconsole.log(user.city);\nconsole.log(typeof user.city);",
+        "title": "A key that was never set",
+        "output": "undefined\nundefined",
+        "caption": "A missing property reads as undefined."
+      }
+    ],
+    "notes": [
+      {
+        "body": "The name in { name: \"Ada\" } is a label attached to that value. Renaming a variable somewhere else in your code does not change it.",
+        "title": "Keys are labels, not variables"
+      },
+      {
+        "body": "When a second variable is given the same object, both names point at one copy. Changing it through either name changes it for both.",
+        "title": "Objects are shared"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "You get undefined instead. Check for it, or give the value a default.",
+        "problem": "Reading user.city when city was never added and expecting an error."
+      },
+      {
+        "fix": "Both forms work. Write name: \"Ada\" unless the key contains spaces or dashes.",
+        "problem": "Quoting every key, as in { \"name\": \"Ada\" }, and wondering whether it means something different."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 189,
+    "concept_id": 96,
+    "title": "Creating an object",
+    "explanation": "Write the curly braces and put each key: value pair inside, separated by commas. Every pair except the last one needs a trailing comma, and a missing comma there is the most common way to break a new object.\n\nThe values can be built first and then picked up: const item = { name: name, price: price } is valid, and when the key and the variable happen to share a name the pair can be shortened to { name, price }.\n\nAn object is a value like any other, so it can be returned from a function. Build it, fill it in, then return it in one step.",
+    "examples": [
+      {
+        "code": "const name = \"Pen\";\nconst price = 2;\nconst item = { name, price, inStock: true };\nconsole.log(item.name);\nconsole.log(item.inStock);",
+        "title": "Build an object from variables",
+        "output": "Pen\ntrue",
+        "caption": "name and price are written once; inStock is added directly."
+      },
+      {
+        "code": "function makeItem() {\n  return { name: \"Pen\", price: 2 };\n}\nconst item = makeItem();\nconsole.log(item.name, item.price);",
+        "title": "Return the whole object",
+        "output": "Pen 2",
+        "caption": "A function can build and return an object in a single statement."
+      }
+    ],
+    "notes": [
+      {
+        "body": "{ name, price } means exactly { name: name, price: price }. Use it whenever the names already match.",
+        "title": "Shorthand means the same thing"
+      },
+      {
+        "body": "Outside the braces you grow an object by assignment: item.price = 2. Commas only ever appear inside the literal.",
+        "title": "Add keys later, not commas"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Take it out. Only the pairs in the middle are followed by commas.",
+        "problem": "Writing a comma after the last pair."
+      },
+      {
+        "fix": "Create the values on the lines above, then write the object underneath them.",
+        "problem": "Building the object before the variables it holds exist."
+      }
+    ],
+    "order_index": 2
+  },
+  {
+    "id": 190,
+    "concept_id": 96,
+    "title": "Reading properties",
+    "explanation": "Dot notation is the usual choice: user.name. It works only when the key is a plain word you can write ahead of time.\n\nBracket notation takes an expression instead: settings[key]. It is the tool for keys that arrive as variables, come out of a form, or are not valid words.\n\nBoth forms read the same value, and both give undefined when the key is missing. When undefined is not a useful answer, supply a default on the same line: const theme = settings[key] ?? \"light\";",
+    "examples": [
+      {
+        "code": "const settings = { theme: \"dark\" };\nconst key = \"theme\";\nconsole.log(settings[key]);\nconsole.log(settings.theme);",
+        "title": "The key as a variable",
+        "output": "dark\ndark",
+        "caption": "Bracket and dot reach the same value."
+      },
+      {
+        "code": "const settings = {};\nconst theme = settings.theme ?? \"light\";\nconsole.log(theme);",
+        "title": "A default for a missing key",
+        "output": "light",
+        "caption": "The right-hand side is used only when nothing is stored."
+      }
+    ],
+    "notes": [
+      {
+        "body": "If the key is held in a variable, or contains anything beyond letters, digits and $, use brackets. Otherwise the dot is shorter and easier to read.",
+        "title": "When to use brackets"
+      },
+      {
+        "body": "|| falls back for every falsy value, including 0 and \"\". ?? falls back only when the left side is null or undefined, so a stored 0 survives.",
+        "title": "?? and || are not the same"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Use brackets: settings[key]. The dot looks for a property literally named key.",
+        "problem": "Writing settings.key when key is a variable holding the text \"theme\"."
+      },
+      {
+        "fix": "It is undefined. Put a default in front of it when you need a value to work with.",
+        "problem": "Treating a missing key as if it were empty text."
+      }
+    ],
+    "order_index": 3
+  },
+  {
+    "id": 191,
+    "concept_id": 97,
+    "title": "Changing a property",
+    "explanation": "Assigning to a property replaces the value that was there: cart.items = 3. Nothing else in the object moves, and no other key is affected.\n\nA const object can still be changed. const fixes the name's link to the object, not what is stored inside it. You cannot point cart at a different object, but you can keep rewriting the contents of the one it holds.\n\nCompound assignment works here too: cart.items += 2 reads the current value, adds two, and writes the answer back in one step.",
+    "examples": [
+      {
+        "code": "const cart = { items: 2 };\ncart.items = 3;\nconsole.log(cart.items);",
+        "title": "Replace a value",
+        "output": "3",
+        "caption": "The old value is gone."
+      },
+      {
+        "code": "const cart = { items: 2 };\ncart.items += 2;\nconsole.log(cart.items);",
+        "title": "Add to what is already there",
+        "output": "4",
+        "caption": "Read, add, write back."
+      }
+    ],
+    "notes": [
+      {
+        "body": "const cart = {}; cart = {} fails with an error. const cart = {}; cart.items = 1 is perfectly fine.",
+        "title": "const stops reassignment, not editing"
+      },
+      {
+        "body": "Assigning to a key that already exists overwrites it. There is only ever one items key in the object.",
+        "title": "Same key, new value"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Use let when the name itself has to be able to point somewhere else.",
+        "problem": "Fighting with \"Assignment to constant variable\" when trying to point an object at a new one."
+      },
+      {
+        "fix": "undefined + number is NaN. Create the key with a real number first.",
+        "problem": "Adding to a property that does not exist yet with +=."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 192,
+    "concept_id": 97,
+    "title": "Adding and removing properties",
+    "explanation": "Assigning to a key that does not exist yet adds it. That is the whole mechanism for growing an object, and it works at any point in the program.\n\ndelete takes a key away. After delete user.city the key is gone: user.city reads as undefined and \"city\" in user is false. The rest of the object is left exactly as it was.\n\nBoth operations change the object itself. If a second name points at the same object, that name sees the addition or the removal straight away.",
+    "examples": [
+      {
+        "code": "const user = { name: \"Ada\" };\nuser.city = \"London\";\nconsole.log(user.city);\nconsole.log(Object.keys(user).length);",
+        "title": "Add a key",
+        "output": "London\n2",
+        "caption": "The object grew from one key to two."
+      },
+      {
+        "code": "const user = { name: \"Ada\", temp: 1 };\ndelete user.temp;\nconsole.log(\"temp\" in user);\nconsole.log(user.name);",
+        "title": "Remove a key",
+        "output": "false\nAda",
+        "caption": "delete takes the key away and leaves the rest alone."
+      }
+    ],
+    "notes": [
+      {
+        "body": "Write delete user.temp, with no parentheses after the key and nothing else on the line.",
+        "title": "delete is a word, not a method"
+      },
+      {
+        "body": "user.city = undefined leaves the key behind, and Object.keys still counts it. Only delete removes the key itself.",
+        "title": "Set to undefined is not the same as delete"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "delete takes an expression, not a call: delete user.temp.",
+        "problem": "Writing delete user.temp() as though it were a function."
+      },
+      {
+        "fix": "Outside the braces, assign: user.city = \"London\".",
+        "problem": "Adding a key with a comma, as if the object were still a literal."
+      }
+    ],
+    "order_index": 2
+  },
+  {
+    "id": 193,
+    "concept_id": 98,
+    "title": "Nested objects",
+    "explanation": "The value of a key can be another object. That is how real data arrives: a user holds an address, and the address holds a city, so the whole record fits under one name.\n\nChain the dots to reach inside: user.address.city. Every link must exist. If address was never set, user.address reads as undefined and then .city on undefined throws a TypeError, so the middle link has to be checked before you walk through it.\n\nOptional chaining, written user.address?.city, does that check for you: when address is missing the whole expression is undefined instead of an error.",
+    "examples": [
+      {
+        "code": "const user = { name: \"Ada\", address: { city: \"London\" } };\nconsole.log(user.address.city);",
+        "title": "Reach into a nested object",
+        "output": "London",
+        "caption": "Two dots, two levels down."
+      },
+      {
+        "code": "const user = { name: \"Ada\" };\nconsole.log(user.address ? user.address.city : \"unknown\");\nconsole.log(user.address?.city);",
+        "title": "Guard the middle link",
+        "output": "unknown\nundefined",
+        "caption": "The check can be written by hand or with ?."
+      }
+    ],
+    "notes": [
+      {
+        "body": "user.profile.settings.theme is legal but brittle, because every link has to hold. Flatten the data when you design it yourself.",
+        "title": "Keep nesting shallow"
+      },
+      {
+        "body": "When the value is there, ?. behaves exactly like a normal dot. It only steps in when the value is null or undefined.",
+        "title": "? only changes the missing case"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Check address first, or write user.address?.city.",
+        "problem": "Letting user.address.city throw a TypeError when address was never set."
+      },
+      {
+        "fix": "Read the field you need and pass that single value around instead.",
+        "problem": "Copying a whole nested object when only one field was needed."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 194,
+    "concept_id": 98,
+    "title": "Object methods",
+    "explanation": "The value of a key can be a function. An object with a function stored in it has a method, and you call it with a dot: helper.shout().\n\nInside the method the surrounding values are still visible, so it can work with the data that was in scope when the object was created. No special keyword is needed for that.\n\nA method returns a value like any other function, so call it and return what it gives back: return helper.upper(). Returning the object itself, or returning the function without calling it, hands the caller something it cannot use.",
+    "examples": [
+      {
+        "code": "function greet(name) {\n  const helper = {\n    shout: function () {\n      return \"HELLO \" + name;\n    }\n  };\n  return helper.shout();\n}\nconsole.log(greet(\"Ada\"));",
+        "title": "Call a method",
+        "output": "HELLO Ada",
+        "caption": "The method reads name from the line above it."
+      },
+      {
+        "code": "const calc = {\n  add: function (a, b) {\n    return a + b;\n  }\n};\nconsole.log(calc.add(2, 3));",
+        "title": "A method with an argument",
+        "output": "5",
+        "caption": "Pass values after the dot, exactly like a normal function."
+      }
+    ],
+    "notes": [
+      {
+        "body": "A method is just a function stored under a key. It can be copied, passed around or replaced like any other value.",
+        "title": "Methods are ordinary values"
+      },
+      {
+        "body": "helper.shout() runs it and gives you the answer. helper.shout without the parentheses hands back the function itself.",
+        "title": "Return the result, not the method"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Call the method and return its answer: return helper.upper().",
+        "problem": "Returning the object when the task asked for the value the method produces."
+      },
+      {
+        "fix": "Without () you are handing over the function; with () you get what it returns.",
+        "problem": "Forgetting the parentheses after the method name."
+      }
+    ],
+    "order_index": 2
+  },
+  {
+    "id": 195,
+    "concept_id": 99,
+    "title": "Working with object data",
+    "explanation": "Lists of objects are the shape real data takes: a form with named fields, a list of people, an order carrying its own items. Almost every task you meet in practice starts from one of these.\n\nReading one follows the same pattern every time. Walk the data with a loop or a lookup, read the property you need, decide with a condition, then return the answer.\n\nSettle the empty case before the happy path. An empty list, a missing key and a zero are all normal input, and each one needs an answer ready to return.",
+    "examples": [
+      {
+        "code": "const people = [\n  { name: \"Ada\", active: false },\n  { name: \"Bob\", active: true }\n];\nfor (const person of people) {\n  if (person.active) {\n    console.log(person.name);\n    break;\n  }\n}",
+        "title": "Walk a list of objects",
+        "output": "Bob",
+        "caption": "Loop, check, answer."
+      },
+      {
+        "code": "const order = { items: [{ price: 2 }, { price: 3 }] };\nlet total = 0;\nfor (const item of order.items) {\n  total += item.price;\n}\nconsole.log(total);",
+        "title": "Add up the items inside an object",
+        "output": "5",
+        "caption": "The list lives under a key of the object."
+      }
+    ],
+    "notes": [
+      {
+        "body": "Decide what an empty list returns before you write the loop. It is the case that breaks working code in production.",
+        "title": "Check the empty case first"
+      },
+      {
+        "body": "Pull the property into a variable at the top instead of typing the whole chain each time. It is shorter and it cannot drift out of sync.",
+        "title": "Read once, decide once"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Arrays take for...of. Objects take for...in or Object.keys.",
+        "problem": "Looping over an object as though it were an array."
+      },
+      {
+        "fix": "Check the length first, or return a default when the list is empty.",
+        "problem": "Reading the first item without checking that the list has any."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 571,
+    "concept_id": 275,
+    "title": "Reading the rules first",
+    "explanation": "Every problem here is a small piece of real work: a screen that needs a list, a count, a total. Before writing anything, read the rules twice and mark the boundary words - \"at least\", \"strictly below\", \"or\" - because they decide your comparisons.\n\nWrite down the exact shape of the result: is it a list of names, a single number, or an object with fixed keys? An empty input still has to return that same shape, so decide the empty case first.\n\nDry-run one example by hand on paper. If your hand-check does not match the expected output, the rules you understood are wrong somewhere - fix that before touching code.",
+    "examples": [
+      {
+        "code": "// Input\nconst patients = [\n  { name: \"John\", age: 72 },\n  { name: \"Anna\", age: 30 },\n  { name: \"Lisa\", age: 68 },\n];\n\n// Rule: senior when age is 65 or older",
+        "title": "Problem anatomy: one rule, checked by hand",
+        "output": "[\"John\", \"Lisa\"]",
+        "caption": "72 and 68 pass the boundary, 30 does not. The output keeps the input order."
+      }
+    ],
+    "notes": [
+      {
+        "body": "Most hidden tests start with []. Decide what an empty input returns before you write the loop.",
+        "title": "The empty case is part of the contract"
+      },
+      {
+        "body": "Unless a rule says otherwise, returned lists follow the input order.",
+        "title": "Order is part of the answer"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "\"Or older\" includes the boundary, so the check is >= 65.",
+        "problem": "Using > where the rule says \"65 or older\"."
+      },
+      {
+        "fix": "Dry-run the visible example line by line and compare with the expected output.",
+        "problem": "Counting an item in your head but not in your code."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 572,
+    "concept_id": 276,
+    "title": "Combining conditions",
+    "explanation": "Real business rules rarely stop at one check. A discount applies to seniors OR gold members; a big order is large AND from the north. Read each rule aloud and decide whether it needs AND, OR, or a sequence of separate checks.\n\nWhen several rules act on the same row, list them in the order the problem states them and check them one at a time. A row must pass every required check before it reaches your result.\n\nKeep arithmetic separate from filtering when the problem asks for a total: decide which rows count first, then add their numbers.",
+    "examples": [
+      {
+        "code": "// Input\nconst customers = [\n  { name: \"Jo\", age: 70, membership: \"STD\" },\n  { name: \"Bea\", age: 40, membership: \"SILVER\" },\n];\n\n// Rule: eligible when age >= 65 OR membership is \"GOLD\"",
+        "title": "Problem anatomy: two conditions on one row",
+        "output": "[\"Jo\"]",
+        "caption": "Jo passes on age, Bea fails both halves of the OR."
+      }
+    ],
+    "notes": [
+      {
+        "body": "\"At least one of the two\" is OR. \"Both conditions\" is AND. Mixing them up is the classic business-rule bug.",
+        "title": "Say the operator out loud"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Rewrite the rule as \"both must pass\" or \"either may pass\" before coding it.",
+        "problem": "Using AND where the rule says OR (or the reverse)."
+      },
+      {
+        "fix": "Decide the skip rule first and return early for rows that fail it.",
+        "problem": "Adding rows that should have been skipped."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 573,
+    "concept_id": 277,
+    "title": "Counting what matters",
+    "explanation": "Counting problems give you a list of statuses, categories or labels and ask for tallies. Create every counter at its starting value first - including the ones you expect to stay at 0 - so the result always has the full shape the contract asks for.\n\nWalk the list once. For each row, decide whether it belongs to a known bucket or must be ignored, then update the matching counter. Rows with unknown labels are usually ignored, not counted somewhere.\n\nClassification is counting with a label per row: the shape changes from one object of numbers to an array of result objects, but the loop stays the same.",
+    "examples": [
+      {
+        "code": "// Input\nconst rows = [\n  { status: \"ACTIVE\" },\n  { status: \"INACTIVE\" },\n  { status: \"ACTIVE\" },\n  { status: \"ARCHIVED\" },\n];\n\n// Rule: count ACTIVE, INACTIVE and BANNED; other statuses are ignored",
+        "title": "Problem anatomy: tallies from a short list",
+        "output": "{ active: 2, inactive: 1, banned: 0 }",
+        "caption": "ARCHIVED is ignored, so banned stays at its starting 0."
+      }
+    ],
+    "notes": [
+      {
+        "body": "The empty input test expects the zeroed object, not an empty object.",
+        "title": "Start every counter at 0"
+      },
+      {
+        "body": "camelCase like inactive or noShow must match character for character.",
+        "title": "Copy key names exactly"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Declare all counters up front so missing buckets come back as 0.",
+        "problem": "Creating counters only when a status first appears."
+      },
+      {
+        "fix": "Treat an unknown label as nothing - skip the row entirely.",
+        "problem": "Counting unknown statuses in the wrong bucket."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 574,
+    "concept_id": 278,
+    "title": "Appointment and queue summaries",
+    "explanation": "Clinic data problems are ordinary data problems wearing a badge: appointment outcomes are categories, queue estimates come from a rule, billing logs are sums. Nothing here involves medical judgement - only the numbers and statuses the software stores.\n\nStatus strings are exact: \"NO_SHOW\" is not \"NO-SHOW\". Compare them the way the rule prints them, and ignore statuses the rule does not mention.\n\nWhen a rule depends on two fields at once - status and date, age and queue position - check both before a row reaches the result, and keep the input order everywhere.",
+    "examples": [
+      {
+        "code": "// Input\nconst appointments = [\n  { id: 1, status: \"BOOKED\", date: \"2026-10-05\" },\n  { id: 2, status: \"BOOKED\", date: \"2026-11-01\" },\n];\n\n// Rule: count BOOKED rows dated 2026-10-01 .. 2026-10-31",
+        "title": "Problem anatomy: two fields decide one row",
+        "output": "1",
+        "caption": "Both status and date must pass; the November row drops out."
+      }
+    ],
+    "notes": [
+      {
+        "body": "A date like \"2026-10-31\" can be compared with <= and >= against \"2026-10-01\" without parsing.",
+        "title": "ISO dates sort as text"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Require every stated condition before you increment the count.",
+        "problem": "Matching only the status and forgetting the date rule."
+      },
+      {
+        "fix": "Copy status strings from the rule character by character.",
+        "problem": "Missing \"NO_SHOW\" because of a spelling guess."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 575,
+    "concept_id": 279,
+    "title": "Shift and defect analysis",
+    "explanation": "Production data mixes counts, ratios and targets. Write the formula the rule gives you exactly as stated - rate means ng divided by produced, waste means defects times unit cost - and decide up front what happens when the denominator is 0.\n\n\"Best\" or \"worst\" problems need one running winner: keep the current best row, and only replace it when the new row is strictly better. That single rule is also how ties resolve - the first row wins.\n\nBroken records (produced 0, good larger than produced) must be skipped, not repaired. The problem tells you which rows are invalid; skipping them is part of the contract.",
+    "examples": [
+      {
+        "code": "// Input\nconst processes = [\n  { process: \"P1\", produced: 1000, ng: 15 },\n  { process: \"P2\", produced: 800, ng: 40 },\n];\n\n// Rule: highest ng / produced wins; ties keep the first row",
+        "title": "Problem anatomy: one number picks the winner",
+        "output": "\"P2\"",
+        "caption": "1.5% against 5% - P2 has the higher reject rate."
+      }
+    ],
+    "notes": [
+      {
+        "body": "Only take the new winner when it is strictly better than the current one.",
+        "title": "Ties keep the first row"
+      },
+      {
+        "body": "A record with produced 0 is a broken sensor - skip it, never treat its rate as 0.",
+        "title": "Divide by zero rows are broken, not small"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Equal scores keep the earlier row, so swap only on strictly greater.",
+        "problem": "Replacing the winner on >= instead of >."
+      },
+      {
+        "fix": "Check produced > 0 before any division.",
+        "problem": "Computing a rate for a row with produced 0."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 576,
+    "concept_id": 280,
+    "title": "Stock rules",
+    "explanation": "Stockroom rules are boundary problems in disguise: \"below the minimum\" excludes the exact minimum, \"at least the ordered qty\" includes the exact qty. Underline the boundary word before you write the comparison.\n\nValue problems skip rows first and multiply second: decide which quantities count (greater than 0), then add their values. Rows with bad data are dropped, never repaired.\n\nWhen two lists must be matched - orders against inventory - build one lookup from the second list, then walk the first list once and read through the lookup. Rows whose partner is missing follow a rule too, so decide that case before you code.",
+    "examples": [
+      {
+        "code": "// Input\nconst orders = [{ id: 10, item: \"Pen\", qty: 5 }];\nconst inventory = [{ item: \"Pen\", stock: 7 }];\n\n// Rule: fillable when stock >= qty; return { id, available }",
+        "title": "Problem anatomy: two lists, one lookup",
+        "output": "[{ id: 10, available: 7 }]",
+        "caption": "Stock 7 covers qty 5, so the order is fillable."
+      }
+    ],
+    "notes": [
+      {
+        "body": "An item absent from the inventory list counts as available 0 - say so in your head before looping.",
+        "title": "Missing keys have a rule too"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "\"Strictly below minLevel\" means stock < minLevel, nothing else.",
+        "problem": "Using <= where the rule says strictly below."
+      },
+      {
+        "fix": "Skip rows whose qty is not greater than 0 before multiplying.",
+        "problem": "Including zero-quantity items in the value total."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 577,
+    "concept_id": 281,
+    "title": "Valid records",
+    "explanation": "Validation is one question per row: does this record pass every requirement? Write each requirement as its own check, then combine them the way the rule words them - all of them must pass.\n\nMissing values arrive as empty strings, not as absent keys, so test for emptiness after trimming whitespace. A row of spaces is blank; a name with spaces inside is not.\n\nGrouping problems (accepted and rejected, first repeat occurrence) need one pass with a clear memory of what you have already seen. Decide the memory structure before the loop starts.",
+    "examples": [
+      {
+        "code": "// Input\nconst rows = [\n  { name: \"A\", email: \"a@x\" },\n  { name: \"\", email: \"c@d\" },\n];\n\n// Rule: trimmed name not empty AND email contains \"@\"",
+        "title": "Problem anatomy: every requirement must pass",
+        "output": "1",
+        "caption": "The second row has a blank name, so only 1 row is valid."
+      }
+    ],
+    "notes": [
+      {
+        "body": "A name of only spaces is blank once trimmed; \" Jo Lee \" is not.",
+        "title": "Trim before you judge a name"
+      },
+      {
+        "body": "A code seen five times is still reported a single time.",
+        "title": "Duplicates appear once in the answer"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "The rule says contains, so \"jo@x\" and even \"@\" both pass.",
+        "problem": "Checking email with === \"@\" instead of containing \"@\"."
+      },
+      {
+        "fix": "Report it once, at the position of its first repeat.",
+        "problem": "Listing a duplicate every time it repeats."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 578,
+    "concept_id": 282,
+    "title": "Processing queues",
+    "explanation": "A queue processor walks a list once and sorts every entry into outcomes - accepted or short, called or skipped. Decide the outcome rules first, including the awkward cases (empty order list, missing stock entry, patient who already left), then make one pass and push ids into the right array.\n\nEvery outcome keeps the input order because the queue itself has an order. Never sort the results unless the rule asks you to.\n\nMulti-input problems take two parameters: build your lookup from the second input before you start walking the first, so each row of the first input reads through it in one step.",
+    "examples": [
+      {
+        "code": "// Input\nconst orders = [\n  { id: 1, items: [{ sku: \"P\", qty: 2 }] },\n  { id: 2, items: [{ sku: \"P\", qty: 5 }] },\n];\nconst stock = [{ sku: \"P\", available: 3 }];\n\n// Rule: accepted when every item has available >= qty",
+        "title": "Problem anatomy: one pass, two buckets",
+        "output": "{ accepted: [1], short: [2] }",
+        "caption": "Order 2 asks for 5 but only 3 are available, so it is short."
+      }
+    ],
+    "notes": [
+      {
+        "body": "An empty queue returns { accepted: [], short: [] }, not an empty object.",
+        "title": "The empty case still has the full shape"
+      },
+      {
+        "body": "If the stock list has no entry for a sku, availability is 0.",
+        "title": "Missing lookups need a stated default"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "All items must cover their qty, or the whole order is short.",
+        "problem": "Accepting an order when only some items are covered."
+      },
+      {
+        "fix": "Status first: only \"WAITING\" rows can ever be called.",
+        "problem": "Forgetting the status check before the urgency check."
+      }
+    ],
+    "order_index": 1
+  },
+  {
+    "id": 579,
+    "concept_id": 282,
+    "title": "Daily reports",
+    "explanation": "Closing-time reports combine a filter and a grouping in one pass: keep only the rows for the day, then fold their amounts into category buckets while a running total sums everything.\n\nGrouping needs a place to start: create a bucket the first time a category appears, and use the stated default for anything the lookup table does not know.\n\nSummary objects follow the contract exactly - same key names, same types, same empty shape. Write the empty-input result first, then make sure the normal path produces the same shape.",
+    "examples": [
+      {
+        "code": "// Input\nconst sales = [\n  { product: \"Pen\", amount: 50, day: \"2026-10-05\" },\n  { product: \"Pen\", amount: 30, day: \"2026-10-04\" },\n];\nconst products = [{ name: \"Pen\", category: \"Office\" }];\n\n// Rule: only 2026-10-05 rows; group by category",
+        "title": "Problem anatomy: totals and buckets in one pass",
+        "output": "{ total: 50, byCategory: { Office: 50 } }",
+        "caption": "The October 4 row never enters either number."
+      }
+    ],
+    "notes": [
+      {
+        "body": "Add to total and to the category bucket inside the same visit to a row.",
+        "title": "One pass can fill several outputs"
+      },
+      {
+        "body": "ngRate rounds to 1 decimal place exactly as the rule states.",
+        "title": "Rounding is part of the contract"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "fix": "Check the day before any amount reaches a bucket.",
+        "problem": "Grouping rows from other days as well."
+      },
+      {
+        "fix": "Return {} for the buckets - the key must still exist.",
+        "problem": "Dropping byCategory entirely when there are no sales."
+      }
+    ],
+    "order_index": 2
+  }
+]

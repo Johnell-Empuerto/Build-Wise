@@ -1,0 +1,346 @@
+[
+  {
+    "id": 1,
+    "topic_id": 1,
+    "section_id": 2,
+    "name": "Variable Basics",
+    "description": "Put a value in a variable and get it back out again",
+    "order_index": 1
+  },
+  {
+    "id": 2,
+    "topic_id": 1,
+    "section_id": 3,
+    "name": "Strings",
+    "description": "Text values and what you can do with them",
+    "order_index": 1
+  },
+  {
+    "id": 3,
+    "topic_id": 7,
+    "section_id": 7,
+    "name": "if statement",
+    "description": "Run code only when something is true",
+    "order_index": 1
+  },
+  {
+    "id": 4,
+    "topic_id": 7,
+    "section_id": 7,
+    "name": "if/else",
+    "description": "Choose one of two paths",
+    "order_index": 2
+  },
+  {
+    "id": 5,
+    "topic_id": 7,
+    "section_id": 8,
+    "name": "for loop",
+    "description": "Repeat a known number of times",
+    "order_index": 1
+  },
+  {
+    "id": 6,
+    "topic_id": 7,
+    "section_id": 8,
+    "name": "for...of",
+    "description": "Loop over the values of a list",
+    "order_index": 3
+  },
+  {
+    "id": 7,
+    "topic_id": 9,
+    "section_id": 13,
+    "name": "Accessing Array Elements",
+    "description": "Read a value by its position",
+    "order_index": 1
+  },
+  {
+    "id": 8,
+    "topic_id": 9,
+    "section_id": 13,
+    "name": "filter()",
+    "description": "Keep only the items that match",
+    "order_index": 2
+  },
+  {
+    "id": 9,
+    "topic_id": 5,
+    "section_id": 9,
+    "name": "Function Declaration",
+    "description": "A named block of code you can run on demand",
+    "order_index": 1
+  },
+  {
+    "id": 10,
+    "topic_id": 5,
+    "section_id": 9,
+    "name": "Parameters & Return",
+    "description": "Values in, values out",
+    "order_index": 2
+  },
+  {
+    "id": 11,
+    "topic_id": 1,
+    "section_id": 1,
+    "name": "Getting Started",
+    "description": "What JavaScript is and how your code reaches the screen",
+    "order_index": 1
+  },
+  {
+    "id": 12,
+    "topic_id": 1,
+    "section_id": 1,
+    "name": "Statements and Comments",
+    "description": "The smallest working pieces of a JavaScript program",
+    "order_index": 2
+  },
+  {
+    "id": 14,
+    "topic_id": 1,
+    "section_id": 2,
+    "name": "let",
+    "description": "Create a variable whose value is allowed to change",
+    "order_index": 2
+  },
+  {
+    "id": 15,
+    "topic_id": 1,
+    "section_id": 2,
+    "name": "const",
+    "description": "Create a binding that can never be reassigned",
+    "order_index": 3
+  },
+  {
+    "id": 16,
+    "topic_id": 1,
+    "section_id": 2,
+    "name": "var",
+    "description": "The old declaration keyword, and why it was replaced",
+    "order_index": 4
+  },
+  {
+    "id": 17,
+    "topic_id": 1,
+    "section_id": 2,
+    "name": "Naming Variables",
+    "description": "Names that the compiler accepts and humans understand",
+    "order_index": 5
+  },
+  {
+    "id": 18,
+    "topic_id": 1,
+    "section_id": 2,
+    "name": "Scope",
+    "description": "Where a variable can be seen from",
+    "order_index": 6
+  },
+  {
+    "id": 19,
+    "topic_id": 1,
+    "section_id": 2,
+    "name": "Mixed Practice",
+    "description": "Put variables, naming and scope together",
+    "order_index": 7
+  },
+  {
+    "id": 21,
+    "topic_id": 1,
+    "section_id": 3,
+    "name": "Numbers",
+    "description": "Maths in JavaScript",
+    "order_index": 2
+  },
+  {
+    "id": 22,
+    "topic_id": 1,
+    "section_id": 3,
+    "name": "Booleans and nothing",
+    "description": "true, false, null and undefined",
+    "order_index": 3
+  },
+  {
+    "id": 23,
+    "topic_id": 1,
+    "section_id": 3,
+    "name": "typeof",
+    "description": "Ask JavaScript what kind of value you are holding",
+    "order_index": 4
+  },
+  {
+    "id": 24,
+    "topic_id": 1,
+    "section_id": 4,
+    "name": "Arithmetic Operators",
+    "description": "Calculate with numbers",
+    "order_index": 1
+  },
+  {
+    "id": 25,
+    "topic_id": 1,
+    "section_id": 4,
+    "name": "Comparison Operators",
+    "description": "Ask questions about values",
+    "order_index": 2
+  },
+  {
+    "id": 26,
+    "topic_id": 1,
+    "section_id": 4,
+    "name": "Logical Operators",
+    "description": "Combine several conditions into one",
+    "order_index": 3
+  },
+  {
+    "id": 29,
+    "topic_id": 7,
+    "section_id": 7,
+    "name": "Comparisons in conditions",
+    "description": "Conditions that read naturally",
+    "order_index": 3
+  },
+  {
+    "id": 31,
+    "topic_id": 7,
+    "section_id": 8,
+    "name": "while loop",
+    "description": "Repeat until something changes",
+    "order_index": 2
+  },
+  {
+    "id": 35,
+    "topic_id": 5,
+    "section_id": 9,
+    "name": "Arrow Functions",
+    "description": "A shorter way to write a function",
+    "order_index": 3
+  },
+  {
+    "id": 81,
+    "topic_id": 1,
+    "section_id": 5,
+    "name": "Converting values",
+    "description": "Change a value from one type to another",
+    "order_index": 1
+  },
+  {
+    "id": 82,
+    "topic_id": 1,
+    "section_id": 5,
+    "name": "Numbers from text",
+    "description": "Pull a number out of a piece of text",
+    "order_index": 2
+  },
+  {
+    "id": 83,
+    "topic_id": 1,
+    "section_id": 5,
+    "name": "When conversion fails",
+    "description": "NaN, empty text and the truthy traps",
+    "order_index": 3
+  },
+  {
+    "id": 84,
+    "topic_id": 1,
+    "section_id": 5,
+    "name": "Mixed practice",
+    "description": "Conversion combined with what you already know",
+    "order_index": 4
+  },
+  {
+    "id": 96,
+    "topic_id": 9,
+    "section_id": 14,
+    "name": "Object basics",
+    "description": "Create objects and read values from them",
+    "order_index": 1
+  },
+  {
+    "id": 97,
+    "topic_id": 9,
+    "section_id": 14,
+    "name": "Changing objects",
+    "description": "Add, change and remove properties",
+    "order_index": 2
+  },
+  {
+    "id": 98,
+    "topic_id": 9,
+    "section_id": 14,
+    "name": "Objects with structure",
+    "description": "Nest objects and store functions inside them",
+    "order_index": 3
+  },
+  {
+    "id": 99,
+    "topic_id": 9,
+    "section_id": 14,
+    "name": "Object practice",
+    "description": "Objects combined with loops, conditions and arrays",
+    "order_index": 4
+  },
+  {
+    "id": 275,
+    "topic_id": 70,
+    "section_id": 273,
+    "name": "Daily Decisions",
+    "description": "Turn plain everyday rules into small functions",
+    "order_index": 1
+  },
+  {
+    "id": 276,
+    "topic_id": 70,
+    "section_id": 274,
+    "name": "Sales and Payments",
+    "description": "Combine conditions the way real business rules do",
+    "order_index": 1
+  },
+  {
+    "id": 277,
+    "topic_id": 70,
+    "section_id": 275,
+    "name": "Summarizing Records",
+    "description": "Count, classify and reshape lists of records",
+    "order_index": 1
+  },
+  {
+    "id": 278,
+    "topic_id": 70,
+    "section_id": 276,
+    "name": "Clinic Workflows",
+    "description": "Process appointment and queue data - software practice only, no medical advice",
+    "order_index": 1
+  },
+  {
+    "id": 279,
+    "topic_id": 70,
+    "section_id": 277,
+    "name": "Production Tracking",
+    "description": "Shift, defect and target logic from a plant floor",
+    "order_index": 1
+  },
+  {
+    "id": 280,
+    "topic_id": 70,
+    "section_id": 278,
+    "name": "Stock Control",
+    "description": "Stock levels, values and matching orders to inventory",
+    "order_index": 1
+  },
+  {
+    "id": 281,
+    "topic_id": 70,
+    "section_id": 279,
+    "name": "Checking Submissions",
+    "description": "Decide which incoming records are valid and which are not",
+    "order_index": 1
+  },
+  {
+    "id": 282,
+    "topic_id": 70,
+    "section_id": 280,
+    "name": "Small Business Systems",
+    "description": "Small pieces of real application logic, start to finish",
+    "order_index": 1
+  }
+]

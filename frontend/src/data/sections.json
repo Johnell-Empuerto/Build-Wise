@@ -1,0 +1,289 @@
+[
+  {
+    "id": 1,
+    "topic_id": 1,
+    "name": "JavaScript Fundamentals",
+    "description": "What JavaScript is, how it runs and how to read errors",
+    "order_index": 1
+  },
+  {
+    "id": 2,
+    "topic_id": 1,
+    "name": "Variables",
+    "description": "Store values with let, const and var, and name them well",
+    "order_index": 2
+  },
+  {
+    "id": 3,
+    "topic_id": 1,
+    "name": "Data Types",
+    "description": "Strings, numbers, booleans, null, undefined and typeof",
+    "order_index": 3
+  },
+  {
+    "id": 4,
+    "topic_id": 1,
+    "name": "Operators",
+    "description": "Calculate, compare and combine values",
+    "order_index": 4
+  },
+  {
+    "id": 5,
+    "topic_id": 1,
+    "name": "Type Conversion",
+    "description": "How JavaScript converts values between types",
+    "order_index": 5
+  },
+  {
+    "id": 6,
+    "topic_id": 1,
+    "name": "Errors and Debugging",
+    "description": "Read error messages and find bugs with console.log",
+    "order_index": 6
+  },
+  {
+    "id": 7,
+    "topic_id": 7,
+    "name": "Conditions",
+    "description": "Run code only when a condition is true",
+    "order_index": 1
+  },
+  {
+    "id": 8,
+    "topic_id": 7,
+    "name": "Loops",
+    "description": "Repeat work with for, while and for...of",
+    "order_index": 2
+  },
+  {
+    "id": 9,
+    "topic_id": 5,
+    "name": "Functions",
+    "description": "Declare functions, pass parameters and return values",
+    "order_index": 1
+  },
+  {
+    "id": 10,
+    "topic_id": 5,
+    "name": "Scope",
+    "description": "Where variables are visible",
+    "order_index": 2
+  },
+  {
+    "id": 11,
+    "topic_id": 5,
+    "name": "Closures",
+    "description": "Functions that remember the variables around them",
+    "order_index": 3
+  },
+  {
+    "id": 12,
+    "topic_id": 5,
+    "name": "this",
+    "description": "What this points to in different situations",
+    "order_index": 4
+  },
+  {
+    "id": 13,
+    "topic_id": 9,
+    "name": "Arrays",
+    "description": "Ordered lists and the methods that transform them",
+    "order_index": 1
+  },
+  {
+    "id": 14,
+    "topic_id": 9,
+    "name": "Objects",
+    "description": "Key/value pairs and how to work with them",
+    "order_index": 2
+  },
+  {
+    "id": 16,
+    "topic_id": 10,
+    "name": "DOM",
+    "description": "Find and change elements on the page",
+    "order_index": 1
+  },
+  {
+    "id": 17,
+    "topic_id": 10,
+    "name": "Browser Events",
+    "description": "React to clicks, typing and scrolling",
+    "order_index": 2
+  },
+  {
+    "id": 18,
+    "topic_id": 10,
+    "name": "Browser APIs",
+    "description": "localStorage, timers, geolocation and more",
+    "order_index": 3
+  },
+  {
+    "id": 19,
+    "topic_id": 10,
+    "name": "JSON",
+    "description": "Convert data to text and back",
+    "order_index": 4
+  },
+  {
+    "id": 20,
+    "topic_id": 10,
+    "name": "Fetch and APIs",
+    "description": "Load data from a server",
+    "order_index": 5
+  },
+  {
+    "id": 21,
+    "topic_id": 11,
+    "name": "Asynchronous JavaScript",
+    "description": "Why code sometimes finishes later",
+    "order_index": 1
+  },
+  {
+    "id": 22,
+    "topic_id": 11,
+    "name": "Promises",
+    "description": "Represent a value that will arrive later",
+    "order_index": 2
+  },
+  {
+    "id": 23,
+    "topic_id": 11,
+    "name": "async/await",
+    "description": "Write asynchronous code that reads like normal code",
+    "order_index": 3
+  },
+  {
+    "id": 24,
+    "topic_id": 12,
+    "name": "Modules",
+    "description": "Split a program across files with import and export",
+    "order_index": 1
+  },
+  {
+    "id": 25,
+    "topic_id": 12,
+    "name": "Prototypes",
+    "description": "How objects inherit from each other",
+    "order_index": 2
+  },
+  {
+    "id": 26,
+    "topic_id": 12,
+    "name": "Classes",
+    "description": "Syntactic sugar over prototypes",
+    "order_index": 3
+  },
+  {
+    "id": 27,
+    "topic_id": 12,
+    "name": "Hoisting",
+    "description": "Why some declarations are visible before their line",
+    "order_index": 4
+  },
+  {
+    "id": 28,
+    "topic_id": 12,
+    "name": "Execution Context",
+    "description": "How the engine runs your code step by step",
+    "order_index": 5
+  },
+  {
+    "id": 29,
+    "topic_id": 12,
+    "name": "Event Loop",
+    "description": "How callbacks, promises and timers take turns",
+    "order_index": 6
+  },
+  {
+    "id": 30,
+    "topic_id": 12,
+    "name": "Advanced Patterns",
+    "description": "Currying, composition, immutability and more",
+    "order_index": 7
+  },
+  {
+    "id": 31,
+    "topic_id": 13,
+    "name": "Algorithms",
+    "description": "Break a problem into small, ordered steps",
+    "order_index": 1
+  },
+  {
+    "id": 32,
+    "topic_id": 13,
+    "name": "Data Structures",
+    "description": "Choose the right container for the job",
+    "order_index": 2
+  },
+  {
+    "id": 33,
+    "topic_id": 13,
+    "name": "Big O",
+    "description": "Estimate how your code scales",
+    "order_index": 3
+  },
+  {
+    "id": 34,
+    "topic_id": 13,
+    "name": "LeetCode-style Problems",
+    "description": "Classic interview exercises, solved step by step",
+    "order_index": 4
+  },
+  {
+    "id": 273,
+    "topic_id": 70,
+    "name": "Everyday Problems",
+    "description": "Simple rules from daily situations",
+    "order_index": 1
+  },
+  {
+    "id": 274,
+    "topic_id": 70,
+    "name": "Business Problems",
+    "description": "Combine conditions the way real business rules do",
+    "order_index": 2
+  },
+  {
+    "id": 275,
+    "topic_id": 70,
+    "name": "Data Processing",
+    "description": "Count, classify and reshape record lists",
+    "order_index": 3
+  },
+  {
+    "id": 276,
+    "topic_id": 70,
+    "name": "Healthcare Problems",
+    "description": "Clinic appointment and queue data processing (software practice only)",
+    "order_index": 4
+  },
+  {
+    "id": 277,
+    "topic_id": 70,
+    "name": "Manufacturing Problems",
+    "description": "Production, shift and defect logic",
+    "order_index": 5
+  },
+  {
+    "id": 278,
+    "topic_id": 70,
+    "name": "Inventory Problems",
+    "description": "Stock levels, values and order matching",
+    "order_index": 6
+  },
+  {
+    "id": 279,
+    "topic_id": 70,
+    "name": "Validation Problems",
+    "description": "Decide which records are valid and which are not",
+    "order_index": 7
+  },
+  {
+    "id": 280,
+    "topic_id": 70,
+    "name": "Mini Applications",
+    "description": "Small pieces of real application logic, start to finish",
+    "order_index": 8
+  }
+]

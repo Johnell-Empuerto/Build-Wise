@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1,
+    "name": "Fundamentals",
+    "description": "The building blocks of JavaScript: values, variables, types and operators",
+    "order_index": 1
+  },
+  {
+    "id": 5,
+    "name": "Functions",
+    "description": "Bundle logic into reusable blocks that take input and return output",
+    "order_index": 3
+  },
+  {
+    "id": 7,
+    "name": "Control Flow",
+    "description": "Decide which code runs and repeat it when you need to",
+    "order_index": 2
+  },
+  {
+    "id": 9,
+    "name": "Data Structures",
+    "description": "Group values together with arrays, objects and strings",
+    "order_index": 4
+  },
+  {
+    "id": 10,
+    "name": "Browser JavaScript",
+    "description": "Change the page, react to the user and talk to servers",
+    "order_index": 5
+  },
+  {
+    "id": 11,
+    "name": "Asynchronous JavaScript",
+    "description": "Work with code that finishes later: callbacks, promises and async/await",
+    "order_index": 6
+  },
+  {
+    "id": 12,
+    "name": "Advanced JavaScript",
+    "description": "How JavaScript really works under the hood",
+    "order_index": 7
+  },
+  {
+    "id": 13,
+    "name": "Algorithms",
+    "description": "Solve problems step by step and reason about how fast your code is",
+    "order_index": 8
+  },
+  {
+    "id": 70,
+    "name": "JavaScript Problem Solving",
+    "description": "Phase 2: apply JavaScript to real-world situations - scenarios, data and requirements you must solve your own way",
+    "order_index": 9
+  }
+]
