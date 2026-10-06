@@ -8,7 +8,7 @@ import ChallengePage from "./pages/ChallengePage.jsx";
 import { SystemDesignProgress } from "./system-design/progress.jsx";
 import SystemDesignOverview from "./system-design/SystemDesignOverview.jsx";
 import SystemDesignFundamentals from "./system-design/SystemDesignFundamentals.jsx";
-import TodoAppLesson from "./system-design/TodoAppLesson.jsx";
+import FundamentalsLesson from "./system-design/FundamentalsLesson.jsx";
 
 function Header() {
   return (
@@ -74,7 +74,7 @@ export default function App() {
             />
             <Route
               path="/system-design/fundamentals/:lessonId"
-              element={<TodoAppLesson />}
+              element={<FundamentalsLesson />}
             />
             <Route path="*" element={<NotFound />} />
           </Routes>

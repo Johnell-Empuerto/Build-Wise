@@ -22,6 +22,9 @@ export default function SystemDesignOverview() {
   const doneCount = FUNDAMENTALS_LESSONS.filter((lesson) =>
     completedLessons.has(lesson.id)
   ).length;
+  const openCount = FUNDAMENTALS_LESSONS.filter(
+    (lesson) => lesson.available
+  ).length;
 
   return (
     <div className="sd-appear">
@@ -60,8 +63,8 @@ export default function SystemDesignOverview() {
                 {doneCount > 0 ? "Continue learning" : "Start learning"} →
               </Link>
               <span className="text-xs text-slate-500">
-                Level 1 open · {FUNDAMENTALS_LESSONS.length} fundamentals
-                lessons
+                Level 1 open · {openCount} of {FUNDAMENTALS_LESSONS.length}{" "}
+                lessons open
               </span>
             </div>
           </div>

@@ -10,7 +10,7 @@ export const FUNDAMENTALS_LESSONS = [
       "Follow one todo from your screen all the way to storage and back.",
     available: true,
   },
-  { id: "what-is-a-system", title: "What is a System?", available: false },
+  { id: "what-is-a-system", title: "What is a System?", summary: "Parts, connections, goals, and boundaries - what turns a pile of pieces into a system.", available: true },
   { id: "client-server", title: "Client and Server", available: false },
   { id: "frontend-backend", title: "Frontend vs Backend", available: false },
   { id: "api", title: "API", available: false },
