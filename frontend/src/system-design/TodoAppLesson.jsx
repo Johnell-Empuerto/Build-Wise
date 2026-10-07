@@ -1,8 +1,17 @@
 // "How does a Todo App work?" - the first interactive System Design lesson.
 //
-// Eight stages that follow the learning philosophy:
-//   See it -> Understand it -> Interact -> See what happens ->
-//   Make a mistake (and learn why) -> Try again -> Build it -> Explain it
+// Six stages built as a miniature simulation the learner can WATCH:
+//   1. Journey  - click ADD, see the glowing message travel Frontend ->
+//                 Backend -> Database and come back (Play / Step / Reset)
+//   2. Quiz     - where should the todo be remembered? Learn from a mistake
+//                 with a visual "the screen closes, the notebook stays"
+//   3. Break    - turn the database OFF, watch the trip fail, repair it,
+//                 watch it succeed
+//   4. Cards    - four simple answers (frontend / backend / db / req-resp)
+//   5. Challenge- rebuild the whole round trip in six slots
+//   6. Summary  - the words you now know + way back
+//
+// Technical terms (REQUEST / RESPONSE) only appear AFTER their visual.
 // Everything is local React state: no backend, no persistence.
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
@@ -11,22 +20,22 @@ import {
   TODO_APP_LESSON as lesson,
 } from "../data/system-design/fundamentals.js";
 import GuideBubble from "./GuideBubble.jsx";
-import FlowDiagram from "./components/FlowDiagram.jsx";
-import QuickCheck from "./components/QuickCheck.jsx";
-import OrderChallenge from "./components/OrderChallenge.jsx";
+import SystemSimulator from "./components/SystemSimulator.jsx";
+import RoundTripOrder from "./components/RoundTripOrder.jsx";
 import { useSystemDesignProgress } from "./progress.jsx";
 
 const INITIAL = {
   stageIndex: 0,
-  teamOpen: null,
-  teamExplored: [],
-  flowDone: false,
+  journeyDone: false,
+  quizMistake: null, // option id of the last wrong pick
+  quizMistakeCount: 0,
+  quizPassed: false,
+  dbOff: false,
   runKey: 0,
-  addedCount: 0,
-  checkPassed: false,
-  buildSolved: false,
-  explainText: "",
-  explainResult: null, // "pass" | "revealed" | null
+  sawFail: false,
+  breakDone: false,
+  challengeSolved: false,
+  todoLabel: lesson.journey.defaultTodo,
 };
 
 export default function TodoAppLesson() {
@@ -36,6 +45,9 @@ export default function TodoAppLesson() {
 
   const stage = LESSON_STAGES[state.stageIndex];
   const patch = (part) => setState((prev) => ({ ...prev, ...part }));
+
+  // Story text can mention whichever todo the learner actually typed.
+  const fill = (str) => str.replaceAll("{todo}", state.todoLabel);
 
   function goTo(index) {
     setState((prev) => ({ ...prev, stageIndex: index }));
@@ -47,38 +59,51 @@ export default function TodoAppLesson() {
     if (stage.id === "summary") completeLesson(lesson.id);
   }, [stage.id, completeLesson]);
 
-  function checkExplanation() {
-    const text = state.explainText.toLowerCase();
-    const hit = lesson.explain.keywords.some((keyword) =>
-      text.includes(keyword)
-    );
-    patch({ explainResult: hit ? "pass" : "coach" });
+  // Break stage: turning the database OFF auto-starts the failing trip.
+  function toggleDatabase() {
+    setState((prev) => {
+      const nextOff = !prev.dbOff;
+      return {
+        ...prev,
+        dbOff: nextOff,
+        runKey: nextOff ? prev.runKey + 1 : prev.runKey,
+      };
+    });
   }
 
-  function revealModelAnswer() {
-    patch({ explainResult: "revealed" });
+  function answerQuiz(option) {
+    if (state.quizPassed) return;
+    if (option.correct) {
+      patch({ quizPassed: true, quizMistake: null });
+    } else {
+      patch({
+        quizMistake: option.id,
+        quizMistakeCount: state.quizMistakeCount + 1,
+      });
+    }
   }
 
   const canContinue = {
-    intro: true,
-    team: true,
-    flow: state.flowDone,
-    try: state.addedCount > 0,
-    check: state.checkPassed,
-    build: state.buildSolved,
-    explain: state.explainResult !== null,
+    journey: state.journeyDone,
+    quiz: state.quizPassed,
+    break: state.breakDone,
+    cards: true,
+    challenge: state.challengeSolved,
     summary: false,
   }[stage.id];
 
   const continueHint = {
-    flow: "Play the full flow once to continue.",
-    try: "Add a todo to continue.",
-    check: "Answer correctly to continue - mistakes are part of learning.",
-    build: "Build the correct flow to continue.",
-    explain: "Check your explanation (or reveal the model answer) to continue.",
+    journey: "Watch one full trip to continue.",
+    quiz: "Answer correctly to continue - mistakes are part of learning.",
+    break: lesson.breakStage.gateHint,
+    challenge: lesson.challenge.gateHint,
   }[stage.id];
 
   const progressPercent = ((state.stageIndex + 1) / LESSON_STAGES.length) * 100;
+
+  const quizMistakeOption = state.quizMistake
+    ? lesson.quiz.options.find((option) => option.id === state.quizMistake)
+    : null;
 
   return (
     <div ref={topRef}>
@@ -127,346 +152,323 @@ export default function TodoAppLesson() {
 
       {/* Stage content */}
       <section className="mt-5" key={stage.id}>
-        {stage.id === "intro" && (
+        {stage.id === "journey" && (
           <div className="sd-appear flex flex-col gap-4">
-            <GuideBubble>
-              <strong className="text-white">
-                Welcome to your first system design story.
-              </strong>{" "}
-              {lesson.intro.tease}
+            <GuideBubble mood={state.journeyDone ? "success" : undefined}>
+              {state.journeyDone ? (
+                <>
+                  <strong className="text-white">
+                    You just watched a complete trip!
+                  </strong>{" "}
+                  Down as a REQUEST, back as a RESPONSE. Now let us check what
+                  you really saw.
+                </>
+              ) : (
+                <>
+                  <strong className="text-white">
+                    Welcome to your first system design story.
+                  </strong>{" "}
+                  Let us follow ONE todo. Type anything (try: Buy milk), press
+                  ADD, then watch the glowing message travel - or press Step to
+                  move one beat at a time.
+                </>
+              )}
             </GuideBubble>
-            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
+
+            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-5 sm:p-6">
               <h2 className="text-lg font-semibold text-white">
-                {lesson.intro.heading}
+                Watch one todo make the full trip
               </h2>
-              <p className="mt-2 text-sm leading-relaxed text-slate-300">
-                {lesson.intro.body}
+              <p className="mt-1 text-sm leading-relaxed text-slate-400">
+                Three parts, one glowing message. Play the whole animation, or
+                step through it - the explanation under the diagram updates at
+                every stop.
               </p>
-              <div className="mt-5 flex flex-wrap items-center gap-2 text-xs font-semibold">
-                {lesson.hops.map((hop, index) => (
-                  <span key={hop.id} className="flex items-center gap-2">
-                    <span className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-slate-300">
-                      {hop.emoji} {hop.name}
-                    </span>
-                    {index < lesson.hops.length - 1 && (
-                      <span aria-hidden="true" className="text-slate-600">
-                        ↓
-                      </span>
-                    )}
-                  </span>
-                ))}
+              <div className="mt-4">
+                <SystemSimulator
+                  journey={lesson.journey}
+                  onDone={() => patch({ journeyDone: true })}
+                  onMessage={(label) => patch({ todoLabel: label })}
+                />
               </div>
-              <p className="mt-4 text-xs text-slate-500">
-                ↓ This is the path your todo will travel. You will animate it
-                in a moment - first, meet each part.
-              </p>
             </div>
           </div>
         )}
 
-        {stage.id === "team" && (
+        {stage.id === "quiz" && (
           <div className="sd-appear flex flex-col gap-4">
             <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
               <h2 className="text-lg font-semibold text-white">
-                Meet the team
+                {fill(lesson.quiz.question)}
               </h2>
-              <p className="mt-1 text-sm text-slate-400">
-                Tap each card to hear its story.{" "}
-                <span className="text-slate-500">
-                  ({state.teamExplored.length} of {lesson.team.length}{" "}
-                  explored)
-                </span>
-              </p>
+              <p className="mt-1 text-sm text-slate-400">{lesson.quiz.intro}</p>
 
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                {lesson.team.map((member) => {
-                  const open = state.teamOpen === member.id;
-                  const explored = state.teamExplored.includes(member.id);
+                {lesson.quiz.options.map((option) => {
+                  const picked = state.quizMistake === option.id;
+                  const correctPick =
+                    state.quizPassed && option.correct;
                   return (
                     <button
-                      key={member.id}
+                      key={option.id}
                       type="button"
-                      aria-expanded={open}
-                      onClick={() => {
-                        patch({
-                          teamOpen: open ? null : member.id,
-                          teamExplored: explored
-                            ? state.teamExplored
-                            : [...state.teamExplored, member.id],
-                        });
-                      }}
-                      className={`rounded-xl border p-4 text-left transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${
-                        open
-                          ? "border-sky-400/60 bg-sky-400/10"
-                          : "border-slate-800 bg-slate-950/60 hover:border-slate-600"
+                      data-quiz-option={option.id}
+                      onClick={() => answerQuiz(option)}
+                      disabled={state.quizPassed}
+                      className={`rounded-xl border p-4 text-left transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 disabled:cursor-default ${
+                        correctPick
+                          ? "border-emerald-400/60 bg-emerald-400/10"
+                          : picked
+                            ? "border-amber-400/60 bg-amber-400/10"
+                            : "border-slate-800 bg-slate-950/60 hover:border-slate-600"
                       }`}
                     >
-                      <div className="flex items-center gap-3">
-                        <span
-                          className="text-2xl"
-                          aria-hidden="true"
-                        >
-                          {member.emoji}
-                        </span>
-                        <div className="min-w-0">
-                          <span className="block text-sm font-semibold text-white">
-                            {member.name}
-                            {explored && (
-                              <span className="ml-2 text-xs text-emerald-400">
-                                ✓
-                              </span>
-                            )}
+                      <span className="block text-sm font-semibold text-white">
+                        {option.label}
+                        {correctPick && (
+                          <span className="ml-2 text-xs text-emerald-400">
+                            ✓
                           </span>
-                          <span className="block text-xs text-slate-400">
-                            {member.tagline}
-                          </span>
-                        </div>
-                      </div>
-                      {open && (
-                        <div className="sd-appear mt-3 border-t border-slate-700/70 pt-3 text-xs leading-relaxed text-slate-300">
-                          <p>
-                            <span className="font-semibold text-sky-300">
-                              Think of it:{" "}
-                            </span>
-                            {member.analogy}
-                          </p>
-                          <p className="mt-2">
-                            <span className="font-semibold text-amber-300">
-                              Without it:{" "}
-                            </span>
-                            {member.without}
-                          </p>
-                        </div>
-                      )}
+                        )}
+                      </span>
                     </button>
                   );
                 })}
               </div>
-            </div>
 
-            {state.teamExplored.length === lesson.team.length ? (
-              <GuideBubble mood="success">
-                <strong className="text-white">Perfect - that is the whole team!</strong>{" "}
-                Screen, messenger, worker, notebook. Now let us watch them
-                pass one todo between them.
-              </GuideBubble>
-            ) : (
-              <GuideBubble>
-                Every card hides two things: an{" "}
-                <span className="text-sky-300">analogy</span> and what would
-                happen <span className="text-amber-300">without it</span>.
-                Open them all!
-              </GuideBubble>
-            )}
-          </div>
-        )}
+              <div aria-live="polite">
+                {quizMistakeOption && !state.quizPassed && (
+                  <div
+                    key={state.quizMistakeCount}
+                    className="sd-shake sd-appear mt-4 rounded-lg border border-amber-500/40 bg-amber-500/10 p-4 text-sm"
+                  >
+                    <p className="font-semibold text-amber-300">
+                      {lesson.quiz.wrongHeading}
+                    </p>
 
-        {stage.id === "flow" && (
-          <div className="sd-appear flex flex-col gap-4">
-            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-              <h2 className="text-lg font-semibold text-white">
-                Follow the request
-              </h2>
-              <p className="mt-1 text-sm leading-relaxed text-slate-400">
-                {lesson.flow.instruction}
-              </p>
-              <div className="mt-5">
-                <FlowDiagram
-                  hops={lesson.hops}
-                  onComplete={() => patch({ flowDone: true })}
-                  requestLabel={lesson.flow.requestLabel}
-                  responseLabel={lesson.flow.responseLabel}
-                  completeText={lesson.flow.completeText}
-                />
+                    {/* Visual proof: the screen closes, the notebook stays. */}
+                    <div className="mt-3 flex flex-wrap items-center gap-3">
+                      <div
+                        key={`demo-${state.quizMistakeCount}`}
+                        className="sim-close rounded-lg border border-slate-700 bg-slate-950 px-4 py-3 text-center"
+                      >
+                        <span className="block text-2xl" aria-hidden="true">
+                          📱
+                        </span>
+                        <span className="block text-xs font-medium text-slate-300">
+                          {lesson.quiz.demoScreen}
+                        </span>
+                        <span className="block text-[10px] text-slate-500">
+                          {lesson.quiz.demoScreenNote}
+                        </span>
+                      </div>
+                      <span aria-hidden="true" className="text-slate-500">
+                        vs
+                      </span>
+                      <div className="rounded-lg border border-fuchsia-400/40 bg-fuchsia-500/10 px-4 py-3 text-center">
+                        <span className="block text-2xl" aria-hidden="true">
+                          🗄️
+                        </span>
+                        <span className="block text-xs font-medium text-fuchsia-200">
+                          {lesson.quiz.demoNote}
+                        </span>
+                        <span className="block text-[10px] text-fuchsia-400/70">
+                          {lesson.quiz.demoNoteNote}
+                        </span>
+                      </div>
+                    </div>
+
+                    <p className="mt-3 leading-relaxed text-slate-300">
+                      {lesson.quiz.demoCaption}
+                    </p>
+                    <p className="mt-2 leading-relaxed text-slate-300">
+                      <span className="font-semibold text-white">
+                        Why "{quizMistakeOption.label}" is not the place:{" "}
+                      </span>
+                      {fill(quizMistakeOption.teach)}
+                    </p>
+                    <p className="mt-2 text-xs font-semibold uppercase tracking-wider text-amber-300/80">
+                      Try again - pick another answer.
+                    </p>
+                  </div>
+                )}
+
+                {state.quizPassed && (
+                  <div className="sd-appear mt-4 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-4 py-3 text-sm">
+                    <p className="font-semibold text-emerald-300">
+                      ✓ {fill(lesson.quiz.correctText)}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
-            {!state.flowDone && (
+
+            {!state.quizPassed && (
               <GuideBubble mood="hint">
-                Watch the dot go all the way down{" "}
-                <span className="font-semibold text-white">and back up</span>{" "}
-                before moving on - the trip home matters just as much.
+                Wrong answers here are <em>useful</em> - each one shows you
+                exactly what that part cannot do. Read, learn, try again.
               </GuideBubble>
             )}
           </div>
         )}
 
-        {stage.id === "try" && (
+        {stage.id === "break" && (
           <div className="sd-appear flex flex-col gap-4">
-            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
+            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-5 sm:p-6">
               <h2 className="text-lg font-semibold text-white">
-                {lesson.tryIt.heading}
+                {lesson.breakStage.heading}
               </h2>
-              <p className="mt-1 text-sm text-slate-400">
-                {lesson.tryIt.body}
+              <p className="mt-1 text-sm leading-relaxed text-slate-400">
+                {lesson.breakStage.body}
               </p>
 
               <div className="mt-4 flex flex-wrap items-center gap-3">
                 <button
                   type="button"
-                  onClick={() => patch({ runKey: state.runKey + 1 })}
-                  className="rounded-lg bg-gradient-to-r from-sky-500 to-indigo-500 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-sky-500/20 transition hover:from-sky-400 hover:to-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
+                  data-db-toggle
+                  aria-pressed={!state.dbOff}
+                  onClick={toggleDatabase}
+                  className={`rounded-lg px-4 py-2 text-sm font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${
+                    state.dbOff
+                      ? "bg-red-500/15 text-red-300 ring-1 ring-red-400/50 hover:bg-red-500/25"
+                      : "bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-400/50 hover:bg-emerald-500/25"
+                  }`}
                 >
-                  {lesson.tryIt.button}
+                  {state.dbOff
+                    ? lesson.breakStage.toggleOff
+                    : lesson.breakStage.toggleOn}
                 </button>
-                {state.addedCount > 0 && (
-                  <span className="text-xs text-slate-500">
-                    {state.addedCount} todo{state.addedCount === 1 ? "" : "s"}{" "}
-                    added this session
-                  </span>
-                )}
+                <span
+                  className={`text-xs font-medium ${
+                    state.dbOff ? "text-red-300" : "text-emerald-300"
+                  }`}
+                >
+                  {state.dbOff
+                    ? lesson.breakStage.statusOff
+                    : lesson.breakStage.statusOn}
+                </span>
               </div>
 
-              <div className="mt-5">
-                <FlowDiagram
-                  hops={lesson.hops}
+              <div className="mt-4">
+                <SystemSimulator
+                  journey={lesson.journey}
+                  dbOff={state.dbOff}
                   runKey={state.runKey}
-                  onComplete={() =>
-                    patch({ addedCount: state.addedCount + 1 })
-                  }
-                  requestLabel={lesson.flow.requestLabel}
-                  responseLabel={lesson.flow.responseLabel}
-                  completeText={lesson.flow.completeText}
+                  onDone={() => {
+                    if (state.sawFail) patch({ breakDone: true });
+                  }}
+                  onFail={() => {
+                    if (!state.sawFail) patch({ sawFail: true });
+                  }}
                 />
               </div>
 
-              {state.addedCount > 0 && (
-                <div className="sd-appear mt-5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-center">
-                  <p className="text-lg font-bold text-emerald-400">
-                    {lesson.tryIt.addedText}
+              <div aria-live="polite">
+                {state.sawFail && state.breakDone && (
+                  <div className="sd-appear mt-4 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-4 py-3 text-sm">
+                    <p className="font-semibold text-emerald-300">
+                      ✓ {lesson.breakStage.successText}
+                    </p>
+                  </div>
+                )}
+                {state.sawFail && !state.breakDone && (
+                  <div className="sd-appear mt-4 rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm">
+                    <p className="font-semibold text-red-300">
+                      ✕ {lesson.breakStage.failPanel}
+                    </p>
+                    <p className="mt-1 leading-relaxed text-slate-300">
+                      {state.dbOff
+                        ? lesson.breakStage.retryHint
+                        : lesson.breakStage.restoredHint}
+                    </p>
+                  </div>
+                )}
+                {!state.sawFail && (
+                  <p className="mt-4 text-xs leading-relaxed text-slate-500">
+                    Press{" "}
+                    <span className="font-semibold text-slate-300">
+                      {lesson.breakStage.toggleOffShort}
+                    </span>{" "}
+                    to switch the database off - the trip will start by itself.
                   </p>
-                  <p className="mt-1 text-xs leading-relaxed text-slate-400">
-                    {lesson.tryIt.resultCaption}
-                  </p>
-                </div>
-              )}
+                )}
+              </div>
             </div>
+
+            <GuideBubble mood={state.breakDone ? "success" : "hint"}>
+              {state.breakDone ? (
+                <>
+                  <strong className="text-white">You fixed the system!</strong>{" "}
+                  Every part matters: the screen shows, the worker saves, the
+                  notebook remembers - take one away and the trip breaks.
+                </>
+              ) : (
+                <>
+                  Failures are how engineers learn. Break it on purpose, watch{" "}
+                  <span className="text-red-300">where</span> it breaks, then
+                  repair it.
+                </>
+              )}
+            </GuideBubble>
           </div>
         )}
 
-        {stage.id === "check" && (
-          <div className="sd-appear flex flex-col gap-4">
-            <QuickCheck
-              quiz={lesson.quiz}
-              onCorrect={() => patch({ checkPassed: true })}
-            />
-            {state.checkPassed ? (
-              <GuideBubble mood="success">
-                <strong className="text-white">Nice! 🎉</strong> You know
-                where data really lives. Remember: the frontend shows, the
-                backend works, the database remembers - even after the server
-                restarts.
-              </GuideBubble>
-            ) : (
-              <GuideBubble mood="hint">
-                Wrong answers here are <em>useful</em> - each one tells you
-                exactly why that part cannot store your todo. Read, learn,
-                try again.
-              </GuideBubble>
-            )}
-          </div>
-        )}
-
-        {stage.id === "build" && (
-          <div className="sd-appear flex flex-col gap-4">
-            <OrderChallenge
-              build={lesson.build}
-              onSolved={() => patch({ buildSolved: true })}
-            />
-            {!state.buildSolved && (
-              <GuideBubble>
-                Tip: a todo always starts with{" "}
-                <span className="text-sky-300">a person asking</span> - and
-                ends where data can be{" "}
-                <span className="text-fuchsia-300">remembered</span>.
-              </GuideBubble>
-            )}
-          </div>
-        )}
-
-        {stage.id === "explain" && (
+        {stage.id === "cards" && (
           <div className="sd-appear flex flex-col gap-4">
             <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
               <h2 className="text-lg font-semibold text-white">
-                Explain your choice
+                {lesson.cards.heading}
               </h2>
-              <p className="mt-1 text-sm leading-relaxed text-slate-400">
-                {lesson.explain.prompt}
+              <p className="mt-1 text-sm text-slate-400">
+                {lesson.cards.body}
               </p>
-              <label className="sr-only" htmlFor="explain-answer">
-                Your explanation
-              </label>
-              <textarea
-                id="explain-answer"
-                rows={3}
-                value={state.explainText}
-                onChange={(event) =>
-                  patch({ explainText: event.target.value })
-                }
-                placeholder={lesson.explain.placeholder}
-                className="mt-3 w-full resize-y rounded-lg border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-slate-200 placeholder:text-slate-600 focus:border-sky-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/50"
-              />
-              <div className="mt-3 flex flex-wrap gap-3">
-                <button
-                  type="button"
-                  onClick={checkExplanation}
-                  disabled={state.explainText.trim().length === 0}
-                  className="rounded-lg bg-sky-500 px-5 py-2 text-sm font-semibold text-white transition hover:bg-sky-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  {lesson.explain.checkButton}
-                </button>
-                <button
-                  type="button"
-                  onClick={revealModelAnswer}
-                  className="rounded-lg border border-slate-700 px-4 py-2 text-sm font-medium text-slate-300 transition hover:border-slate-500 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
-                >
-                  {lesson.explain.revealButton}
-                </button>
-              </div>
-
-              <div aria-live="polite">
-                {state.explainResult === "pass" && (
-                  <div className="sd-appear mt-4 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-4 py-3 text-sm">
-                    <p className="font-semibold text-emerald-300">
-                      ✓ {lesson.explain.passTitle}
-                    </p>
-                    <p className="mt-1 text-slate-300">
-                      {lesson.explain.passBody}
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                {lesson.cards.items.map((card) => (
+                  <div
+                    key={card.name}
+                    className="rounded-xl border border-slate-800 bg-slate-950/60 p-4"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl" aria-hidden="true">
+                        {card.emoji}
+                      </span>
+                      <span className="text-sm font-semibold uppercase tracking-wider text-white">
+                        {card.name}
+                      </span>
+                    </div>
+                    <p className="mt-2 text-sm leading-relaxed text-slate-300">
+                      {card.body}
                     </p>
                   </div>
-                )}
-                {state.explainResult === "coach" && (
-                  <div className="sd-appear mt-4 rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm">
-                    <p className="font-semibold text-amber-300">
-                      {lesson.explain.coachTitle}
-                    </p>
-                    <p className="mt-1 text-slate-300">
-                      {lesson.explain.coachBody}
-                    </p>
-                  </div>
-                )}
+                ))}
               </div>
-
-              {(state.explainResult === "pass" ||
-                state.explainResult === "revealed") && (
-                <div className="sd-appear mt-4 rounded-lg border border-indigo-500/30 bg-indigo-500/10 px-4 py-3 text-sm">
-                  <p className="font-semibold text-indigo-300">
-                    Model answer
-                  </p>
-                  <p className="mt-1 leading-relaxed text-slate-300">
-                    {lesson.explain.modelAnswer}
-                  </p>
-                </div>
-              )}
             </div>
 
             <GuideBubble>
-              There is no single perfect wording - the check just looks for
-              the key idea:{" "}
-              <span className="text-sky-300">
-                the database stores and remembers
-              </span>
-              .
+              Say them out loud:{" "}
+              <span className="text-cyan-300">frontend shows</span>,{" "}
+              <span className="text-violet-300">backend works</span>,{" "}
+              <span className="text-fuchsia-300">database remembers</span>,{" "}
+              <span className="text-sky-300">request out, response back</span>.
+              That is the whole language.
             </GuideBubble>
+          </div>
+        )}
+
+        {stage.id === "challenge" && (
+          <div className="sd-appear flex flex-col gap-4">
+            <RoundTripOrder
+              challenge={lesson.challenge}
+              onSolved={() => patch({ challengeSolved: true })}
+            />
+            {!state.challengeSolved && (
+              <GuideBubble>
+                Tip: the trip always starts at the{" "}
+                <span className="text-cyan-300">screen</span> - and the answer
+                always starts where the data was saved: the{" "}
+                <span className="text-fuchsia-300">notebook</span>.
+              </GuideBubble>
+            )}
           </div>
         )}
 
@@ -476,27 +478,28 @@ export default function TodoAppLesson() {
               <strong className="text-white">
                 {lesson.summary.congrats}
               </strong>{" "}
-              You saw it, touched it, missed once, fixed it, built it, and
-              explained it. That is how system design actually works.
+              You watched it, broke it, fixed it, named every part, and traced
+              the whole trip. That is how system design actually works.
             </GuideBubble>
 
-            <div className="grid gap-3 sm:grid-cols-2">
-              {lesson.summary.cards.map((card) => (
-                <div
-                  key={card.title}
-                  className="rounded-xl border border-slate-800 bg-slate-900 p-4"
-                >
-                  <h3 className="text-sm font-semibold text-white">
-                    {card.title}
-                  </h3>
-                  <p className="mt-1 text-xs leading-relaxed text-slate-400">
-                    {card.body}
-                  </p>
-                </div>
-              ))}
+            <div className="rounded-xl border border-indigo-500/30 bg-indigo-500/10 p-4">
+              <p className="text-xs font-semibold uppercase tracking-wider text-indigo-300">
+                {lesson.summary.wordsHeading}
+              </p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {lesson.summary.words.map((word) => (
+                  <span
+                    key={word.term}
+                    className="rounded-lg border border-slate-700 bg-slate-950/70 px-3 py-1.5 text-xs"
+                  >
+                    <strong className="text-white">{word.term}</strong>{" "}
+                    <span className="text-slate-400">- {word.def}</span>
+                  </span>
+                ))}
+              </div>
             </div>
 
-            <div className="rounded-xl border border-indigo-500/30 bg-indigo-500/10 p-4 text-sm leading-relaxed text-slate-300">
+            <div className="rounded-xl border border-slate-800 bg-slate-900 p-4 text-sm leading-relaxed text-slate-300">
               {lesson.summary.closing}
             </div>
 

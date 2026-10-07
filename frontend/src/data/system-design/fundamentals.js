@@ -37,14 +37,14 @@ export const SYSTEM_DESIGN_ROADMAP = [
   { level: null, title: "Design Problems", count: 12, status: "planned" },
 ];
 
+// Lesson 1 stage list: watch the system -> learn from mistakes -> break it
+// -> understand it -> rebuild the trip -> wrap up.
 export const LESSON_STAGES = [
-  { id: "intro", label: "Introduction", chip: "See it" },
-  { id: "team", label: "The Team", chip: "Understand it" },
-  { id: "flow", label: "Follow the Request", chip: "Interact with it" },
-  { id: "try", label: "Try It", chip: "See what happens" },
-  { id: "check", label: "Quick Check", chip: "Learn from mistakes" },
-  { id: "build", label: "Build the Flow", chip: "Build it" },
-  { id: "explain", label: "Explain Your Choice", chip: "Explain it" },
+  { id: "journey", label: "Follow One Todo", chip: "See it" },
+  { id: "quiz", label: "Where Is It Kept?", chip: "Learn from mistakes" },
+  { id: "break", label: "Break the System", chip: "See what happens" },
+  { id: "cards", label: "Four Simple Cards", chip: "Understand it" },
+  { id: "challenge", label: "Trace the Round Trip", chip: "Build it" },
   { id: "summary", label: "Summary", chip: "Wrap up" },
 ];
 
@@ -52,243 +52,201 @@ export const TODO_APP_LESSON = {
   id: "todo-app",
   title: "How does a Todo App work?",
 
-  intro: {
-    heading: "One click. Five parts working together.",
-    body: "A todo app feels simple: you type something, press Add, and it appears. But behind that one click, a small team of parts passes your todo along like a relay race. In this lesson you will watch one todo travel through the whole team - and come back with a smiley check mark.",
-    tease: "Ready? First, meet the team.",
+  // Stage 1: the miniature simulation (see -> click -> watch -> understand).
+  journey: {
+    ready: "READY",
+    stepPrefix: "STEP",
+    addLabel: "ADD",
+    inputPlaceholder: "Write a todo...",
+    defaultTodo: "Buy milk",
+    idle: {
+      title: "Let's follow one todo.",
+      body: "Type a todo (try: Buy milk) and press ADD. A glowing message will leave your screen, travel through the whole system, and come back with a check mark.",
+    },
+    // One entry per beat; the simulator shows the entry of the step it just
+    // reached. Technical words appear only AFTER the visual it names.
+    beats: [
+      {
+        title: "You clicked ADD.",
+        body: "A glowing message leaves your screen: \"Please save: {todo}\". The screen you are touching is the FRONTEND - buttons, text, forms - like the front counter of a restaurant. Programmers call that glowing message a REQUEST.",
+      },
+      {
+        title: "The worker received it.",
+        body: "The BACKEND is the worker behind the screen - the kitchen behind the counter. It receives your message and decides what should happen: \"Okay! I'll save it.\"",
+      },
+      {
+        title: "Now the notebook.",
+        body: "The DATABASE is where the system remembers information - like a notebook. If you close the app, the notebook still remembers.",
+      },
+      {
+        title: "Written down!",
+        body: "BEFORE: the notebook was empty. AFTER: \"Buy milk\" is written inside. That is what saving really looks like. Now the answer starts travelling back.",
+      },
+      {
+        title: "The answer came back.",
+        body: "\"Saved!\" arrived at your screen: Database to Backend to Frontend. Programmers call this coming-back message a RESPONSE.",
+      },
+      {
+        title: "✓ Todo saved!",
+        body: "You just watched one complete trip through a software system - a REQUEST going down and a RESPONSE coming back.",
+      },
+    ],
+    fail: {
+      title: "Uh oh!",
+      body: "The backend asked the database to remember the todo, but the database is unavailable. The screen can still be visible - but saving the todo fails.",
+    },
+    chainCaption: "The whole trip:",
+    chain: [
+      { id: "you", label: "You" },
+      { id: "frontend", label: "Frontend" },
+      { id: "backend", label: "Backend" },
+      { id: "database", label: "Database" },
+      { id: "backend2", label: "Backend" },
+      { id: "frontend2", label: "Frontend" },
+      { id: "you2", label: "You" },
+    ],
+    idleHint: "Type a todo, then press ADD to start the trip.",
+    doneHint: "The trip is complete - continue when you are ready.",
+    controls: {
+      play: "▶ Play",
+      replay: "↻ Replay",
+      tryAgain: "↻ Try Again",
+      playing: "● Playing…",
+      step: "⏭ Step",
+      reset: "↻ Reset",
+    },
   },
 
-  // Stage 2: clickable component cards (analogies + what happens without it)
-  team: [
-    {
-      id: "frontend",
-      name: "Frontend",
-      accent: "cyan",
-      emoji: "🖥️",
-      tagline: "The screen you interact with.",
-      analogy:
-        "Like the menu board and cashier counter in a shop - it is what you see and touch.",
-      without:
-        "Nothing to click. You would have to type raw commands like a developer.",
-    },
-    {
-      id: "api",
-      name: "API",
-      accent: "blue",
-      emoji: "📡",
-      tagline: "The messenger that carries requests and answers.",
-      analogy:
-        "Like a waiter: takes your order to the kitchen and brings the food back.",
-      without:
-        "The screen would have to reach into the database directly - and hand out its secret password to everyone.",
-    },
-    {
-      id: "backend",
-      name: "Backend",
-      accent: "violet",
-      emoji: "⚙️",
-      tagline: "The part that processes the request.",
-      analogy:
-        "Like the kitchen worker who checks the order, follows the rules, and prepares it.",
-      without:
-        "Nobody checks the rules. Any invalid or harmful request would walk right in.",
-    },
-    {
-      id: "database",
-      name: "Database",
-      accent: "fuchsia",
-      emoji: "🗄️",
-      tagline: "The place where information is remembered.",
-      analogy:
-        "Like the shop's notebook - it writes down every order so it is not forgotten.",
-      without:
-        "Your todos live only on the screen. Close the page and they are gone forever.",
-    },
-  ],
-
-  // Stage 3/4: the animated request/response flow
-  hops: [
-    {
-      id: "user",
-      name: "You",
-      accent: "sky",
-      emoji: "🧑‍💻",
-      tagline: "You tap Add Todo.",
-      explanation:
-        "Every flow starts with a person wanting something to happen.",
-      analogy: "The customer who places an order.",
-    },
-    {
-      id: "frontend",
-      name: "Frontend",
-      accent: "cyan",
-      emoji: "🖥️",
-      tagline: "The screen you interact with.",
-      explanation:
-        "It draws the buttons and lists, then sends your click onward as a request.",
-      analogy: "The cashier counter that takes your order.",
-    },
-    {
-      id: "api",
-      name: "API",
-      accent: "blue",
-      emoji: "📡",
-      tagline: "The messenger between screen and brain.",
-      explanation:
-        "It carries the request to the backend and later carries the answer back.",
-      analogy: "The waiter walking between table and kitchen.",
-    },
-    {
-      id: "backend",
-      name: "Backend",
-      accent: "violet",
-      emoji: "⚙️",
-      tagline: "The part that processes the request.",
-      explanation:
-        "It checks that the todo is valid and decides what should happen next.",
-      analogy: "The kitchen worker preparing your order.",
-    },
-    {
-      id: "database",
-      name: "Database",
-      accent: "fuchsia",
-      emoji: "🗄️",
-      tagline: "The place where information is remembered.",
-      explanation:
-        "It writes the todo down so it is still there after you close and reopen the app.",
-      analogy: "The notebook that stores every order.",
-    },
-  ],
-
-  flow: {
-    instruction:
-      "Press Play and follow the moving dot. The dot is your request travelling through the system - then the answer travelling back.",
-    requestLabel: "REQUEST - carrying your todo down",
-    responseLabel: "RESPONSE - carrying the answer back up",
-    completeText:
-      "Flow complete - you followed one todo all the way down and back!",
-  },
-
-  tryIt: {
-    heading: "Your turn. Add a todo.",
-    body: "Press the button and watch what happens behind the scenes. Every click sends one todo on the journey you just learned.",
-    button: "＋ Add Todo",
-    addedText: "Todo Added ✓",
-    resultCaption:
-      "Nice! The answer travelled back the same way your request went down: Database → Backend → API → Frontend → you.",
-  },
-
-  // Stage 5: quick check with teaching feedback for every wrong answer
+  // Stage 2: interactive break - answer, learn visually from a mistake.
   quiz: {
-    question: "Where is a todo permanently remembered?",
+    question: "Where should {todo} be remembered?",
+    intro: "Pick an answer. A wrong one shows you exactly why it cannot remember.",
+    wrongHeading: "Not quite - watch what happens.",
+    demoScreen: "📱 Your screen",
+    demoScreenNote: "(it closes...)",
+    demoNote: "🗄️ The notebook",
+    demoNoteNote: "(it stays)",
+    demoCaption:
+      "Imagine closing the app. The screen disappears. The notebook stays. That is why we use a database.",
     options: [
       {
         id: "frontend",
-        text: "In the frontend",
-        correct: false,
-        teach:
-          "The frontend only SHOWS the todo on your screen. Refresh the page without a backend and it would disappear.",
-      },
-      {
-        id: "database",
-        text: "In the database",
-        correct: true,
-        teach:
-          "Yes! The database is the system's notebook - the todo is still there after the server restarts.",
-      },
-      {
-        id: "api",
-        text: "In the API",
-        correct: false,
-        teach:
-          "The API is only a messenger. It passes the todo along like a waiter - it does not keep a copy.",
-      },
-      {
-        id: "javascript",
-        text: "In JavaScript",
-        correct: false,
-        teach:
-          "JavaScript is the LANGUAGE the app is written in. A language does not store data - the database does.",
-      },
-    ],
-    retryHint: "Pick an answer, press Check, and learn from the feedback. You can try again!",
-  },
-
-  // Stage 6: order challenge (build the flow yourself)
-  build: {
-    prompt:
-      "Build the path of a todo. Click the parts in the order your todo would visit them.",
-    reset: "Start over",
-    solved:
-      "Perfect flow! Your todo visits: You → Frontend → API → Backend → Database.",
-    steps: [
-      {
-        id: "user",
-        label: "You click Add Todo",
-        why: "Nothing can happen until someone asks for it - you start the flow.",
-      },
-      {
-        id: "frontend",
         label: "Frontend",
-        why: "The screen catches your click and turns it into a request.",
-      },
-      {
-        id: "api",
-        label: "API",
-        why: "The messenger carries the request toward the brain of the app.",
+        correct: false,
+        teach:
+          "The frontend only SHOWS the todo. Close the app and its list disappears with it.",
       },
       {
         id: "backend",
         label: "Backend",
-        why: "The backend checks the request and decides what to do.",
+        correct: false,
+        teach:
+          "The backend WORKS on the todo, but the notebook is what keeps it. Workers can restart - the notebook outlasts them.",
       },
       {
         id: "database",
         label: "Database",
-        why: "Last stop - the database writes the todo down to remember it.",
+        correct: true,
+        teach:
+          "Yes! The notebook. Close the app, restart the computer - \"{todo}\" is still written down.",
+      },
+      {
+        id: "button",
+        label: "The Button",
+        correct: false,
+        teach:
+          "A button just reacts to your tap. It cannot remember anything on its own.",
+      },
+    ],
+    correctText:
+      "Exactly - the database is the notebook of the system. The screen shows it, the worker saves it, the notebook remembers it.",
+    gateHint: "Find where the todo is remembered to continue.",
+  },
+
+  // Stage 3: break the system, watch it fail, repair it, watch it succeed.
+  breakStage: {
+    heading: "What happens if the database disappears?",
+    body: "Turn the database OFF and watch the same trip fail - then repair it and watch it work.",
+    toggleOn: "🗄️ Database: ON (click to turn OFF)",
+    toggleOff: "🗄️ Database: OFF (click to turn ON)",
+    toggleOnShort: "Database ON",
+    toggleOffShort: "Database OFF",
+    statusOff: "Database is OFF. Saving the todo will fail.",
+    statusOn: "Database is ON. Everything can be remembered.",
+    failPanel:
+      "Uh oh! The backend asked the database to remember the todo, but the database is unavailable. The screen still works - but saving the todo fails.",
+    retryHint:
+      "Turn the database back on, then press Try Again to watch the whole trip succeed.",
+    restoredHint:
+      "The database is back on. Press Try Again in the simulator to watch the full trip succeed.",
+    successText: "The database is back - and the whole trip worked!",
+    gateHint: "Turn the database off and watch a trip fail to continue.",
+  },
+
+  // Stage 4: simple final explanation (four cards).
+  cards: {
+    heading: "The whole system in four cards",
+    body: "Four simple answers you can now say out loud.",
+    items: [
+      { emoji: "🖥️", name: "FRONTEND", body: "The part you see and touch." },
+      {
+        emoji: "⚙️",
+        name: "BACKEND",
+        body: "The worker that handles the request.",
+      },
+      {
+        emoji: "🗄️",
+        name: "DATABASE",
+        body: "The place that remembers information.",
+      },
+      {
+        emoji: "📨",
+        name: "REQUEST / RESPONSE",
+        body: "A message going there and coming back.",
       },
     ],
   },
 
-  // Stage 7: explain your choice (simple keyword check, no AI)
-  explain: {
+  // Stage 5: final interactive challenge - build the round trip.
+  challenge: {
     prompt:
-      "In one or two sentences: why does a todo app need a database instead of only the frontend?",
-    placeholder: "Type your answer here...",
-    keywords: ["remember", "store", "save", "permanent", "restart", "close"],
-    checkButton: "Check my explanation",
-    revealButton: "Show a model answer",
-    passTitle: "Great explanation!",
-    passBody:
-      "You connected the database to remembering data - that is the core idea.",
-    coachTitle: "Almost - add one key idea.",
-    coachBody:
-      "Mention that the database STORES or REMEMBERS data (for example words like: remember, store, permanent, restart).",
-    modelAnswer:
-      "The database remembers todos permanently. The frontend only displays them - if you closed the page, they would be lost without a database.",
+      "You want to save a new todo. Arrange the whole round trip - the request going down, then the response coming back.",
+    goingLabel: "Going down (request)",
+    backLabel: "Coming back (response)",
+    poolHint: "Click a part to fill the next box - the right part is always next.",
+    parts: [
+      { id: "frontend", label: "Frontend", emoji: "🖥️" },
+      { id: "backend", label: "Backend", emoji: "⚙️" },
+      { id: "database", label: "Database", emoji: "🗄️" },
+    ],
+    slots: [
+      { id: "frontend", why: "Nothing can happen until you press ADD on the screen." },
+      { id: "backend", why: "The screen cannot store by itself - it sends its message to the worker." },
+      { id: "database", why: "The worker hands the todo to the notebook." },
+      { id: "database", why: "The answer starts where the data was saved: the notebook says \"Saved!\"" },
+      { id: "backend", why: "The worker carries the answer back toward the screen." },
+      { id: "frontend", why: "The screen shows the check mark to you." },
+    ],
+    wrongHeading: "Not the next stop - here is why:",
+    solvedText: "🎉 You just traced a real software system!",
+    solvedBody:
+      "Request down: Frontend to Backend to Database. Response back: Database to Backend to Frontend. That is the real shape of nearly every app you use.",
+    reset: "Start over",
+    gateHint: "Build the full round trip to continue.",
   },
 
+  // Stage 6: wrap-up.
   summary: {
     congrats: "You just learned how a todo app really works!",
-    cards: [
-      {
-        title: "Frontend shows",
-        body: "The screen you interact with turns your click into a request.",
-      },
-      {
-        title: "Backend works",
-        body: "It checks the request, follows the rules, and tells the database what to do.",
-      },
-      {
-        title: "Database remembers",
-        body: "It writes data down so it survives restarts, refreshes, and time.",
-      },
-      {
-        title: "API connects",
-        body: "The messenger between screen and brain - requests go down, answers come back.",
-      },
+    wordsHeading: "Words you now know",
+    words: [
+      { term: "FRONTEND", def: "the part you see and touch" },
+      { term: "BACKEND", def: "the worker behind the screen" },
+      { term: "DATABASE", def: "the notebook that remembers" },
+      { term: "REQUEST", def: "the message going there" },
+      { term: "RESPONSE", def: "the answer coming back" },
     ],
     closing:
-      "Every bigger system you will ever design is this same team, with more helpers added when the load grows.",
+      "Every bigger system you will ever design is this same trip - with more helpers added when the load grows.",
   },
 };

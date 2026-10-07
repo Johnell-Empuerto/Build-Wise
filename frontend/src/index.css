@@ -1,9 +1,25 @@
 @import "tailwindcss";
 
+/* Google Fonts (CDN): Plus Jakarta Sans for UI, Sora for headings,
+   JetBrains Mono for code. Loaded in index.html. */
+@theme {
+  --font-sans:
+    "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+  --font-display:
+    "Sora", "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono:
+    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
 html,
 body,
 #root {
   min-height: 100%;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -11,6 +27,7 @@ body {
   background-color: #020617;
   color: #f1f5f9;
   font-family:
+    "Plus Jakarta Sans",
     ui-sans-serif,
     system-ui,
     -apple-system,
@@ -19,7 +36,53 @@ body {
     Helvetica,
     Arial,
     sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: 0.005em;
+  text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Headings: display font, tighter tracking, balanced line breaks. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family:
+    "Sora",
+    "Plus Jakarta Sans",
+    ui-sans-serif,
+    system-ui,
+    sans-serif;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+
+/* Airy paragraph rhythm (Tailwind leading-* utilities still win). */
+p {
+  line-height: 1.7;
+}
+
+code,
+kbd,
+samp,
+pre {
+  font-family:
+    "JetBrains Mono",
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Consolas,
+    monospace;
+}
+
+::selection {
+  background: rgba(56, 189, 248, 0.35);
+  color: #f8fafc;
 }
 
 /* ---- System Design: lightweight entrance + motion keyframes ---- */
@@ -126,6 +189,337 @@ body {
   animation: sd-shake 0.4s ease-in-out;
 }
 
+/* ---- Lesson 1 miniature system simulation ---------------------------------
+   The stage is a row on wider screens (Frontend -> Backend -> Database) and
+   a column on small ones. The packet dot travels with CSS; direction is
+   decided purely by media query so the markup never changes. */
+
+@keyframes sim-x-fwd {
+  from {
+    left: 0;
+  }
+  to {
+    left: calc(100% - 14px);
+  }
+}
+
+@keyframes sim-x-back {
+  from {
+    left: calc(100% - 14px);
+  }
+  to {
+    left: 0;
+  }
+}
+
+@keyframes sim-y-fwd {
+  from {
+    top: 0;
+  }
+  to {
+    top: calc(100% - 14px);
+  }
+}
+
+@keyframes sim-y-back {
+  from {
+    top: calc(100% - 14px);
+  }
+  to {
+    top: 0;
+  }
+}
+
+.sim-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+@media (min-width: 768px) {
+  .sim-stage {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+/* Connector between two nodes: line + arrowhead. */
+.sim-conn {
+  position: relative;
+  flex: 0 0 auto;
+  width: 100%;
+  height: 52px;
+}
+
+.sim-line {
+  position: absolute;
+  left: 50%;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  margin-left: -1.5px;
+  border-radius: 9999px;
+  background: #334155;
+}
+
+.sim-arrow {
+  position: absolute;
+  left: 50%;
+  bottom: 6px;
+  width: 9px;
+  height: 9px;
+  margin-left: -5px;
+  border-top: 2px solid #475569;
+  border-right: 2px solid #475569;
+  transform: rotate(135deg);
+}
+
+@media (min-width: 768px) {
+  .sim-conn {
+    flex: 1 1 72px;
+    width: auto;
+    min-width: 64px;
+    height: 44px;
+  }
+  .sim-line {
+    left: 8px;
+    right: 8px;
+    top: 50%;
+    bottom: auto;
+    width: auto;
+    height: 3px;
+    margin-left: 0;
+    margin-top: -1.5px;
+  }
+  .sim-arrow {
+    left: auto;
+    right: 6px;
+    top: 50%;
+    bottom: auto;
+    margin-left: 0;
+    margin-top: -5px;
+    transform: rotate(45deg);
+  }
+}
+
+/* Travelling packet (dot + riding label). */
+.sim-packet {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 14px;
+  height: 14px;
+  margin-left: -7px;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.sim-pkt-label {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 767.98px) {
+  .sim-pkt-end {
+    top: calc(100% - 14px);
+  }
+}
+
+@media (min-width: 768px) {
+  .sim-packet {
+    left: 0;
+    top: 50%;
+    margin-left: 0;
+    margin-top: -7px;
+  }
+  .sim-pkt-end {
+    left: calc(100% - 14px);
+  }
+}
+
+@media (min-width: 768px) {
+  .sim-pkt-fwd {
+    animation: sim-x-fwd 900ms ease-in-out forwards;
+  }
+  .sim-pkt-back {
+    animation: sim-x-back 900ms ease-in-out forwards;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .sim-pkt-fwd {
+    animation: sim-y-fwd 900ms ease-in-out forwards;
+  }
+  .sim-pkt-back {
+    animation: sim-y-back 900ms ease-in-out forwards;
+  }
+}
+
+/* Quiz demo: the screen closes, the notebook stays. */
+@keyframes sim-close {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+    filter: grayscale(0);
+  }
+  100% {
+    opacity: 0.25;
+    transform: scale(0.92);
+    filter: grayscale(1);
+  }
+}
+
+.sim-close {
+  animation: sim-close 0.9s ease-in-out 0.15s forwards;
+}
+
+/* Subtle success pop for "Todo saved!" */
+@keyframes sim-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.sim-pop {
+  animation: sim-pop 0.5s ease-out both;
+}
+
+/* ---- Lesson 2: bicycle, morph, finale -------------------------------------
+   The bicycle is five .bike-part groups. Scattering is a transition on
+   those groups; running is CSS animations on the crank/chain/wheels plus
+   one translate on the whole assembly. All classes are toggled by React. */
+
+.bike-part {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.3, 1), opacity 0.9s;
+}
+
+.bike-scattered .bp-frame {
+  transform: translate(-26px, 46px) rotate(-6deg);
+  opacity: 0.9;
+  transition-delay: 0.05s;
+}
+.bike-scattered .bp-wheel {
+  transform: translate(52px, 58px) rotate(24deg);
+  transition-delay: 0.12s;
+}
+.bike-scattered .bp-chain {
+  transform: translate(-6px, -54px) rotate(16deg);
+  transition-delay: 0.18s;
+}
+.bike-scattered .bp-pedals {
+  transform: translate(-58px, -30px) rotate(-22deg);
+  transition-delay: 0.24s;
+}
+.bike-scattered .bp-brakes {
+  transform: translate(44px, -58px) rotate(12deg);
+  transition-delay: 0.3s;
+}
+
+.bike-hot {
+  filter: drop-shadow(0 0 7px rgba(56, 189, 248, 0.95));
+}
+.bike-fail {
+  filter: drop-shadow(0 0 7px rgba(248, 113, 113, 0.95));
+}
+.bike-gone {
+  opacity: 0.12;
+}
+
+@keyframes bike-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.crank {
+  transform-box: view-box;
+  transform-origin: 230px 195px;
+}
+.crank-spin {
+  animation: bike-spin 0.7s linear infinite;
+}
+
+.spin-rear,
+.spin-front {
+  transform-box: view-box;
+}
+.spin-rear {
+  transform-origin: 115px 195px;
+}
+.spin-front {
+  transform-origin: 335px 195px;
+}
+.wheel-spin {
+  animation: bike-spin 1s linear infinite;
+}
+
+.chain-run {
+  stroke-dasharray: 14 9;
+}
+.chain-run-on {
+  animation: bike-chain-run 0.45s linear infinite;
+}
+@keyframes bike-chain-run {
+  to {
+    stroke-dashoffset: -23;
+  }
+}
+
+@keyframes bike-rolling {
+  to {
+    transform: translateX(56px);
+  }
+}
+.bike-rolling {
+  animation: bike-rolling 1.5s ease-in-out forwards;
+}
+
+/* Bicycle -> software morph (stage 6) */
+@keyframes morph-out {
+  to {
+    opacity: 0.2;
+    transform: scale(0.92) translateX(-20px);
+    filter: grayscale(1);
+  }
+}
+.morph-out {
+  animation: morph-out 0.9s ease-in-out forwards;
+}
+
+@keyframes morph-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.morph-in-a {
+  animation: morph-in 0.7s cubic-bezier(0.2, 0.9, 0.3, 1) 0.15s both;
+}
+.morph-in-b {
+  animation: morph-in 0.7s cubic-bezier(0.2, 0.9, 0.3, 1) 0.4s both;
+}
+.morph-in-c {
+  animation: morph-in 0.7s cubic-bezier(0.2, 0.9, 0.3, 1) 0.65s both;
+}
+
 /* Respect the user's motion preferences (WCAG). */
 @media (prefers-reduced-motion: reduce) {
   .sd-appear,
@@ -133,8 +527,32 @@ body {
   .sd-shake {
     animation: none;
   }
+  .sim-pop,
+  .sim-close {
+    animation-duration: 0.01s;
+  }
+  .sim-pkt-fwd,
+  .sim-pkt-back {
+    animation-duration: 0.01s;
+  }
   .flow-dot-down,
   .flow-dot-up {
+    animation-duration: 0.01s;
+  }
+  .bike-part {
+    transition-duration: 0.01s;
+    transition-delay: 0s;
+  }
+  .crank-spin,
+  .wheel-spin,
+  .chain-run-on,
+  .bike-rolling {
+    animation: none;
+  }
+  .morph-out,
+  .morph-in-a,
+  .morph-in-b,
+  .morph-in-c {
     animation-duration: 0.01s;
   }
   * {
