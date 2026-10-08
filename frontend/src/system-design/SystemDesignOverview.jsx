@@ -20,18 +20,14 @@ const THINKING_STEPS = [
 export default function SystemDesignOverview() {
   const { completedLessons } = useSystemDesignProgress();
   const doneCount = FUNDAMENTALS_LESSONS.filter((lesson) =>
-    completedLessons.has(lesson.id)
+    completedLessons.has(lesson.id),
   ).length;
   const openCount = FUNDAMENTALS_LESSONS.filter(
-    (lesson) => lesson.available
+    (lesson) => lesson.available,
   ).length;
 
   return (
     <div className="sd-appear">
-      <nav className="mb-4 text-sm text-slate-500" aria-label="Breadcrumb">
-        <span className="text-slate-300">System Design</span>
-      </nav>
-
       {/* Hero */}
       <section className="relative overflow-hidden rounded-2xl border border-slate-800 bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950/60 p-6 sm:p-8">
         <div
@@ -71,9 +67,8 @@ export default function SystemDesignOverview() {
           <div className="sm:w-64">
             <GuideBubble>
               <strong className="text-white">Hi! I am your guide.</strong>
-              We will start with a tiny todo app and pull it apart step by
-              step. By the end, big system diagrams will feel like reading a
-              map.
+              We will start with a tiny todo app and pull it apart step by step.
+              By the end, big system diagrams will feel like reading a map.
             </GuideBubble>
           </div>
         </div>

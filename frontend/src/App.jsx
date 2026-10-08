@@ -26,7 +26,7 @@ function Header() {
             to="/topics"
             className="text-sm font-medium text-slate-400 transition hover:text-emerald-400"
           >
-            Topics
+            Learn to Code
           </Link>
           <Link
             to="/system-design"
