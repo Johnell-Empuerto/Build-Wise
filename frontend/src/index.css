@@ -520,6 +520,98 @@ pre {
   animation: morph-in 0.7s cubic-bezier(0.2, 0.9, 0.3, 1) 0.65s both;
 }
 
+/* ---- Lesson 3: client/server exchange -------------------------------------
+   The request packet stops mid-lane when the server is offline (half key-
+   frames), the server spins while it works, and the final flow chain sends
+   small dots across the REQUEST / RESPONSE chips. */
+
+@keyframes sim-x-half {
+  from {
+    left: 0;
+  }
+  to {
+    left: calc(50% - 7px);
+  }
+}
+
+@keyframes sim-y-half {
+  from {
+    top: 0;
+  }
+  to {
+    top: calc(50% - 7px);
+  }
+}
+
+@media (min-width: 768px) {
+  .sim-pkt-half {
+    animation: sim-x-half 900ms ease-in-out forwards;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .sim-pkt-half {
+    animation: sim-y-half 900ms ease-in-out forwards;
+  }
+}
+
+.cs-spin {
+  display: inline-block;
+  animation: bike-spin 0.8s linear infinite;
+}
+
+@keyframes cs-wait {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.cs-wait {
+  animation: cs-wait 1s ease-in-out infinite;
+}
+
+.cs-dot {
+  position: absolute;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  margin-top: -5px;
+  border-radius: 9999px;
+  background: #38bdf8;
+  box-shadow: 0 0 8px 2px rgba(56, 189, 248, 0.7);
+  opacity: 0;
+}
+
+@keyframes cs-dot-r {
+  from {
+    left: 0;
+  }
+  to {
+    left: calc(100% - 10px);
+  }
+}
+
+@keyframes cs-dot-l {
+  from {
+    left: calc(100% - 10px);
+  }
+  to {
+    left: 0;
+  }
+}
+
+.cs-dot.go-r {
+  animation: cs-dot-r 0.7s ease-in-out both;
+}
+
+.cs-dot.go-l {
+  animation: cs-dot-l 0.7s ease-in-out both;
+}
+
 /* Respect the user's motion preferences (WCAG). */
 @media (prefers-reduced-motion: reduce) {
   .sd-appear,
@@ -532,7 +624,16 @@ pre {
     animation-duration: 0.01s;
   }
   .sim-pkt-fwd,
-  .sim-pkt-back {
+  .sim-pkt-back,
+  .sim-pkt-half {
+    animation-duration: 0.01s;
+  }
+  .cs-spin,
+  .cs-wait {
+    animation: none;
+  }
+  .cs-dot.go-r,
+  .cs-dot.go-l {
     animation-duration: 0.01s;
   }
   .flow-dot-down,
