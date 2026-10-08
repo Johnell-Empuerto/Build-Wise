@@ -1,21 +1,13 @@
 // System Design - Level 1, Lesson 4: "Frontend vs Backend"
 // Frontend-only static content. Builds directly on lesson 3 (client/server):
 // the frontend IS the visible client side, the backend IS the working server
-// side. Restaurant thread continues: dining room vs kitchen.
+// side. Restaurant thread continues: dining room vs kitchen. Scroll-led:
+// sections read top to bottom, the restaurant-to-software morph starts when
+// its section scrolls into view, and every interaction lives inline.
 
 export const FRONTEND_BACKEND_LESSON = {
   id: "frontend-backend",
   title: "Frontend vs Backend",
-
-  stages: [
-    { id: "intro", label: "Introduction", chip: "See it" },
-    { id: "sides", label: "Side by Side", chip: "Understand it" },
-    { id: "fix", label: "Fix the Split", chip: "Interact with it" },
-    { id: "check", label: "Quick Check", chip: "Learn from mistakes" },
-    { id: "build", label: "Follow a Like", chip: "Build it" },
-    { id: "explain", label: "Explain Your Choice", chip: "Explain it" },
-    { id: "summary", label: "Summary", chip: "Wrap up" },
-  ],
 
   intro: {
     heading: "One app, two jobs.",
@@ -25,7 +17,7 @@ export const FRONTEND_BACKEND_LESSON = {
       "The buttons, colors, and words you interact with are the frontend. The rules, calculations, and memory behind them are the backend. You have already met them as client and server - now they get sharper names: the frontend is the client's side of the screen, the backend is the server's side of the work.",
     analogy:
       "A restaurant again: the dining room is the frontend - menus, plates, the smile that greets you. The kitchen is the backend - you never see it, but it is why your plate arrives. Neither works alone.",
-    tease: "Next: what each side is actually good at.",
+    tease: "Watch the restaurant turn into software, then take the split apart yourself.",
   },
 
   sides: {
@@ -63,6 +55,27 @@ export const FRONTEND_BACKEND_LESSON = {
         without:
           "Put everything on one side and you get either an unsafe app (rules living in the browser) or an ugly one (a server trying to draw pixels).",
       },
+    ],
+  },
+
+  // The scroll-triggered morph: restaurant words dissolve into software
+  // words (same animation family as lesson 3's restaurant-to-software beat).
+  morph: {
+    heading: "From Restaurant to Software",
+    body:
+      "Same building, new names - watch the dining room become the frontend and the kitchen become the backend.",
+    from: [
+      { icon: "🪑", name: "Dining Room", sub: "menus, plates, smiles" },
+      { icon: "🍳", name: "Kitchen", sub: "recipes, pantry, heat" },
+    ],
+    to: [
+      { icon: "🎨", name: "Frontend", sub: "screens, buttons, words" },
+      { icon: "⚙️", name: "Backend", sub: "rules, memory, work" },
+    ],
+    lines: [
+      "You look, tap, and read - that is the frontend.",
+      "It checks, decides, and remembers - that is the backend.",
+      "Frontend asks, backend answers, frontend shows.",
     ],
   },
 
@@ -117,6 +130,9 @@ export const FRONTEND_BACKEND_LESSON = {
   },
 
   quiz: {
+    heading: "Quick Check: Where Does the Rule Live?",
+    intro:
+      "A rule only counts when it lives where nobody can bend it. Where does this one go?",
     question:
       "The rule 'each username must be unique' has to live somewhere. Where?",
     options: [
@@ -154,6 +170,9 @@ export const FRONTEND_BACKEND_LESSON = {
   },
 
   build: {
+    heading: "Follow a Like",
+    body:
+      "Watch which side owns each beat - click the beats in the order they really happen.",
     prompt:
       "Someone taps the ❤️ on a post. Build the five beats - and watch which side owns each one.",
     reset: "Start over",
@@ -194,6 +213,7 @@ export const FRONTEND_BACKEND_LESSON = {
   },
 
   explain: {
+    heading: "Explain Your Choice",
     prompt:
       "In your own words: why must the password check live in the backend instead of the frontend?",
     placeholder: "Type your answer here...",
@@ -211,6 +231,7 @@ export const FRONTEND_BACKEND_LESSON = {
   },
 
   summary: {
+    heading: "The Two Halves",
     congrats: "You can now split any feature into its two halves!",
     cards: [
       {
