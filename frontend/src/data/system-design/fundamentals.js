@@ -6,7 +6,13 @@ export const FUNDAMENTALS_LESSONS = [
   { id: "what-is-a-system", title: "What is a System?", summary: "Parts, connections, goals, and boundaries - what turns a pile of pieces into a system.", available: true },
   { id: "client-server", title: "Client and Server", summary: "The two roles behind every online interaction: who asks, who answers, and who waits.", available: true },
   { id: "frontend-backend", title: "Frontend vs Backend", summary: "Who owns what: frontend shows and collects, backend rules and remembers.", available: true },
-  { id: "api", title: "API", available: false },
+  {
+    id: "api",
+    title: "API",
+    summary:
+      "The messenger between frontend and backend: who carries what, and in what shape.",
+    available: true,
+  },
   { id: "database", title: "Database", available: false },
   { id: "request-response", title: "Request and Response", available: false },
   { id: "stateful-stateless", title: "Stateful vs Stateless", available: false },

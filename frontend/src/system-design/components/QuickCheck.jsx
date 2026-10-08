@@ -1,8 +1,11 @@
 // Quick Check: multiple choice with teaching feedback for every wrong answer.
 // Wrong answers are never dead ends - each one explains WHY it is wrong.
-import { useState } from "react";
+import { useId, useState } from "react";
 
 export default function QuickCheck({ quiz, onCorrect }) {
+  // Unique radio-group name per instance so two checks never unselect
+  // each other when they render on the same page.
+  const [groupName] = useId();
   const [selected, setSelected] = useState(null);
   const [feedback, setFeedback] = useState(null); // {correct, option} | null
   const [tries, setTries] = useState(0);
@@ -47,7 +50,7 @@ export default function QuickCheck({ quiz, onCorrect }) {
             >
               <input
                 type="radio"
-                name="quick-check"
+                name={groupName}
                 value={option.id}
                 checked={isSelected}
                 onChange={() => pick(option.id)}

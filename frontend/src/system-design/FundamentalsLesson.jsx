@@ -6,11 +6,13 @@ import { FUNDAMENTALS_LESSONS } from "../data/system-design/fundamentals.js";
 import WhatIsASystemLesson from "./WhatIsASystemLesson.jsx";
 import ClientServerLesson from "./ClientServerLesson.jsx";
 import FrontendBackendLesson from "./FrontendBackendLesson.jsx";
+import ApiLesson from "./ApiLesson.jsx";
 
 const LESSON_VIEWS = {
   "what-is-a-system": WhatIsASystemLesson,
   "client-server": ClientServerLesson,
   "frontend-backend": FrontendBackendLesson,
+  api: ApiLesson,
 };
 
 export default function FundamentalsLesson() {
