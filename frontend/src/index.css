@@ -404,7 +404,10 @@ pre {
 .bike-part {
   transform-box: fill-box;
   transform-origin: center;
-  transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.3, 1), opacity 0.9s;
+  transition:
+    transform 0.9s cubic-bezier(0.2, 0.8, 0.3, 1),
+    opacity 0.9s,
+    filter 0.4s;
 }
 
 .bike-scattered .bp-frame {
@@ -520,6 +523,77 @@ pre {
   animation: morph-in 0.7s cubic-bezier(0.2, 0.9, 0.3, 1) 0.65s both;
 }
 
+/* ---- Lesson 2 scroll-led extras -------------------------------------------
+   The bike rides the road strip (JS travel waits 1700ms), the stacked todo
+   lanes carry their packet down and back up (JS waits 900ms), and builder
+   gaps show a dashed placeholder until the parts are connected. */
+
+@keyframes ls-travel {
+  from {
+    left: 2%;
+  }
+  to {
+    left: calc(100% - 26px);
+  }
+}
+
+.ls-travel {
+  animation: ls-travel 1.7s ease-in-out forwards;
+}
+
+@keyframes ls-pkt-down {
+  from {
+    top: 0;
+  }
+  to {
+    top: calc(100% - 14px);
+  }
+}
+
+.ls-pkt-down {
+  animation: ls-pkt-down 900ms ease-in-out forwards;
+}
+
+@keyframes ls-pkt-up {
+  from {
+    top: calc(100% - 14px);
+  }
+  to {
+    top: 0;
+  }
+}
+
+.ls-pkt-up {
+  animation: ls-pkt-up 900ms ease-in-out forwards;
+}
+
+.ls-empty-lane {
+  position: absolute;
+  inset: 6px;
+  border: 2px dashed rgba(100, 116, 139, 0.55);
+  border-radius: 8px;
+}
+
+.ls-anim-spin {
+  display: inline-block;
+  animation: bike-spin 2.4s linear infinite;
+}
+
+@keyframes ls-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.ls-anim-wait {
+  display: inline-block;
+  animation: ls-bob 1.4s ease-in-out infinite;
+}
+
 /* ---- Lesson 3: client/server exchange -------------------------------------
    The request packet stops mid-lane when the server is offline (half key-
    frames), the server spins while it works, and the final flow chain sends
@@ -626,6 +700,15 @@ pre {
   .morph-in-b,
   .morph-in-c {
     animation-duration: 0.01s;
+  }
+  .ls-travel,
+  .ls-pkt-down,
+  .ls-pkt-up {
+    animation-duration: 0.01s;
+  }
+  .ls-anim-spin,
+  .ls-anim-wait {
+    animation: none;
   }
   * {
     scroll-behavior: auto !important;

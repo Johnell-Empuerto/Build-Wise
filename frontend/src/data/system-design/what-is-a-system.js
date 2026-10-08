@@ -1,318 +1,205 @@
 // System Design - Level 1, Lesson 2: "What is a System?"
-// Frontend-only static content, fourteen interactive stages:
-// bicycle (real world) -> parts -> run -> break -> goal ->
-// morph to software -> todo flow -> break the app -> connections ->
-// builder -> goal quiz -> real systems -> final challenge -> finale.
+// Frontend-only static content, told as a scroll-led lesson:
+// EXPLAIN (parts / connections / goal) -> SHOW (the bicycle story) ->
+// EXPERIENCE (break the bicycle, run + break the todo system) ->
+// UNDERSTAND (build it, judge it, see it everywhere, final challenge).
 // No jargon before the WHY; every idea gets a visual first.
 
 export const WHAT_IS_A_SYSTEM_LESSON = {
   id: "what-is-a-system",
   title: "What is a System?",
 
-  stages: [
-    { id: "intro", label: "The Box of Parts", chip: "See it" },
-    { id: "parts", label: "Meet the Parts", chip: "Understand it" },
-    { id: "together", label: "Working Together", chip: "See it work" },
-    { id: "remove", label: "Break the Bicycle", chip: "Learn from mistakes" },
-    { id: "goal", label: "The Goal", chip: "Understand it" },
-    { id: "morph", label: "From Bike to App", chip: "Connect it" },
-    { id: "flow", label: "The Todo System", chip: "See it work" },
-    { id: "todoBreak", label: "Break the App", chip: "Learn from mistakes" },
-    { id: "connections", label: "Connections Matter", chip: "Understand it" },
-    { id: "builder", label: "Build a System", chip: "Build it" },
-    { id: "goalQuiz", label: "Find the Goal", chip: "Learn from mistakes" },
-    { id: "examples", label: "Systems Everywhere", chip: "See it" },
-    { id: "final", label: "Final Challenge", chip: "Explain it" },
-    { id: "summary", label: "Summary", chip: "Wrap up" },
-  ],
-
   intro: {
     heading: "A system is parts that work together - on purpose.",
+    paragraphs: [
+      "A system is a set of connected parts working together toward a goal.",
+      "Not a pile of pieces, not a list of names - parts that pass work to each other until something real gets done.",
+    ],
     definition:
       "A system is a set of connected parts working together toward a goal.",
-    question:
-      "A bicycle lies in pieces on the garage floor: frame, wheel, chain, pedals, brakes. Is it a system yet?",
-    tease: "Assemble it - then watch the answer appear.",
-    assembled:
-      "Same parts - now they are connected. That is the difference.",
-    pileNote:
-      "A pile of parts cannot carry anyone anywhere. Order and connection are the whole trick.",
-    assemble: "Assemble the bicycle",
-    disassemble: "Take it apart",
-    svgLabel: "A bicycle made of five parts",
-  },
-
-  parts: {
-    heading: "Every part has one small job",
-    hint: "Tap each part to hear its story.",
-    done: "You just explored all five parts - each one does a small job alone.",
-    items: [
-      {
-        id: "frame",
-        name: "Frame",
-        emoji: "🏗️",
-        what: "Holds every other part in place.",
-        analogy:
-          "The skeleton of the bike. Without it nothing has anything to attach to.",
-      },
-      {
-        id: "wheel",
-        name: "Wheel",
-        emoji: "🛞",
-        what: "Rolls you forward - the part that touches the road.",
-        analogy:
-          "The final performer: all the effort ends up here, turned into movement.",
-      },
-      {
-        id: "chain",
-        name: "Chain",
-        emoji: "⛓️",
-        what: "Carries your pedaling to the wheel.",
-        analogy:
-          "A conveyor belt between two machines - it does no work itself, it PASSES work along.",
-      },
-      {
-        id: "pedals",
-        name: "Pedals",
-        emoji: "⚙️",
-        what: "Takes the push from your feet.",
-        analogy:
-          "The entrance door: this is where your energy enters the system.",
-      },
-      {
-        id: "brakes",
-        name: "Brakes",
-        emoji: "🛑",
-        what: "Lets you stop safely.",
-        analogy:
-          "The safety net. The bike works without them... until the first hill.",
-      },
-    ],
-  },
-
-  together: {
-    heading: "Alone a part does nothing - together they ride",
-    body:
-      "Press start and follow your own push through the chain to the wheel. Watch where the effort goes.",
-    start: "Start the ride",
-    again: "Ride again",
-    busy: "● Riding…",
-    idle: "Ready. Press start - your push begins at the pedal.",
-    beats: {
-      push: "You push the pedal - your effort enters the system.",
-      chain:
-        "The chain carries the effort to the wheel - a CONNECTION doing its job.",
-      roll: "The wheel turns - you move! The goal happens.",
-    },
-    done: "Goal met: you move! Parts + connections + a goal, working as one.",
-    svgLabel: "A bicycle riding forward",
-  },
-
-  remove: {
-    heading: "Take one part out - watch the ride fail",
-    body:
-      "Click a part to pull it out of the bicycle, then press Ride. Every failure teaches you what that part was really for.",
-    start: "Ride",
-    again: "Ride again",
-    busy: "● Riding…",
-    idle: "Bicycle intact. Remove a part, then press Ride.",
-    beats: {
-      push: "You push the pedal - your effort enters the system.",
-      chain: "The chain carries the effort toward the wheel...",
-      roll: "The wheel turns - you move!",
-    },
-    done: "Goal met: you move! The whole bicycle works.",
-    failTitle: "✕ The ride failed",
-    failTexts: {
-      pedals:
-        "The push never enters - without pedals your effort has nowhere to go.",
-      chain:
-        "Pedals spin, the wheel sits still - the connection between parts is cut.",
-      wheel:
-        "Nothing can roll - the goal of movement is simply impossible.",
-      brakes:
-        "It moves - but you cannot stop it. Reaching a goal dangerously is not working.",
-    },
-    parts: [
-      {
-        id: "wheel",
-        name: "Wheel",
-        emoji: "🛞",
-        off: "No rolling, no movement. The goal cannot be met.",
-      },
-      {
-        id: "chain",
-        name: "Chain",
-        emoji: "⛓️",
-        off: "You pedal and the wheel just sits there - the connection is gone.",
-      },
-      {
-        id: "pedals",
-        name: "Pedals",
-        emoji: "⚙️",
-        off: "Your energy has no way into the system.",
-      },
-      {
-        id: "brakes",
-        name: "Brakes",
-        emoji: "🛑",
-        off: "It moves but cannot stop - dangerous.",
-      },
-    ],
-    restored:
-      "The bicycle is whole again and the ride succeeds - you just broke a system and fixed it.",
-    gateHint: "Take a part out, press Ride, then put it back and ride again.",
-    svgLabel: "A bicycle with removable parts",
-  },
-
-  goal: {
-    heading: "Three questions separate a pile from a system",
-    body:
-      "Ask them about the bicycle in order. Press trace and follow the answers.",
-    trace: "Trace the goal",
-    steps: [
+    cards: [
       {
         id: "parts",
-        title: "🧩 Do parts exist?",
-        body: "Five pieces, each with one small job.",
+        icon: "🧩",
+        name: "Parts",
+        body: "Each piece does one small job.",
+        bike: "🚲 frame, pedals, chain, wheels",
+        app: "📱 Frontend, Backend, Database",
       },
       {
-        id: "together",
-        title: "🔗 Do they work together?",
-        body: "Connections pass your effort from piece to piece.",
+        id: "connections",
+        icon: "🔗",
+        name: "Connections",
+        body: "How one part passes work to the next.",
+        bike: "🚲 the chain carries your push to the wheel",
+        app: "📱 your tap travels Frontend → Backend → Database",
       },
       {
         id: "goal",
-        title: "🎯 Is there a goal?",
-        body: "All that passing adds up to one result: you move.",
+        icon: "🎯",
+        name: "Goal",
+        body: "What the system exists to do. No goal, no system.",
+        bike: "🚲 carry you somewhere",
+        app: "📱 save and manage your todos",
       },
     ],
-    done:
-      "Yes, yes, and yes - three answers in that order. THAT is what you just watched, not a pile.",
-    gateHint: "Press trace to follow the three answers.",
   },
 
-  morph: {
-    heading: "Now point the same idea at software",
-    body:
-      "The todo app from Lesson 1 has the same shape as the bicycle. Press the button and watch the bicycle become the app.",
-    button: "Connect it to software",
-    cards: [
-      {
-        id: "frontend",
-        name: "Frontend",
-        emoji: "🖥️",
-        bike: "Like the pedals",
-        body: "Where YOU push - type, tap, click. Input enters here.",
-      },
-      {
-        id: "backend",
-        name: "Backend",
-        emoji: "⚙️",
-        bike: "Like the chain",
-        body: "Carries your push and does the work behind the scenes.",
-      },
-      {
-        id: "database",
-        name: "Database",
-        emoji: "🗄️",
-        bike: "Something bikes don't have",
-        body: "A notebook that remembers - your todos from Lesson 1.",
-      },
+  rule: {
+    heading: "The simple rule",
+    body: "Every system - bicycle, kitchen, or app - follows one shape:",
+    steps: [
+      { id: "parts", icon: "🧩", label: "PARTS" },
+      { id: "connections", icon: "🔗", label: "CONNECTIONS" },
+      { id: "goal", icon: "🎯", label: "GOAL" },
     ],
-    done:
-      "The todo app is a system too: parts, connections, and one goal - save and manage your todos.",
-    gateHint: "Press the button to morph the bicycle into the app.",
+    equals: "✨ SYSTEM",
+    note: "Take any one away and you are back to a pile of parts.",
   },
 
-  flow: {
-    heading: "Watch the todo system work - one message, three parts",
-    body:
-      "Same trip you traced in Lesson 1, seen through the system lens: three parts, two connections, one goal.",
-    play: "Play the trip",
-    busy: "● Working…",
-    reset: "↻ Reset",
-    idle: "Press Play and watch one message make the whole trip.",
-    beats: [
-      "The screen takes your message - Frontend shows and asks.",
-      "The worker receives it - Backend does the work.",
-      "The notebook writes it down - Database remembers.",
-      "The answer travels back - the screen can show it.",
+  story: {
+    heading: "Watch a bicycle become a system",
+    body: "The story plays as you read it. Parts light up, the push travels between them, and the goal finally happens.",
+    svgLabel: "A bicycle telling its story",
+    frames: [
+      { hot: ["frame"], line: "The frame holds every part in place." },
+      { hot: ["pedals"], line: "The pedals take your push." },
+      { hot: ["chain"], line: "The chain carries the push." },
+      { hot: ["wheel"], line: "The wheel turns push into movement." },
+      {
+        hot: ["handlebar"],
+        line: "The handlebar keeps it aimed at the goal.",
+      },
+      { hot: ["pedals"], line: "The pedal does not move the bicycle alone." },
+      { hot: ["pedals", "chain"], line: "The pedal moves the chain." },
+      {
+        hot: ["chain", "wheel"],
+        line: "The chain turns the wheel.",
+        spin: true,
+      },
+      {
+        hot: ["frame", "pedals", "chain", "wheel", "handlebar"],
+        line: "The bicycle moves.",
+        spin: true,
+        travel: true,
+      },
+      { line: "That's a system.", done: true },
     ],
-    done: "Trip complete: three parts, two connections, one goal met.",
-    failTitle: "✕ The trip failed",
-    savedLabel: "✓ saved",
+    idle: "The story starts itself when you scroll here - or press Play.",
+    done: "Parts + connections + goal = one system working.",
+    legend: "glow = the part we are talking about",
+    after:
+      "That is a system. Now take one part away and watch it stop.",
   },
 
-  todoBreak: {
-    heading: "Break the software system now",
-    body:
-      "Pull a part out of the app, then press Add a todo - watch exactly where the trip dies.",
-    add: "Add a todo",
-    busy: "● Working…",
-    reset: "↻ Reset",
-    idle: "All three parts in place. Remove one, then press Add a todo.",
-    beats: [
-      "The screen takes your message - Frontend shows and asks.",
-      "The worker receives it - Backend does the work.",
-      "The notebook writes it down - Database remembers.",
-      "The answer travels back - the screen can show it.",
+  remove: {
+    heading: "Take one part out - watch it fail",
+    body: "Pull a piece out of the bicycle. It tries to ride without it - and tells you exactly what was lost.",
+    parts: [
+      { id: "wheel", name: "Wheel", emoji: "🛞" },
+      { id: "chain", name: "Chain", emoji: "⛓️" },
+      { id: "pedals", name: "Pedal", emoji: "⚙️" },
+      { id: "handlebar", name: "Handlebar", emoji: "🧭" },
     ],
-    done:
-      "All three parts are back - the trip completes. You just proved what breaks a software system.",
-    failTitle: "🔴 MISSING",
+    svgLabel: "A bicycle with removable parts",
+    failTitle: "✕ The ride failed",
     failTexts: {
-      frontend:
-        "No screen - your message can never even enter the system.",
-      backend:
-        "The message arrives but nobody does the work - it just sits there.",
-      database:
-        "The work happens but nothing remembers it - close the tab and it is gone.",
+      wheel: "Without a wheel nothing can roll - movement is simply impossible.",
+      chain:
+        "The pedals spin, the wheel sits still - the connection between parts is cut.",
+      pedals: "Your push never enters the bicycle - nothing can move it.",
+      handlebar:
+        "It moves - but nobody can steer it. A system you cannot control fails too.",
     },
-    parts: [
-      { id: "frontend", name: "Frontend", emoji: "🖥️" },
-      { id: "backend", name: "Backend", emoji: "⚙️" },
-      { id: "database", name: "Database", emoji: "🗄️" },
-    ],
-    gateHint: "Take a part away, press Add a todo, then put it back and retry.",
-    svgLabel: "The todo app system diagram",
+    idle: "All five parts in place. Remove one to hear what it was for.",
+    restored: "The bicycle is whole again - every part had a job.",
+    teach:
+      "Three removals, three failures - the bicycle needed every one of them. Remove a part, lose the system.",
+    hint: "Pull out three different parts - each one fails in its own way.",
+    restore: "Restore all",
+    legend: "faded = the part you removed",
   },
 
-  connections: {
-    heading: "Parts are not enough - they must be connected",
-    body:
-      "Here are the three parts - but someone cut the wires. Nothing flows. Click each broken link to repair it.",
-    waitText:
-      "Parts sit in place - but with cut links, nothing flows. Connect them.",
-    connectA: "Connect Frontend → Backend",
-    connectB: "Connect Backend → Database",
-    connectedLabel: "🔗 Connected",
-    play: "Run the message",
+  transition: {
+    heading: "The same shape, now in software",
+    body: "The todo app from Lesson 1 is built like the bicycle: parts, connections, one goal. Watch the bike become the app.",
+    from: { icon: "🚲", name: "Bicycle", sub: "pedals → chain → wheel" },
+    to: [
+      {
+        icon: "🖥️",
+        name: "Frontend",
+        sub: "like the pedals - where your push enters",
+      },
+      {
+        icon: "⚙️",
+        name: "Backend",
+        sub: "like the chain - carries and does the work",
+      },
+      { icon: "🗄️", name: "Database", sub: "remembers the result" },
+    ],
+    lines: [
+      "Your tap enters at the Frontend.",
+      "The Frontend passes it to the Backend.",
+      "The Database remembers the todo.",
+      "Three parts, two connections, one goal: your todo is saved.",
+    ],
+  },
+
+  bridge:
+    "Same rules in software. Watch one todo travel through three parts - then switch one off.",
+
+  todo: {
+    heading: "One todo through three parts",
+    body: "Press Add Todo and watch the message travel. Then switch a part off and try again - the failure tells you what that part was for.",
+    svgLabel: "The todo system, stacked",
+    user: { icon: "🙋", name: "You", sub: "the user" },
+    nodes: [
+      { id: "frontend", name: "Frontend", emoji: "🖥️", sub: "the screen" },
+      { id: "backend", name: "Backend", emoji: "⚙️", sub: "the worker" },
+      { id: "database", name: "Database", emoji: "🗄️", sub: "the notebook" },
+    ],
+    run: "▶ Add Todo",
     busy: "● Working…",
     reset: "↻ Reset",
-    idle: "Press Run the message once both links are repaired.",
-    beats: [
-      "The screen takes your message - Frontend shows and asks.",
-      "The worker receives it - Backend does the work.",
-      "The notebook writes it down - Database remembers.",
-      "The answer travels back - the screen can show it.",
+    toggles: [
+      { id: "frontend", label: "Disable Frontend" },
+      { id: "backend", label: "Disable Backend" },
+      { id: "database", label: "Disable Database" },
     ],
-    done:
-      "Connected! The message flows - two parts, one connection, one result.",
+    idle:
+      "All three parts are ON. Press Add Todo to send one todo through the system.",
+    hint:
+      "Send one todo through, then switch a part off and try again - the failure names the missing part.",
+    beats: [
+      "The frontend receives your action.",
+      "The frontend sends the request to the backend.",
+      "The database remembers the todo.",
+      "The result travels back to the frontend.",
+    ],
+    done: "The parts worked together to achieve the goal.",
+    appears: "TODO APPEARS",
+    item: "✅ Buy milk",
+    saved: "📝 saved",
+    work: "↩ working on it...",
     failTitle: "✕ The trip failed",
-    linkDone: {
-      a: "Connected! The Frontend can now reach the Backend.",
-      b: "Connected! The Backend can now reach the Database.",
+    failLine: "Todo was not saved.",
+    failTexts: {
+      frontend: "No screen - your action can never enter the system.",
+      backend: "Nobody does the work - the request just sits there.",
+      database: "Nothing remembers it - close the tab and it is gone.",
     },
-    gateHint: "Repair both broken links to continue.",
-    svgLabel: "The todo app system with repairable links",
+    packetOut: "your todo",
+    packetBack: "result",
+    on: "ON",
+    off: "OFF",
+    disabledNote: "switched off - press it again to bring the part back",
   },
 
-  builder: {
+  build: {
     heading: "Build a system from scratch",
-    body:
-      "No diagram yet - just pieces. Place Frontend, Backend, and Database in the right order, then connect them.",
-    parts: [
+    body: "Three parts, zero connections - still a pile. Click two parts to wire them together, in the direction the work flows.",
+    svgLabel: "System builder",
+    nodes: [
       {
         id: "frontend",
         name: "Frontend",
@@ -322,172 +209,139 @@ export const WHAT_IS_A_SYSTEM_LESSON = {
       { id: "backend", name: "Backend", emoji: "⚙️", role: "the worker" },
       { id: "database", name: "Database", emoji: "🗄️", role: "the notebook" },
     ],
-    links: [
-      { id: "a", label: "Frontend → Backend" },
-      { id: "b", label: "Backend → Database" },
-    ],
+    chips: ["Frontend → Backend", "Backend → Database"],
     labels: {
-      wrongFirst:
-        "Not yet - start where YOU touch it: the Frontend.",
+      start: "Click the part where the work starts.",
+      selected: "Now click the part it should connect to.",
+      wrongStart: "Start where YOU touch it - the Frontend.",
       wrongNext:
-        "The screen cannot work alone - next comes the Backend, the worker.",
-      noLinks:
-        "Something is missing: the parts are placed, but nothing is connected.",
-      linkWrongOrder:
-        "Connect Frontend → Backend first - that is where the message goes next.",
-      solved:
-        "A complete system: three parts, two connections, one goal.",
-      missingNow: "Something is missing - place:",
-      placeFirst: "Place the three parts first, then connect them.",
+        "The Frontend is already wired - next comes the Backend, the worker.",
+      wrongPair:
+        "Not like that - the work flows Frontend → Backend → Database.",
+      linked: "🔗 Connected - one more to go.",
+      next: "One more connection: Backend → Database.",
+      solved: "System ready",
+      solvedBody: "Three parts, two connections, one goal.",
+      idleRun: "The system is wired. Press RUN SYSTEM to send one todo through it.",
     },
-    reset: "Start over",
-    gateHint: "Place all three parts and connect them to continue.",
-    svgLabel: "System builder slots",
+    reset: "↻ Start over",
+    run: "▶ RUN SYSTEM",
+    runBusy: "● Running…",
+    runBeats: [
+      "Your tap enters at the Frontend.",
+      "The Backend does the work.",
+      "The Database remembers the todo.",
+      "The result is back on your screen.",
+    ],
+    runDone:
+      "🎉 The system worked - one todo, three parts, two connections, one goal.",
+    legend: "dashed = not connected yet",
   },
 
-  goalQuiz: {
-    question: "Quick check: what is the GOAL of a todo app?",
-    options: [
+  check: {
+    heading: "Is this a system?",
+    intro: "Parts, connections, goal - judge each one. A wrong pick tells you why.",
+    items: [
       {
-        id: "save",
-        text: "Save and manage Todos.",
-        correct: true,
-        teach:
-          "Exactly! The screen, the worker, the database - all three exist to make THAT happen.",
+        id: "bike",
+        prompt: "A bicycle, assembled and ready to ride.",
+        answer: true,
+        right: "Yes! Parts connected, working together - one goal: carry you.",
+        wrong:
+          "Look again: its parts are connected and it has one clear goal. It IS a system.",
       },
       {
-        id: "screen",
-        text: "Show a beautiful screen.",
-        correct: false,
-        teach:
-          "The screen is a PART, not a goal. A gorgeous screen that forgets your todos fails the system.",
+        id: "pile",
+        prompt: "A box of bicycle parts on the garage floor.",
+        answer: false,
+        right:
+          "Correct - same pieces as the bicycle, but nothing is connected. Still a pile.",
+        wrong:
+          "Not yet - the parts exist, but nothing is connected, so nothing works together.",
       },
       {
-        id: "database",
-        text: "Store everything in a database.",
-        correct: false,
-        teach:
-          "The database is also just a part. A goal is what the whole system achieves for someone.",
-      },
-      {
-        id: "errors",
-        text: "Run without errors.",
-        correct: false,
-        teach:
-          "Not wrong, but vague: a system can run perfectly and still do nothing useful. Aim at what the user gets.",
+        id: "sand",
+        prompt: "A pile of sand.",
+        answer: false,
+        right: "Correct - no parts doing jobs, no connections, no goal.",
+        wrong:
+          "A pile has no parts doing jobs and no connections - the opposite of a system.",
       },
     ],
-    retryHint:
-      "Pick an answer, press Check, and learn from the feedback. You can try again!",
-    tip: "Whenever you see parts, ask: what are they FOR? The answer is the goal.",
+    yes: "Yes, it is a system",
+    no: "No, it is not",
+    solved: "Three for three. Now watch a pile become a system.",
+    bubble:
+      "Only connections turn the same pieces into something that works - parts, connections, goal, or nothing at all.",
+    transform: {
+      from: { icon: "📦", name: "Box of parts", sub: "parts, no connections" },
+      steps: ["+ connections", "+ one goal"],
+      to: { icon: "✨", name: "SYSTEM", sub: "parts + connections + goal" },
+    },
   },
 
   examples: {
-    heading: "Three systems you already know",
-    hint: "Tap each card - name its parts, connections, and goal.",
-    done:
-      "You just analyzed three real systems without writing a line of code.",
+    heading: "Systems everywhere",
+    hint: "Tap each card - find its parts, its connections, and its goal.",
+    done: "You just analyzed three systems without writing a line of code.",
     equation: ["🧩 PARTS", "🔗 CONNECTIONS", "🎯 GOAL"],
     equals: "🧠 SYSTEM",
     cards: [
       {
-        id: "traffic",
-        name: "Traffic light",
-        emoji: "🚦",
-        parts: "bulbs, timer, wiring, power",
-        connections: "the timer switches the current from one bulb to the next",
-        goal: "alternate who may go - without crashes",
-      },
-      {
-        id: "orchestra",
-        name: "Orchestra",
-        emoji: "🎻",
-        parts: "players, instruments, the score",
-        connections: "everyone follows the conductor's beat",
-        goal: "make ONE song, together",
+        id: "bike",
+        emoji: "🚲",
+        name: "Bicycle",
+        animIcon: "🛞",
+        anim: "spin",
+        parts: "frame, pedals, chain, wheels",
+        connections: "the pedals drive the chain; the chain turns the wheel",
+        goal: "carry you somewhere",
       },
       {
         id: "kitchen",
-        name: "Restaurant kitchen",
         emoji: "🍳",
+        name: "Restaurant",
+        animIcon: "♨️",
+        anim: "wait",
         parts: "orders, cook, stove, plates",
-        connections: "the ticket passes cook → stove → plate",
+        connections: "the ticket passes order → cook → plate",
         goal: "turn an order into a meal",
       },
+      {
+        id: "todo",
+        emoji: "✅",
+        name: "Todo app",
+        animIcon: "⚙️",
+        anim: "spin",
+        parts: "Frontend, Backend, Database",
+        connections: "your tap travels Frontend → Backend → Database",
+        goal: "save and manage your todos",
+      },
     ],
-    gateHint: "Explore all three cards to continue.",
   },
 
   final: {
-    question: "Final challenge: which of these is a SYSTEM?",
-    options: [
-      {
-        id: "bike",
-        text: "A fully assembled bicycle.",
-        correct: true,
-        teach:
-          "Yes! Parts connected, working together, one clear goal: carry you.",
-      },
-      {
-        id: "box",
-        text: "A box of bicycle parts.",
-        correct: false,
-        teach:
-          "Same pieces - but nothing is connected, so nothing works together. Still a pile.",
-      },
-      {
-        id: "sand",
-        text: "A pile of sand.",
-        correct: false,
-        teach:
-          "A pile has no parts doing jobs and no connections - the opposite of a system.",
-      },
-      {
-        id: "chain",
-        text: "A single bicycle chain, alone.",
-        correct: false,
-        teach:
-          "One part by itself cannot be a system. A chain only matters inside a bike, connected to pedals and a wheel.",
-      },
-    ],
-    retryHint:
-      "Pick an answer, press Check, and learn from the feedback. You can try again!",
-    tip: "Look for the three answers: parts, working together, a goal.",
+    heading: "Final challenge: build it, then run it",
+    body: "No hints this time. Wire the three parts together, press RUN SYSTEM, and watch one todo make the whole trip.",
+    done: "You built it, you wired it, you ran it - that is a system.",
   },
 
   summary: {
-    congrats:
-      "You can now spot a system anywhere - and take one apart in your head.",
-    finale: [
+    heading: "The basic idea",
+    body: "You started this lesson with a box of parts. Now you can spot the difference between a pile and a system - anywhere.",
+    definitionHeading: "The formal definition - now it should feel obvious:",
+    definition:
+      "A system is a set of connected parts working together toward a goal.",
+    stackCaption: "Parts + connections + goal →",
+    stack: [
       { id: "parts", icon: "🧩", label: "Parts" },
       { id: "links", icon: "🔗", label: "Connections" },
       { id: "goal", icon: "🎯", label: "Goal" },
       { id: "system", icon: "✨", label: "SYSTEM" },
     ],
-    finaleCaption: "Parts + connections + goal →",
-    definitionHeading:
-      "The formal definition - now it should feel obvious:",
-    definition:
-      "A system is a set of connected parts working together toward a goal.",
     callback:
       "In Lesson 1 you traced one todo through a real app. Now you know WHY that trip works: parts, connections, and a goal. That is system design - and everything else in this course builds on it.",
-    cards: [
-      {
-        title: "Parts",
-        body: "Each piece does one small job.",
-      },
-      {
-        title: "Connections",
-        body: "How pieces pass work and information - this is what makes them a whole.",
-      },
-      {
-        title: "Goal",
-        body: "What the system exists to do. No goal, no system.",
-      },
-      {
-        title: "System",
-        body: "Parts + connections + goal, working as one.",
-      },
-    ],
+    replay: "↻ Replay lesson",
+    back: "← Back to Fundamentals",
   },
 };
