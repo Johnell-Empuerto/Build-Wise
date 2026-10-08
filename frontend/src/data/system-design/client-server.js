@@ -348,7 +348,7 @@ export const CLIENT_SERVER_LESSON = {
   todo: {
     heading: "Your Todo App, Again",
     body:
-      "This is only about the client and the server. The app you know from Lesson 1 talks this way too - two little conversations, watch who asks each time.",
+      "This is only about the client and the server. The todo app you already saw talks this way too - two little conversations, watch who asks each time.",
     trips: [
       {
         id: "show",

@@ -96,9 +96,9 @@ export default function SystemDesignFundamentals() {
 
         <aside className="flex flex-col gap-4">
           <GuideBubble>
-            <strong className="text-white">Start with lesson 1.</strong> One
-            todo, one click, five parts. Once you can explain that flow out
-            loud, every future diagram will make sense.
+            <strong className="text-white">Start with lesson 1.</strong> Parts,
+            connections, and one goal. Once you can name those three out loud in
+            any app you use, every future diagram will make sense.
           </GuideBubble>
           <div className="rounded-xl border border-slate-800 bg-slate-900 p-4">
             <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-400">

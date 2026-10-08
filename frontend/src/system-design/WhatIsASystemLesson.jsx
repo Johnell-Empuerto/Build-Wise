@@ -274,7 +274,7 @@ export default function WhatIsASystemLesson() {
                 ❓
               </span>
               <p className="mt-2 text-xs text-slate-500">
-                the todo app from Lesson 1 - same shape?
+                the todo app - same shape?
               </p>
             </div>
           )}

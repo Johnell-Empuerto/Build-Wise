@@ -122,7 +122,7 @@ export const WHAT_IS_A_SYSTEM_LESSON = {
 
   transition: {
     heading: "The same shape, now in software",
-    body: "The todo app from Lesson 1 is built like the bicycle: parts, connections, one goal. Watch the bike become the app.",
+    body: "The todo app is built like the bicycle: parts, connections, one goal. Watch the bike become the app.",
     from: { icon: "🚲", name: "Bicycle", sub: "pedals → chain → wheel" },
     to: [
       {
@@ -340,7 +340,7 @@ export const WHAT_IS_A_SYSTEM_LESSON = {
       { id: "system", icon: "✨", label: "SYSTEM" },
     ],
     callback:
-      "In Lesson 1 you traced one todo through a real app. Now you know WHY that trip works: parts, connections, and a goal. That is system design - and everything else in this course builds on it.",
+      "You saw a bicycle and a todo app break the moment a part went missing. Now you know WHY a system works: parts, connections, and a goal. That is system design - and everything else in this course builds on it.",
     replay: "↻ Replay lesson",
     back: "← Back to Fundamentals",
   },
