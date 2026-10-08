@@ -1,63 +1,78 @@
-// Lesson 3: "Client and Server" - seventeen interactive stages.
-// Story first (restaurant), then software terms, then request/response
-// mechanics, failure + recovery, and two games. The learner WATCHES the
-// glowing packet travel: CLIENT sends REQUEST down, SERVER sends RESPONSE
-// up. Unique interactions: offline/online recovery, role switching, and
-// the client-or-server classification challenge.
-import { useEffect, useRef, useState } from "react";
+// Lesson 3: "Client and Server" - a scroll-led lesson (EXPLAIN -> SHOW ->
+// EXPERIENCE). The learner reads the definitions, watches the burger story
+// transform into software, sees request/response in action, then switches
+// roles, answers a short check, and breaks + repairs the connection.
+// Stories start themselves when their section scrolls into view; nothing
+// is gated behind "Next" or step counters.
+import { Fragment, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { CLIENT_SERVER_LESSON as lesson } from "../data/system-design/client-server.js";
 import GuideBubble from "./GuideBubble.jsx";
 import ExchangeDiagram from "./components/ExchangeDiagram.jsx";
 import RoleSwitch from "./components/RoleSwitch.jsx";
-import RoleGame from "./components/RoleGame.jsx";
-import Classification from "./components/Classification.jsx";
-import FlowChain from "./components/FlowChain.jsx";
+import WhoIsAsking from "./components/WhoIsAsking.jsx";
 import { useSystemDesignProgress } from "./progress.jsx";
 
 const INITIAL = {
-  stageIndex: 0,
-  introAsked: false,
-  kitchenDone: false,
-  morphed: false,
-  lookDone: false,
-  clientSelected: null,
-  clientExplored: [],
-  jobTried: [],
-  currentJobId: "none",
-  currentJob: null,
+  burgerDone: false,
   roleDirs: [],
-  exchangeDone: false,
-  webDone: false,
-  todoTrips: [],
-  currentTripId: "none",
-  currentTrip: null,
-  dbCards: [],
+  checkSolved: false,
   offlineFailed: false,
   serverOn: false,
   retryKey: 0,
-  onlineRecovered: false,
-  gameSolved: false,
-  classifySolved: false,
-  flowDone: false,
+  recovered: false,
+  todoTrips: [],
+  currentTripId: "none",
+  currentTrip: null,
 };
+
+// Fires once when the element scrolls into view - used to start stories.
+function useSeen() {
+  const ref = useRef(null);
+  const [seen, setSeen] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || seen) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setSeen(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [seen]);
+  return [ref, seen];
+}
+
+function Section({ id, heading, children, sectionRef }) {
+  return (
+    <section
+      id={id}
+      ref={sectionRef}
+      className="mt-5 rounded-2xl border border-slate-800 bg-slate-900 p-5 sm:p-6"
+    >
+      <h2 className="text-lg font-semibold text-white">{heading}</h2>
+      {children}
+    </section>
+  );
+}
 
 export default function ClientServerLesson() {
   const [state, setState] = useState(INITIAL);
   const { completeLesson } = useSystemDesignProgress();
-  const topRef = useRef(null);
 
-  const stage = lesson.stages[state.stageIndex];
+  const [burgerRef, burgerSeen] = useSeen();
+  const [transitionRef, transitionSeen] = useSeen();
+  const [softwareRef, softwareSeen] = useSeen();
+  const [rrRef, rrSeen] = useSeen();
+  const [websiteRef, websiteSeen] = useSeen();
+  const [offlineRef, offlineSeen] = useSeen();
+
   const patch = (part) => setState((prev) => ({ ...prev, ...part }));
-
-  function goTo(index) {
-    setState((prev) => ({ ...prev, stageIndex: index }));
-    topRef.current?.scrollIntoView({ block: "start" });
-  }
-
-  useEffect(() => {
-    if (stage.id === "summary") completeLesson(lesson.id);
-  }, [stage.id, completeLesson]);
 
   function addTo(field, value) {
     setState((prev) =>
@@ -67,56 +82,40 @@ export default function ClientServerLesson() {
     );
   }
 
-  // Stage gates - every animation must be seen before Continue unlocks.
-  const exploredCount = state.clientExplored.length;
-  const jobCount = state.jobTried.length;
-  const dirCount = state.roleDirs.length;
-  const tripCount = state.todoTrips.length;
-  const dbCount = state.dbCards.length;
+  // The lesson is complete once every interaction has been lived: both
+  // role directions, the short check, the offline failure, and recovery.
+  const allDone =
+    state.roleDirs.length === 2 &&
+    state.checkSolved &&
+    state.offlineFailed &&
+    state.recovered;
 
-  const canContinue = {
-    intro: state.introAsked,
-    kitchen: state.kitchenDone,
-    rolesIntro: state.morphed,
-    firstLook: state.lookDone,
-    whoClient: exploredCount === lesson.whoClient.examples.length,
-    whoServer: jobCount === lesson.whoServer.jobs.length,
-    roleSwitch: dirCount === 2,
-    exchange: state.exchangeDone,
-    website: state.webDone,
-    todo: tripCount === lesson.todo.trips.length,
-    notDb: dbCount === 2,
-    offline: state.offlineFailed,
-    online: state.onlineRecovered,
-    roleGame: state.gameSolved,
-    classify: state.classifySolved,
-    finalFlow: state.flowDone,
-    summary: false,
-  }[stage.id];
+  useEffect(() => {
+    if (allDone) completeLesson(lesson.id);
+  }, [allDone, completeLesson]);
 
-  const continueHint = {
-    intro: "Ask for the burger to continue - watch it travel.",
-    kitchen: "Watch the kitchen's full trip to continue.",
-    rolesIntro: "Transform the story to continue.",
-    firstLook: "Watch one full request/response trip to continue.",
-    whoClient: `Tap all four examples to continue (${exploredCount}/4 explored).`,
-    whoServer: `Try all four jobs to continue (${jobCount}/4 tried).`,
-    roleSwitch: `Try both directions to continue (${dirCount}/2 done).`,
-    exchange: "Finish one full run (Play or Step through all 5) to continue.",
-    website: "Visit example.com to continue.",
-    todo: `Watch both conversations to continue (${tripCount}/2 watched).`,
-    notDb: "Tap the Server and Database cards to continue.",
-    offline: "Send the request into the offline server to continue.",
-    online: "Turn the server on, then retry - get a response to continue.",
-    roleGame: "Win both rounds of the role game to continue.",
-    classify: "Answer all four correctly to continue.",
-    finalFlow: "Play the full flow once to continue.",
-  }[stage.id];
-
-  const progressPercent = ((state.stageIndex + 1) / lesson.stages.length) * 100;
+  const tripCopy = (() => {
+    if (!state.currentTrip) return lesson.todo.copy;
+    return {
+      ...lesson.todo.copy,
+      steps: [
+        {
+          title: state.currentTrip.step1,
+          body: "The request leaves the app - watch it travel.",
+        },
+        lesson.todo.copy.steps[1],
+        lesson.todo.copy.steps[2],
+        lesson.todo.copy.steps[3],
+        {
+          title: state.currentTrip.step5,
+          body: "The response arrived and the screen updated.",
+        },
+      ],
+    };
+  })();
 
   return (
-    <div ref={topRef}>
+    <div>
       <nav className="mb-4 text-sm text-slate-500" aria-label="Breadcrumb">
         <Link to="/system-design" className="hover:text-sky-400">
           System Design
@@ -129,1036 +128,627 @@ export default function ClientServerLesson() {
         <span className="text-slate-300">{lesson.title}</span>
       </nav>
 
-      {/* Lesson header + progress */}
-      <header className="rounded-2xl border border-slate-800 bg-slate-900 p-5">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h1 className="text-xl font-bold text-white sm:text-2xl">
-              {lesson.title}
-            </h1>
-            <p className="mt-1 text-xs text-slate-500">
-              Step {state.stageIndex + 1} of {lesson.stages.length} ·{" "}
-              <span className="font-semibold text-sky-400">{stage.chip}</span>
+      {/* ---- Intro ----------------------------------------------------- */}
+      <header className="rounded-2xl border border-slate-800 bg-slate-900 p-5 sm:p-6">
+        <h1 className="text-xl font-bold text-white sm:text-2xl">
+          {lesson.intro.heading}
+        </h1>
+        <div className="mt-3 space-y-2">
+          {lesson.intro.paragraphs.map((paragraph, index) => (
+            <p
+              key={paragraph}
+              className={`text-sm leading-relaxed ${
+                index === 0
+                  ? "font-semibold text-slate-200"
+                  : "text-slate-400"
+              }`}
+            >
+              {paragraph}
             </p>
-          </div>
-          <span className="rounded-full border border-slate-700 bg-slate-950 px-3 py-1 text-xs font-medium text-slate-400">
-            {stage.label}
-          </span>
-        </div>
-        <div
-          className="mt-4 h-2 overflow-hidden rounded-full bg-slate-950"
-          role="progressbar"
-          aria-valuemin={1}
-          aria-valuemax={lesson.stages.length}
-          aria-valuenow={state.stageIndex + 1}
-          aria-label="Lesson progress"
-        >
-          <div
-            className="h-full rounded-full bg-gradient-to-r from-sky-500 via-indigo-500 to-violet-500 transition-all duration-500"
-            style={{ width: `${progressPercent}%` }}
-          />
+          ))}
         </div>
       </header>
 
-      {/* Stage content */}
-      <section className="mt-5" key={stage.id}>
-        {/* ---- Stage 1: the burger story -------------------------------- */}
-        {stage.id === "intro" && (
-          <div className="sd-appear flex flex-col gap-4">
-            <GuideBubble>
-              <strong className="text-white">
-                You are at a restaurant. 🍔
-              </strong>{" "}
-              {lesson.intro.body}
-            </GuideBubble>
-            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-              <h2 className="text-lg font-semibold text-white">
-                {lesson.intro.heading}
-              </h2>
-              <p className="mt-1 text-sm text-slate-400">
-                {lesson.intro.prompt}
-              </p>
-              <div className="mt-4">
-                <ExchangeDiagram
-                  client={lesson.intro.customer}
-                  server={lesson.intro.restaurant}
-                  clientLine={lesson.intro.customerLine}
-                  serverLine={lesson.intro.restaurantLine}
-                  request={lesson.intro.request}
-                  response={lesson.intro.response}
-                  copy={lesson.intro.copy}
-                  playLabel={lesson.intro.playLabel}
-                  controls="simple"
-                  onDone={() => patch({ introAsked: true })}
-                />
-              </div>
-            </div>
-            {state.introAsked && (
-              <GuideBubble mood="success">{lesson.intro.after}</GuideBubble>
-            )}
+      {/* ---- What is a client? ------------------------------------------ */}
+      <Section id="what-is-a-client" heading={lesson.whoClient.heading}>
+        {lesson.whoClient.paragraphs.map((paragraph, index) => (
+          <p
+            key={paragraph}
+            className={`mt-2 text-sm leading-relaxed ${
+              index === 0 ? "font-semibold text-slate-200" : "text-slate-400"
+            }`}
+          >
+            {paragraph}
+          </p>
+        ))}
+        <div className="mt-3 flex flex-wrap gap-2">
+          {lesson.whoClient.examples.map((example) => (
+            <span
+              key={example}
+              className="rounded-lg border border-sky-400/30 bg-sky-400/10 px-3 py-1.5 text-xs font-semibold text-sky-200"
+            >
+              {example}
+            </span>
+          ))}
+        </div>
+        <p className="mt-3 rounded-lg bg-slate-950/60 px-4 py-3 text-xs leading-relaxed text-slate-400">
+          {lesson.whoClient.exampleNote}
+        </p>
+        <div className="mt-3 flex items-center justify-center gap-3 text-center">
+          <span className="rounded-lg border border-slate-700 bg-slate-950/70 px-3 py-2 text-xs font-semibold text-slate-300">
+            {lesson.whoClient.visual.you}
+          </span>
+          <span className="text-slate-600" aria-hidden="true">
+            ↓
+          </span>
+          <span className="rounded-lg border border-sky-400/50 bg-sky-400/10 px-3 py-2 text-xs font-bold text-sky-200">
+            {lesson.whoClient.visual.client}
+          </span>
+          <span className="rounded-lg border border-slate-700 bg-slate-950/70 px-3 py-2 text-xs italic text-slate-400">
+            “{lesson.whoClient.visual.line}”
+          </span>
+        </div>
+      </Section>
+
+      {/* ---- What is a server? ------------------------------------------ */}
+      <Section id="what-is-a-server" heading={lesson.whoServer.heading}>
+        {lesson.whoServer.paragraphs.map((paragraph, index) => (
+          <p
+            key={paragraph}
+            className={`mt-2 text-sm leading-relaxed ${
+              index === 0 ? "font-semibold text-slate-200" : "text-slate-400"
+            }`}
+          >
+            {paragraph}
+          </p>
+        ))}
+        <ul className="mt-3 space-y-1">
+          {lesson.whoServer.abilities.map((ability) => (
+            <li key={ability} className="text-xs text-slate-400">
+              {ability}
+            </li>
+          ))}
+        </ul>
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-3 text-center">
+          <span className="rounded-lg border border-sky-400/50 bg-sky-400/10 px-3 py-2 text-xs font-bold text-sky-200">
+            {lesson.whoServer.example.client}
+          </span>
+          <span className="rounded-lg border border-slate-700 bg-slate-950/70 px-3 py-2 text-xs italic text-slate-300">
+            “{lesson.whoServer.example.request}”
+          </span>
+          <span className="text-slate-600" aria-hidden="true">
+            ▶
+          </span>
+          <span className="rounded-lg border border-violet-400/50 bg-violet-400/10 px-3 py-2 text-xs font-bold text-violet-200">
+            {lesson.whoServer.example.server}
+          </span>
+        </div>
+        <p className="mt-3 text-center text-xs text-slate-500">
+          {lesson.whoServer.example.line}
+        </p>
+      </Section>
+
+      {/* ---- Client vs server ------------------------------------------- */}
+      <Section id="client-vs-server" heading={lesson.vs.heading}>
+        <div className="mt-3 grid gap-3 sm:grid-cols-2">
+          <div className="rounded-xl border border-sky-400/50 bg-sky-400/10 p-4">
+            <p className="text-lg font-bold text-sky-200">
+              {lesson.vs.clientCard.icon} {lesson.vs.clientCard.name}
+            </p>
+            <p className="mt-1 text-xs font-extrabold uppercase tracking-widest text-sky-400">
+              {lesson.vs.clientCard.tag}
+            </p>
+            <p className="mt-2 text-xs leading-relaxed text-slate-300">
+              {lesson.vs.clientCard.body}
+            </p>
           </div>
-        )}
-
-        {/* ---- Stage 2: the kitchen does the work ----------------------- */}
-        {stage.id === "kitchen" && (
-          <div className="sd-appear flex flex-col gap-4">
-            <GuideBubble>
-              <strong className="text-white">Behind the counter...</strong>{" "}
-              {lesson.kitchen.body}
-            </GuideBubble>
-            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-              <h2 className="text-lg font-semibold text-white">
-                {lesson.kitchen.heading}
-              </h2>
-              <div className="mt-4">
-                <ExchangeDiagram
-                  client={lesson.kitchen.customer}
-                  server={lesson.kitchen.restaurant}
-                  clientLine={lesson.kitchen.customerLine}
-                  serverLine={lesson.kitchen.restaurantLine}
-                  request={lesson.kitchen.request}
-                  response={lesson.kitchen.response}
-                  copy={lesson.kitchen.copy}
-                  playLabel={lesson.kitchen.playLabel}
-                  controls="simple"
-                  onDone={() => patch({ kitchenDone: true })}
-                />
-              </div>
-            </div>
-            {state.kitchenDone && (
-              <GuideBubble mood="success">{lesson.kitchen.after}</GuideBubble>
-            )}
+          <div className="rounded-xl border border-violet-400/50 bg-violet-400/10 p-4">
+            <p className="text-lg font-bold text-violet-200">
+              {lesson.vs.serverCard.icon} {lesson.vs.serverCard.name}
+            </p>
+            <p className="mt-1 text-xs font-extrabold uppercase tracking-widest text-violet-400">
+              {lesson.vs.serverCard.tag}
+            </p>
+            <p className="mt-2 text-xs leading-relaxed text-slate-300">
+              {lesson.vs.serverCard.body}
+            </p>
           </div>
-        )}
-
-        {/* ---- Stage 3: morph story -> software roles ------------------- */}
-        {stage.id === "rolesIntro" && (
-          <div className="sd-appear flex flex-col gap-4">
-            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-              <h2 className="text-lg font-semibold text-white">
-                {lesson.rolesIntro.heading}
-              </h2>
-              <p className="mt-1 text-sm leading-relaxed text-slate-400">
-                {lesson.rolesIntro.body}
-              </p>
-
-              <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                {[lesson.rolesIntro.fromCustomer, lesson.rolesIntro.fromRestaurant].map(
-                  (node) => (
-                    <div
-                      key={node.name}
-                      className={`rounded-xl border p-4 text-center transition ${
-                        state.morphed
-                          ? "morph-out border-slate-800 bg-slate-950/60"
-                          : "border-slate-700 bg-slate-950/70"
-                      }`}
-                    >
-                      <span className="text-3xl" aria-hidden="true">
-                        {node.icon}
-                      </span>
-                      <p className="mt-1 text-sm font-bold uppercase tracking-wider text-slate-300">
-                        {node.name}
-                      </p>
-                      <p className="mt-0.5 text-xs text-slate-500">{node.sub}</p>
-                    </div>
-                  )
-                )}
-              </div>
-
-              {!state.morphed ? (
-                <button
-                  type="button"
-                  onClick={() => patch({ morphed: true })}
-                  className="mt-4 rounded-lg bg-gradient-to-r from-sky-500 to-indigo-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:from-sky-400 hover:to-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
-                >
-                  {lesson.rolesIntro.morphLabel}
-                </button>
-              ) : (
-                <div className="mt-4">
-                  <p className="text-sm font-semibold text-sky-300">
-                    {lesson.rolesIntro.bridge}
-                  </p>
-                  <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                    <div className="morph-in-a rounded-xl border border-sky-400/50 bg-sky-400/10 p-4">
-                      <p className="text-lg font-bold text-sky-200">
-                        {lesson.rolesIntro.toClient.icon}{" "}
-                        {lesson.rolesIntro.toClient.name}
-                      </p>
-                      <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-sky-400">
-                        {lesson.rolesIntro.toClient.sub}
-                      </p>
-                      <p className="mt-2 text-xs leading-relaxed text-slate-300">
-                        {lesson.rolesIntro.cardClient}
-                      </p>
-                    </div>
-                    <div className="morph-in-b rounded-xl border border-violet-400/50 bg-violet-400/10 p-4">
-                      <p className="text-lg font-bold text-violet-200">
-                        {lesson.rolesIntro.toServer.icon}{" "}
-                        {lesson.rolesIntro.toServer.name}
-                      </p>
-                      <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-violet-400">
-                        {lesson.rolesIntro.toServer.sub}
-                      </p>
-                      <p className="mt-2 text-xs leading-relaxed text-slate-300">
-                        {lesson.rolesIntro.cardServer}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-            {state.morphed && (
-              <GuideBubble mood="success">
-                <strong className="text-white">
-                  {lesson.rolesIntro.after}
-                </strong>
-              </GuideBubble>
-            )}
-          </div>
-        )}
-
-        {/* ---- Stage 4: first client/server diagram --------------------- */}
-        {stage.id === "firstLook" && (
-          <div className="sd-appear flex flex-col gap-4">
-            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-              <h2 className="text-lg font-semibold text-white">
-                {lesson.firstLook.heading}
-              </h2>
-              <p className="mt-1 text-sm leading-relaxed text-slate-400">
-                {lesson.firstLook.body}
-              </p>
-              <div className="mt-4">
-                <ExchangeDiagram
-                  client={lesson.firstLook.client}
-                  server={lesson.firstLook.server}
-                  clientLine={lesson.firstLook.clientLine}
-                  serverLine={lesson.firstLook.serverLine}
-                  request={lesson.firstLook.request}
-                  response={lesson.firstLook.response}
-                  copy={lesson.firstLook.copy}
-                  controls="simple"
-                  onDone={() => patch({ lookDone: true })}
-                />
-              </div>
-            </div>
-            {state.lookDone && (
-              <GuideBubble mood="success">{lesson.firstLook.after}</GuideBubble>
-            )}
-          </div>
-        )}
-
-        {/* ---- Stage 5: who can be a client ----------------------------- */}
-        {stage.id === "whoClient" && (
-          <div className="sd-appear flex flex-col gap-4">
-            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-              <h2 className="text-lg font-semibold text-white">
-                {lesson.whoClient.heading}
-              </h2>
-              <p className="mt-1 text-sm text-slate-400">
-                {lesson.whoClient.body}{" "}
-                <span className="text-slate-500">
-                  ({exploredCount}/{lesson.whoClient.examples.length} explored)
+        </div>
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-center">
+          {lesson.vs.loop.map((step, index) => (
+            <Fragment key={`${step}-${index}`}>
+              <span
+                className={`rounded-lg border px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider ${
+                  step === "CLIENT"
+                    ? "border-sky-400/50 bg-sky-400/10 text-sky-300"
+                    : "border-violet-400/50 bg-violet-400/10 text-violet-300"
+                }`}
+              >
+                {step}
+              </span>
+              {index < lesson.vs.loop.length - 1 && (
+                <span className="text-slate-500" aria-hidden="true">
+                  →
                 </span>
-              </p>
-
-              <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                {lesson.whoClient.examples.map((example) => {
-                  const explored = state.clientExplored.includes(example.id);
-                  const selected = state.clientSelected === example.id;
-                  return (
-                    <button
-                      key={example.id}
-                      type="button"
-                      aria-pressed={selected}
-                      onClick={() => {
-                        patch({ clientSelected: example.id });
-                        addTo("clientExplored", example.id);
-                      }}
-                      className={`rounded-xl border p-4 text-center transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${
-                        selected
-                          ? "border-sky-400/60 bg-sky-400/10 ring-2 ring-sky-400/40"
-                          : "border-slate-800 bg-slate-950/60 hover:border-slate-600"
-                      }`}
-                    >
-                      <span className="text-3xl" aria-hidden="true">
-                        {example.icon}
-                      </span>
-                      <p className="mt-1 text-sm font-semibold text-white">
-                        {example.name}
-                        {explored && (
-                          <span className="ml-1.5 text-xs text-emerald-400">
-                            ✓
-                          </span>
-                        )}
-                      </p>
-                    </button>
-                  );
-                })}
-              </div>
-
-              {state.clientSelected && (
-                <div className="sd-appear mt-4 rounded-xl border border-sky-400/30 bg-sky-400/5 p-4">
-                  <p className="text-sm font-semibold text-white">
-                    {
-                      lesson.whoClient.examples.find(
-                        (e) => e.id === state.clientSelected
-                      ).icon
-                    }{" "}
-                    {
-                      lesson.whoClient.examples.find(
-                        (e) => e.id === state.clientSelected
-                      ).name
-                    }{" "}
-                    says: “
-                    {
-                      lesson.whoClient.examples.find(
-                        (e) => e.id === state.clientSelected
-                      ).line
-                    }
-                    ”
-                  </p>
-                  <p className="mt-1.5 text-xs leading-relaxed text-slate-300">
-                    {
-                      lesson.whoClient.examples.find(
-                        (e) => e.id === state.clientSelected
-                      ).why
-                    }
-                  </p>
-                </div>
               )}
+            </Fragment>
+          ))}
+        </div>
+        <p className="mt-3 text-center text-xs text-slate-500">
+          {lesson.vs.loopNote}
+        </p>
+      </Section>
 
-              <p className="mt-4 rounded-lg bg-slate-950/60 px-4 py-3 text-xs leading-relaxed text-slate-400">
-                <span className="font-semibold text-slate-300">Remember: </span>
-                {lesson.whoClient.hint}{" "}
-                <span className="text-sky-300">{lesson.whoClient.roleNote}</span>
+      {/* ---- Roles are roles -------------------------------------------- */}
+      <Section id="client-server-roles" heading={lesson.roles.heading}>
+        {lesson.roles.paragraphs.map((paragraph) => (
+          <p key={paragraph} className="mt-2 text-sm leading-relaxed text-slate-400">
+            {paragraph}
+          </p>
+        ))}
+        <p className="mt-3 rounded-lg bg-slate-950/60 px-4 py-3 text-xs leading-relaxed text-slate-500">
+          {lesson.roles.note}
+        </p>
+      </Section>
+
+      <div className="mt-5">
+        <GuideBubble>
+          <strong className="text-white">{lesson.bridge}</strong>
+        </GuideBubble>
+      </div>
+
+      {/* ---- Story 1: the burger ---------------------------------------- */}
+      <Section
+        id="burger-story"
+        heading={lesson.burger.heading}
+        sectionRef={burgerRef}
+      >
+        <p className="mt-2 text-sm leading-relaxed text-slate-400">
+          {lesson.burger.body}
+        </p>
+        <div className="mt-4">
+          <ExchangeDiagram
+            client={lesson.burger.customer}
+            server={lesson.burger.restaurant}
+            clientLine={lesson.burger.customerLine}
+            serverLine={lesson.burger.restaurantLine}
+            request={lesson.burger.request}
+            response={lesson.burger.response}
+            copy={lesson.burger.copy}
+            controls="player"
+            runKey={burgerSeen ? 1 : 0}
+            onDone={() => patch({ burgerDone: true })}
+          />
+        </div>
+        {state.burgerDone && (
+          <p
+            className="sd-appear mt-4 rounded-lg border border-emerald-400/30 bg-emerald-500/10 px-4 py-3 text-xs font-semibold leading-relaxed text-emerald-300"
+            aria-live="polite"
+          >
+            {lesson.burger.after}
+          </p>
+        )}
+      </Section>
+
+      {/* ---- Restaurant -> software morph ------------------------------- */}
+      <Section
+        id="story-to-software"
+        heading={lesson.transition.heading}
+        sectionRef={transitionRef}
+      >
+        <p className="mt-2 text-sm leading-relaxed text-slate-400">
+          {lesson.transition.body}
+        </p>
+
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          {lesson.transition.from.map((node) => (
+            <div
+              key={node.name}
+              className={`rounded-xl border p-4 text-center ${
+                transitionSeen
+                  ? "morph-out border-slate-800 bg-slate-950/60"
+                  : "border-slate-700 bg-slate-950/70"
+              }`}
+            >
+              <span className="text-3xl" aria-hidden="true">
+                {node.icon}
+              </span>
+              <p className="mt-1 text-sm font-bold uppercase tracking-wider text-slate-300">
+                {node.name}
+              </p>
+              <p className="mt-0.5 text-xs text-slate-500">{node.sub}</p>
+            </div>
+          ))}
+        </div>
+
+        {transitionSeen && (
+          <div className="mt-3 grid gap-3 sm:grid-cols-2">
+            <div className="morph-in-a rounded-xl border border-sky-400/50 bg-sky-400/10 p-4 text-center">
+              <span className="text-3xl" aria-hidden="true">
+                {lesson.transition.to[0].icon}
+              </span>
+              <p className="mt-1 text-sm font-bold uppercase tracking-wider text-sky-200">
+                {lesson.transition.to[0].name}
+              </p>
+              <p className="mt-0.5 text-xs text-sky-400">
+                {lesson.transition.to[0].sub}
               </p>
             </div>
-
-            {exploredCount === lesson.whoClient.examples.length ? (
-              <GuideBubble mood="success">
-                <strong className="text-white">
-                  {lesson.whoClient.done}
-                </strong>
-              </GuideBubble>
-            ) : (
-              <GuideBubble mood="hint">
-                Tap each example - watch it light up and hear why it can act
-                as the client.
-              </GuideBubble>
-            )}
+            <div className="morph-in-b rounded-xl border border-violet-400/50 bg-violet-400/10 p-4 text-center">
+              <span className="text-3xl" aria-hidden="true">
+                {lesson.transition.to[1].icon}
+              </span>
+              <p className="mt-1 text-sm font-bold uppercase tracking-wider text-violet-200">
+                {lesson.transition.to[1].name}
+              </p>
+              <p className="mt-0.5 text-xs text-violet-400">
+                {lesson.transition.to[1].sub}
+              </p>
+            </div>
           </div>
         )}
 
-        {/* ---- Stage 6: server jobs ------------------------------------- */}
-        {stage.id === "whoServer" && (
-          <div className="sd-appear flex flex-col gap-4">
-            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-              <h2 className="text-lg font-semibold text-white">
-                {lesson.whoServer.heading}
-              </h2>
-              <p className="mt-1 text-sm text-slate-400">
-                {lesson.whoServer.body}{" "}
-                <span className="text-slate-500">({jobCount}/4 tried)</span>
-              </p>
-
-              <div className="mt-4 flex flex-wrap justify-center gap-2">
-                {lesson.whoServer.jobs.map((job) => (
-                  <button
-                    key={job.id}
-                    type="button"
-                    onClick={() => {
-                      addTo("jobTried", job.id);
-                      patch({ currentJobId: job.id, currentJob: job });
-                    }}
-                    className={`rounded-lg border px-4 py-2 text-sm font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${
-                      state.currentJobId === job.id
-                        ? "border-violet-400/60 bg-violet-400/15 text-violet-200"
-                        : "border-slate-700 bg-slate-950/60 text-slate-200 hover:border-violet-400/50"
-                    }`}
-                  >
-                    {job.text}
-                    {state.jobTried.includes(job.id) && (
-                      <span className="ml-1.5 text-xs text-emerald-400">✓</span>
-                    )}
-                  </button>
-                ))}
-              </div>
-
-              <div className="mt-4">
-                <ExchangeDiagram
-                  key={state.currentJobId}
-                  client={lesson.whoServer.client}
-                  server={lesson.whoServer.server}
-                  clientLine={
-                    state.currentJob
-                      ? `"${state.currentJob.text}"`
-                      : lesson.whoServer.clientLine
-                  }
-                  serverLine={lesson.whoServer.serverLine}
-                  request={
-                    state.currentJob ? state.currentJob.request : "REQUEST"
-                  }
-                  response={
-                    state.currentJob ? state.currentJob.response : "RESPONSE"
-                  }
-                  copy={lesson.whoServer.copy}
-                  controls="none"
-                  autoPlay={state.currentJobId !== "none"}
-                />
-              </div>
-
-              <p className="mt-4 rounded-lg bg-slate-950/60 px-4 py-3 text-xs leading-relaxed text-slate-400">
-                <span className="font-semibold text-slate-300">Pattern: </span>
-                {lesson.whoServer.hint}
-              </p>
-            </div>
-
-            {jobCount === lesson.whoServer.jobs.length ? (
-              <GuideBubble mood="success">
-                <strong className="text-white">{lesson.whoServer.done}</strong>
-              </GuideBubble>
-            ) : (
-              <GuideBubble mood="hint">
-                Four little jobs are waiting - tap each one and watch the
-                server receive it.
-              </GuideBubble>
-            )}
-          </div>
+        {transitionSeen && (
+          <ol className="mt-4 space-y-1.5" aria-live="polite">
+            {lesson.transition.lines.map((line, index) => (
+              <li
+                key={line}
+                className="morph-in-c rounded-lg bg-slate-950/60 px-4 py-2 text-sm text-slate-300"
+                style={{ animationDelay: `${0.3 + index * 0.35}s` }}
+              >
+                {line}
+              </li>
+            ))}
+          </ol>
         )}
+      </Section>
 
-        {/* ---- Stage 7: roles can switch -------------------------------- */}
-        {stage.id === "roleSwitch" && (
-          <div className="sd-appear flex flex-col gap-4">
-            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-              <h2 className="text-lg font-semibold text-white">
-                {lesson.roleSwitch.heading}
-              </h2>
-              <p className="mt-1 text-sm leading-relaxed text-slate-400">
-                {lesson.roleSwitch.body}
-              </p>
-              <div className="mt-4">
-                <RoleSwitch
-                  copy={lesson.roleSwitch}
-                  a={lesson.roleSwitch.a}
-                  b={lesson.roleSwitch.b}
-                  onSwitch={(dir) => addTo("roleDirs", dir)}
-                />
-              </div>
-            </div>
+      {/* ---- Story 2: the software loop --------------------------------- */}
+      <Section
+        id="software-story"
+        heading={lesson.software.heading}
+        sectionRef={softwareRef}
+      >
+        <p className="mt-2 text-sm leading-relaxed text-slate-400">
+          {lesson.software.body}
+        </p>
+        <div className="mt-4">
+          <ExchangeDiagram
+            client={lesson.software.client}
+            server={lesson.software.server}
+            clientLine={lesson.software.clientLine}
+            serverLine={lesson.software.serverLine}
+            request={lesson.software.request}
+            response={lesson.software.response}
+            copy={lesson.software.copy}
+            controls="player"
+            runKey={softwareSeen ? 1 : 0}
+          />
+        </div>
+      </Section>
 
-            {dirCount === 2 ? (
-              <GuideBubble mood="success">
-                <strong className="text-white">
-                  {lesson.roleSwitch.bothDone}
-                </strong>
-              </GuideBubble>
-            ) : (
-              <GuideBubble mood="hint">
-                Try both buttons - watch who becomes the CLIENT each time.
-              </GuideBubble>
-            )}
-          </div>
-        )}
-
-        {/* ---- Stage 8: request & response with full controls ------------ */}
-        {stage.id === "exchange" && (
-          <div className="sd-appear flex flex-col gap-4">
-            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-              <h2 className="text-lg font-semibold text-white">
-                {lesson.exchange.heading}
-              </h2>
-              <p className="mt-1 text-sm leading-relaxed text-slate-400">
-                {lesson.exchange.body}
-              </p>
-
-              <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                <p className="rounded-xl border border-sky-400/40 bg-sky-400/10 px-4 py-3 text-sm font-semibold text-sky-200">
-                  ↓ {lesson.exchange.requestDef}
-                </p>
-                <p className="rounded-xl border border-violet-400/40 bg-violet-400/10 px-4 py-3 text-sm font-semibold text-violet-200">
-                  ↑ {lesson.exchange.responseDef}
-                </p>
-              </div>
-
-              <div className="mt-4">
-                <ExchangeDiagram
-                  client={lesson.exchange.client}
-                  server={lesson.exchange.server}
-                  clientLine={lesson.exchange.clientLine}
-                  serverLine={lesson.exchange.serverLine}
-                  request={lesson.exchange.request}
-                  response={lesson.exchange.response}
-                  copy={lesson.exchange.copy}
-                  controls="full"
-                  onDone={() => patch({ exchangeDone: true })}
-                />
-              </div>
-            </div>
-
-            {state.exchangeDone && (
-              <GuideBubble mood="success">
-                <strong className="text-white">
-                  {lesson.exchange.after}
-                </strong>
-              </GuideBubble>
-            )}
-          </div>
-        )}
-
-        {/* ---- Stage 9: real website example ----------------------------- */}
-        {stage.id === "website" && (
-          <div className="sd-appear flex flex-col gap-4">
-            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-              <h2 className="text-lg font-semibold text-white">
-                {lesson.website.heading}
-              </h2>
-              <p className="mt-1 text-sm leading-relaxed text-slate-400">
-                {lesson.website.body}
-              </p>
-              <div className="mt-4">
-                <ExchangeDiagram
-                  client={lesson.website.client}
-                  server={lesson.website.server}
-                  clientLine={lesson.website.clientLine}
-                  serverLine={lesson.website.serverLine}
-                  request={lesson.website.request}
-                  response={lesson.website.response}
-                  copy={lesson.website.copy}
-                  playLabel={lesson.website.playLabel}
-                  controls="simple"
-                  onDone={() => patch({ webDone: true })}
-                />
-              </div>
-              <p className="mt-4 rounded-lg bg-slate-950/60 px-4 py-3 text-xs leading-relaxed text-slate-400">
-                <span className="font-semibold text-slate-300">Keep it simple: </span>
-                {lesson.website.note}
-              </p>
-            </div>
-
-            {state.webDone ? (
-              <GuideBubble mood="success">
-                <strong className="text-white">{lesson.website.after}</strong>
-              </GuideBubble>
-            ) : (
-              <GuideBubble>
-                Press the button - it is exactly what happens when you type
-                an address and hit Enter.
-              </GuideBubble>
-            )}
-          </div>
-        )}
-
-        {/* ---- Stage 10: the Todo app talks this way too ----------------- */}
-        {stage.id === "todo" && (
-          <div className="sd-appear flex flex-col gap-4">
-            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-              <h2 className="text-lg font-semibold text-white">
-                {lesson.todo.heading}
-              </h2>
-              <p className="mt-1 text-sm leading-relaxed text-slate-400">
-                {lesson.todo.body}
-              </p>
-
-              <div className="mt-4 flex flex-wrap justify-center gap-2">
-                {lesson.todo.trips.map((trip) => (
-                  <button
-                    key={trip.id}
-                    type="button"
-                    onClick={() => {
-                      addTo("todoTrips", trip.id);
-                      patch({ currentTripId: trip.id, currentTrip: trip });
-                    }}
-                    className={`rounded-lg border px-4 py-2 text-sm font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${
-                      state.currentTripId === trip.id
-                        ? "border-sky-400/60 bg-sky-400/15 text-sky-200"
-                        : "border-slate-700 bg-slate-950/60 text-slate-200 hover:border-sky-400/50"
-                    }`}
-                  >
-                    {trip.label}
-                    {state.todoTrips.includes(trip.id) && (
-                      <span className="ml-1.5 text-xs text-emerald-400">✓</span>
-                    )}
-                  </button>
-                ))}
-              </div>
-
-              <div className="mt-4">
-                <ExchangeDiagram
-                  key={`trip-${state.currentTripId}`}
-                  client={lesson.todo.client}
-                  server={lesson.todo.server}
-                  clientLine={
-                    state.currentTrip
-                      ? `"${state.currentTrip.request}"`
-                      : '"Give me my Todos"'
-                  }
-                  serverLine='"Let me get them."'
-                  serverNote={lesson.todo.serverNote}
-                  request={
-                    state.currentTrip ? state.currentTrip.request : "REQUEST"
-                  }
-                  response={
-                    state.currentTrip ? state.currentTrip.response : "RESPONSE"
-                  }
-                  copy={{
-                    ...lesson.todo.copy,
-                    steps: state.currentTrip
-                      ? [
-                          {
-                            title: state.currentTrip.step1,
-                            body: "The request leaves the app - watch it travel.",
-                          },
-                          lesson.todo.copy.steps[1],
-                          lesson.todo.copy.steps[2],
-                          lesson.todo.copy.steps[3],
-                          {
-                            title: state.currentTrip.step5,
-                            body: "The response arrived and the screen updated.",
-                          },
-                        ]
-                      : lesson.todo.copy.steps,
-                  }}
-                  controls="none"
-                  autoPlay={state.currentTripId !== "none"}
-                />
-              </div>
-
-              <p className="mt-4 rounded-lg bg-slate-950/60 px-4 py-3 text-xs leading-relaxed text-slate-400">
-                <span className="font-semibold text-slate-300">Focus here: </span>
-                {lesson.todo.note}
-              </p>
-            </div>
-
-            {tripCount === lesson.todo.trips.length ? (
-              <GuideBubble mood="success">
-                <strong className="text-white">{lesson.todo.done}</strong>
-              </GuideBubble>
-            ) : (
-              <GuideBubble mood="hint">
-                Two buttons, two short trips - watch who asks each time.
-              </GuideBubble>
-            )}
-          </div>
-        )}
-
-        {/* ---- Stage 11: server is not the database ---------------------- */}
-        {stage.id === "notDb" && (
-          <div className="sd-appear flex flex-col gap-4">
-            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-              <h2 className="text-lg font-semibold text-white">
-                {lesson.notDb.heading}
-              </h2>
-              <p className="mt-1 text-sm leading-relaxed text-slate-400">
-                {lesson.notDb.body}
-              </p>
-
-              <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                {lesson.notDb.cards.map((card) => {
-                  const tapped = state.dbCards.includes(card.id);
-                  return (
-                    <button
-                      key={card.id}
-                      type="button"
-                      disabled={!card.tap}
-                      onClick={() => addTo("dbCards", card.id)}
-                      aria-expanded={tapped}
-                      className={`rounded-xl border p-4 text-left transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${
-                        tapped
-                          ? "border-sky-400/60 bg-sky-400/10"
-                          : card.tap
-                            ? "border-slate-700 bg-slate-950/70 hover:border-sky-400/50"
-                            : "cursor-default border-slate-800 bg-slate-950/50"
-                      }`}
-                    >
-                      <p className="text-2xl" aria-hidden="true">
-                        {card.icon}
-                      </p>
-                      <p className="mt-1 text-sm font-bold text-white">
-                        {card.name}
-                        {tapped && (
-                          <span className="ml-1.5 text-xs text-emerald-400">
-                            ✓
-                          </span>
-                        )}
-                      </p>
-                      <p className="mt-0.5 text-xs text-slate-400">{card.line}</p>
-                      {tapped && card.why && (
-                        <p className="sd-appear mt-2 border-t border-slate-700/70 pt-2 text-xs leading-relaxed text-slate-300">
-                          {card.why}
-                        </p>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {dbCount === 2 && (
-                <p className="sd-appear mt-4 rounded-lg border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-xs leading-relaxed text-amber-100">
-                  <span className="font-semibold text-amber-300">
-                    Restaurant version:{" "}
-                  </span>
-                  {lesson.notDb.analogy}
-                </p>
+      {/* ---- The two words ---------------------------------------------- */}
+      <Section id="request-response-terms" heading={lesson.terms.heading}>
+        {lesson.terms.lines.map((line, index) => (
+          <p
+            key={line}
+            className={`mt-2 text-sm leading-relaxed ${
+              index === 0 ? "font-semibold text-sky-200" : "font-semibold text-violet-200"
+            }`}
+          >
+            {index === 0 ? "↓ " : "↑ "}
+            {line}
+          </p>
+        ))}
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-center">
+          {lesson.terms.diagram.map((step, index) => (
+            <Fragment key={`${step}-${index}`}>
+              <span
+                className={`rounded-lg border px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider ${
+                  step === "SERVER"
+                    ? "border-violet-400/50 bg-violet-400/10 text-violet-300"
+                    : step === "CLIENT"
+                      ? "border-sky-400/50 bg-sky-400/10 text-sky-300"
+                      : "border-slate-600 bg-slate-950/70 text-slate-300"
+                }`}
+              >
+                {step}
+              </span>
+              {index < lesson.terms.diagram.length - 1 && (
+                <span className="text-slate-500" aria-hidden="true">
+                  ▼
+                </span>
               )}
-            </div>
+            </Fragment>
+          ))}
+        </div>
+      </Section>
 
-            {dbCount === 2 ? (
-              <GuideBubble mood="success">
-                <strong className="text-white">{lesson.notDb.done}</strong>
-              </GuideBubble>
-            ) : (
-              <GuideBubble mood="hint">
-                Tap the <span className="text-violet-300">Server</span> and{" "}
-                <span className="text-fuchsia-300">Database</span> cards -
-                their jobs are not the same!
-              </GuideBubble>
-            )}
-          </div>
-        )}
+      {/* ---- Watch a request and response -------------------------------- */}
+      <Section
+        id="request-response-demo"
+        heading={lesson.rr.heading}
+        sectionRef={rrRef}
+      >
+        <p className="mt-2 text-sm leading-relaxed text-slate-400">
+          {lesson.rr.body}
+        </p>
+        <div className="mt-4">
+          <ExchangeDiagram
+            client={lesson.rr.client}
+            server={lesson.rr.server}
+            clientLine={lesson.rr.clientLine}
+            serverLine={lesson.rr.serverLine}
+            request={lesson.rr.request}
+            response={lesson.rr.response}
+            copy={lesson.rr.copy}
+            controls="player"
+            runKey={rrSeen ? 1 : 0}
+          />
+        </div>
+      </Section>
 
-        {/* ---- Stage 12: break the connection ---------------------------- */}
-        {stage.id === "offline" && (
-          <div className="sd-appear flex flex-col gap-4">
-            <GuideBubble mood="hint">
-              <strong className="text-white">Prediction time: </strong>
-              the server is offline. What do you think happens when the
-              client sends its request anyway?
-            </GuideBubble>
-            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-              <h2 className="text-lg font-semibold text-white">
-                {lesson.offline.heading}
-              </h2>
-              <p className="mt-1 text-sm leading-relaxed text-slate-400">
-                {lesson.offline.body}
-              </p>
-              <div className="mt-4">
-                <ExchangeDiagram
-                  client={lesson.offline.client}
-                  server={lesson.offline.server}
-                  clientLine={lesson.offline.clientLine}
-                  serverLine={lesson.offline.serverLine}
-                  request={lesson.offline.request}
-                  response={lesson.offline.response}
-                  copy={lesson.offline.copy}
-                  playLabel={lesson.offline.playLabel}
-                  serverOff
-                  controls="simple"
-                  onFail={() => patch({ offlineFailed: true })}
-                />
-              </div>
-            </div>
-            {state.offlineFailed && (
-              <GuideBubble mood="hint">{lesson.offline.after}</GuideBubble>
-            )}
-          </div>
-        )}
+      {/* ---- Opening a website ------------------------------------------- */}
+      <Section
+        id="website-example"
+        heading={lesson.website.heading}
+        sectionRef={websiteRef}
+      >
+        <p className="mt-2 text-sm leading-relaxed text-slate-400">
+          {lesson.website.body}
+        </p>
+        <div className="mt-4">
+          <ExchangeDiagram
+            client={lesson.website.client}
+            server={lesson.website.server}
+            clientLine={lesson.website.clientLine}
+            serverLine={lesson.website.serverLine}
+            request={lesson.website.request}
+            response={lesson.website.response}
+            copy={lesson.website.copy}
+            controls="player"
+            runKey={websiteSeen ? 1 : 0}
+          />
+        </div>
+        <p className="mt-4 rounded-lg bg-slate-950/60 px-4 py-3 text-xs leading-relaxed text-slate-500">
+          {lesson.website.note}
+        </p>
+      </Section>
 
-        {/* ---- Stage 13: server comes back ------------------------------- */}
-        {stage.id === "online" && (
-          <div className="sd-appear flex flex-col gap-4">
-            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-              <h2 className="text-lg font-semibold text-white">
-                {lesson.online.heading}
-              </h2>
-              <p className="mt-1 text-sm leading-relaxed text-slate-400">
-                {lesson.online.body}
-              </p>
-
-              <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
-                <button
-                  type="button"
-                  onClick={() => patch({ serverOn: true })}
-                  disabled={state.serverOn}
-                  className={`rounded-lg px-5 py-2.5 text-sm font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 disabled:cursor-not-allowed ${
-                    state.serverOn
-                      ? "border border-emerald-500/50 bg-emerald-500/15 text-emerald-300 opacity-70"
-                      : "bg-emerald-500 text-white hover:bg-emerald-400"
-                  }`}
-                >
-                  {state.serverOn
-                    ? "🟢 Server is ON"
-                    : lesson.online.turnOnLabel}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => patch({ retryKey: state.retryKey + 1 })}
-                  disabled={!state.serverOn}
-                  className="rounded-lg bg-gradient-to-r from-sky-500 to-indigo-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:from-sky-400 hover:to-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  {lesson.online.tryLabel}
-                </button>
-              </div>
-
-              <div className="mt-4">
-                <ExchangeDiagram
-                  client={lesson.online.client}
-                  server={lesson.online.server}
-                  clientLine={lesson.online.clientLine}
-                  serverLine={lesson.online.serverLine}
-                  request={lesson.online.request}
-                  response={lesson.online.response}
-                  copy={lesson.online.copy}
-                  serverOff={!state.serverOn}
-                  runKey={state.retryKey}
-                  controls="none"
-                  onDone={() => patch({ onlineRecovered: true })}
-                />
-              </div>
-            </div>
-
-            <div aria-live="polite">
-              {state.onlineRecovered ? (
-                <GuideBubble mood="success">
-                  <strong className="text-white">
-                    {lesson.online.copy.done}
-                  </strong>{" "}
-                  {lesson.online.after}
-                </GuideBubble>
-              ) : state.serverOn ? (
-                <GuideBubble mood="hint">
-                  🟢 {lesson.online.turnedOn} Now press{" "}
-                  <span className="text-sky-300">{lesson.online.tryLabel}</span>
-                  .
-                </GuideBubble>
-              ) : (
-                <GuideBubble mood="hint">
-                  The server is still offline - bring it back with{" "}
-                  <span className="text-emerald-300">
-                    {lesson.online.turnOnLabel}
-                  </span>
-                  .
-                </GuideBubble>
+      {/* ---- The Todo app, again ------------------------------------------ */}
+      <Section id="todo-again" heading={lesson.todo.heading}>
+        <p className="mt-2 text-sm leading-relaxed text-slate-400">
+          {lesson.todo.body}
+        </p>
+        <div className="mt-4 flex flex-wrap justify-center gap-2">
+          {lesson.todo.trips.map((trip) => (
+            <button
+              key={trip.id}
+              type="button"
+              onClick={() => {
+                addTo("todoTrips", trip.id);
+                patch({ currentTripId: trip.id, currentTrip: trip });
+              }}
+              className={`rounded-lg border px-4 py-2 text-sm font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${
+                state.currentTripId === trip.id
+                  ? "border-sky-400/60 bg-sky-400/15 text-sky-200"
+                  : "border-slate-700 bg-slate-950/60 text-slate-200 hover:border-sky-400/50"
+              }`}
+            >
+              {trip.label}
+              {state.todoTrips.includes(trip.id) && (
+                <span className="ml-1.5 text-xs text-emerald-400">✓</span>
               )}
-            </div>
-          </div>
+            </button>
+          ))}
+        </div>
+        <div className="mt-4">
+          <ExchangeDiagram
+            key={`trip-${state.currentTripId}`}
+            client={lesson.todo.client}
+            server={lesson.todo.server}
+            clientLine={
+              state.currentTrip
+                ? `"${state.currentTrip.request}"`
+                : '"Show my Todos"'
+            }
+            serverLine={lesson.todo.serverLine}
+            request={state.currentTrip ? state.currentTrip.request : "REQUEST"}
+            response={state.currentTrip ? state.currentTrip.response : "RESPONSE"}
+            copy={tripCopy}
+            controls="none"
+            autoPlay={state.currentTripId !== "none"}
+          />
+        </div>
+      </Section>
+
+      {/* ---- Roles can switch --------------------------------------------- */}
+      <Section id="roles-can-switch" heading={lesson.roleSwitch.heading}>
+        <p className="mt-2 text-sm leading-relaxed text-slate-400">
+          {lesson.roleSwitch.body}
+        </p>
+        <div className="mt-4">
+          <RoleSwitch
+            copy={lesson.roleSwitch}
+            a={lesson.roleSwitch.a}
+            b={lesson.roleSwitch.b}
+            onSwitch={(direction) => addTo("roleDirs", direction)}
+          />
+        </div>
+        {state.roleDirs.length === 2 && (
+          <p
+            className="sd-appear mt-4 rounded-lg border border-emerald-400/30 bg-emerald-500/10 px-4 py-3 text-xs font-semibold leading-relaxed text-emerald-300"
+            aria-live="polite"
+          >
+            ✓ {lesson.roleSwitch.bothDone}
+          </p>
         )}
+      </Section>
 
-        {/* ---- Stage 14: role game --------------------------------------- */}
-        {stage.id === "roleGame" && (
-          <div className="sd-appear flex flex-col gap-4">
-            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-              <h2 className="text-lg font-semibold text-white">
-                {lesson.roleGame.heading}
-              </h2>
-              <p className="mt-1 text-sm text-slate-400">
-                {lesson.roleGame.body}
-              </p>
-            </div>
-            <RoleGame
-              game={lesson.roleGame}
-              onDone={() => patch({ gameSolved: true })}
-            />
-            {!state.gameSolved && (
-              <GuideBubble mood="hint">
-                Think: what would a GOOD client do? A GOOD server? Pick the
-                move that <span className="text-sky-300">asks</span> or{" "}
-                <span className="text-violet-300">answers</span>.
-              </GuideBubble>
-            )}
-          </div>
+      {/* ---- Short interactive check --------------------------------------- */}
+      <Section id="who-is-asking" heading={lesson.check.heading}>
+        <p className="mt-2 text-sm leading-relaxed text-slate-400">
+          {lesson.check.intro}
+        </p>
+        <div className="mt-4">
+          <WhoIsAsking
+            quiz={lesson.check}
+            onSolved={() => patch({ checkSolved: true })}
+          />
+        </div>
+      </Section>
+
+      {/* ---- Server offline ------------------------------------------------ */}
+      <Section
+        id="server-offline"
+        heading={lesson.offline.heading}
+        sectionRef={offlineRef}
+      >
+        <p className="mt-2 text-sm leading-relaxed text-slate-400">
+          {lesson.offline.body}
+        </p>
+        <div className="mt-4">
+          <ExchangeDiagram
+            client={lesson.offline.client}
+            server={lesson.offline.server}
+            clientLine={lesson.offline.clientLine}
+            serverLine={lesson.offline.serverLine}
+            request={lesson.offline.request}
+            response={lesson.offline.response}
+            copy={lesson.offline.copy}
+            serverOff
+            controls="player"
+            runKey={offlineSeen ? 1 : 0}
+            onFail={() => patch({ offlineFailed: true })}
+          />
+        </div>
+        {state.offlineFailed && (
+          <p
+            className="sd-appear mt-4 rounded-lg border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-xs leading-relaxed text-amber-100"
+            aria-live="polite"
+          >
+            No server, no answer - the client can wait forever. Let us fix it
+            in the next section.
+          </p>
         )}
+      </Section>
 
-        {/* ---- Stage 15: client or server classification ------------------ */}
-        {stage.id === "classify" && (
-          <div className="sd-appear flex flex-col gap-4">
-            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-              <h2 className="text-lg font-semibold text-white">
-                {lesson.classify.heading}
-              </h2>
-              <p className="mt-1 text-sm text-slate-400">
-                {lesson.classify.body}
-              </p>
-            </div>
-            <Classification
-              quiz={lesson.classify}
-              onSolved={() => patch({ classifySolved: true })}
-            />
-            {state.classifySolved ? (
-              <GuideBubble mood="success">
-                <strong className="text-white">{lesson.classify.done}</strong>
-              </GuideBubble>
-            ) : (
-              <GuideBubble mood="hint">
-                One at a time - ask yourself{" "}
-                <span className="text-sky-300">"who is asking?"</span> and you
-                will never miss.
-              </GuideBubble>
-            )}
-          </div>
-        )}
+      {/* ---- Bring the server back ------------------------------------------ */}
+      <Section id="server-back" heading={lesson.online.heading}>
+        <p className="mt-2 text-sm leading-relaxed text-slate-400">
+          {lesson.online.body}
+        </p>
 
-        {/* ---- Stage 16: the complete flow -------------------------------- */}
-        {stage.id === "finalFlow" && (
-          <div className="sd-appear flex flex-col gap-4">
-            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-              <h2 className="text-lg font-semibold text-white">
-                {lesson.finalFlow.heading}
-              </h2>
-              <p className="mt-1 text-sm leading-relaxed text-slate-400">
-                {lesson.finalFlow.body}
-              </p>
-              <div className="mt-4">
-                <FlowChain
-                  flow={lesson.finalFlow}
-                  onDone={() => patch({ flowDone: true })}
-                />
-              </div>
-            </div>
-            {state.flowDone && (
-              <GuideBubble mood="success">
-                <strong className="text-white">{lesson.finalFlow.after}</strong>
-              </GuideBubble>
-            )}
-          </div>
-        )}
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
+          <button
+            type="button"
+            onClick={() => patch({ serverOn: true })}
+            disabled={state.serverOn}
+            className={`rounded-lg px-5 py-2.5 text-sm font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 disabled:cursor-not-allowed ${
+              state.serverOn
+                ? "border border-emerald-500/50 bg-emerald-500/15 text-emerald-300 opacity-70"
+                : "bg-emerald-500 text-white hover:bg-emerald-400"
+            }`}
+          >
+            {state.serverOn ? "🟢 Server is ON" : lesson.online.turnOnLabel}
+          </button>
+          <button
+            type="button"
+            onClick={() => patch({ retryKey: state.retryKey + 1 })}
+            disabled={!state.serverOn}
+            className="rounded-lg bg-gradient-to-r from-sky-500 to-indigo-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:from-sky-400 hover:to-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {lesson.online.tryLabel}
+          </button>
+        </div>
 
-        {/* ---- Stage 17: summary + formal definition ---------------------- */}
-        {stage.id === "summary" && (
-          <div className="sd-appear flex flex-col gap-4">
-            <GuideBubble mood="success">
-              <strong className="text-white">
-                {lesson.summary.congrats}
-              </strong>{" "}
-              You watched it happen all lesson - now it has an official name.
-            </GuideBubble>
+        <div className="mt-4">
+          <ExchangeDiagram
+            client={lesson.online.client}
+            server={lesson.online.server}
+            clientLine={lesson.online.clientLine}
+            serverLine={lesson.online.serverLine}
+            request={lesson.online.request}
+            response={lesson.online.response}
+            copy={lesson.online.copy}
+            serverOff={!state.serverOn}
+            runKey={state.retryKey}
+            controls="none"
+            onDone={() => patch({ recovered: true })}
+          />
+        </div>
 
-            {/* Formal definition - only shown at the end */}
-            <div className="rounded-2xl border border-sky-400/30 bg-sky-400/5 p-5">
-              <p className="text-sm font-bold uppercase tracking-wider text-sky-300">
-                The definition
-              </p>
-              <p className="mt-2 text-base font-semibold text-white">
-                {lesson.summary.definition}
-              </p>
-              <ul className="mt-2 space-y-1.5">
-                {lesson.summary.definitionBody.map((line) => (
-                  <li
-                    key={line}
-                    className="flex items-start gap-2 text-sm leading-relaxed text-slate-300"
-                  >
-                    <span className="text-sky-400" aria-hidden="true">
-                      •
-                    </span>
-                    {line}
-                  </li>
-                ))}
-              </ul>
-            </div>
+        <div aria-live="polite">
+          {state.recovered ? (
+            <p className="mt-4 rounded-lg border border-emerald-400/30 bg-emerald-500/10 px-4 py-3 text-xs font-semibold leading-relaxed text-emerald-300">
+              {lesson.online.copy.done} {lesson.online.after}
+            </p>
+          ) : state.serverOn ? (
+            <p className="mt-4 rounded-lg border border-sky-400/30 bg-sky-500/10 px-4 py-3 text-xs leading-relaxed text-sky-200">
+              🟢 {lesson.online.turnedOn} Now press{" "}
+              <span className="font-semibold">{lesson.online.tryLabel}</span>.
+            </p>
+          ) : (
+            <p className="mt-4 rounded-lg border border-slate-700 bg-slate-950/60 px-4 py-3 text-xs leading-relaxed text-slate-400">
+              The server is still offline - bring it back with{" "}
+              <span className="font-semibold text-emerald-300">
+                {lesson.online.turnOnLabel}
+              </span>
+              .
+            </p>
+          )}
+        </div>
+      </Section>
 
-            {/* CLIENT = ASKS / SERVER = ANSWERS */}
-            <div className="grid gap-3 sm:grid-cols-2">
-              {lesson.summary.equation.map((eq, i) => (
-                <div
-                  key={eq.key}
-                  className={`rounded-xl border p-4 text-center ${
-                    i === 0
-                      ? "border-sky-400/50 bg-sky-400/10"
-                      : "border-violet-400/50 bg-violet-400/10"
-                  }`}
-                >
-                  <p className="text-2xl" aria-hidden="true">
-                    {eq.icon}
-                  </p>
-                  <p
-                    className={`mt-1 text-lg font-extrabold tracking-widest ${
-                      i === 0 ? "text-sky-300" : "text-violet-300"
-                    }`}
-                  >
-                    {eq.key} = {eq.value}
-                  </p>
-                </div>
-              ))}
-            </div>
+      {/* ---- Final takeaway -------------------------------------------------- */}
+      <Section id="the-basic-idea" heading={lesson.final.heading}>
+        <p className="mt-2 text-sm text-slate-500">{lesson.final.body}</p>
+        <p className="mt-2 rounded-lg border border-sky-400/30 bg-sky-400/5 px-4 py-3 text-sm font-semibold text-sky-200">
+          {lesson.final.sentence}
+        </p>
 
-            {/* Recall - connection to the previous lessons */}
-            <div className="rounded-xl border border-slate-800 bg-slate-900 p-4">
-              {lesson.summary.recall.map((line, i) => (
+        <div className="mt-4 flex flex-wrap items-stretch justify-center gap-3">
+          {lesson.final.chain.map((node, index) => (
+            <Fragment key={`${node.label}-${index}`}>
+              <div
+                className={`rounded-xl border p-4 text-center ${
+                  index % 2 === 0
+                    ? "border-sky-400/50 bg-sky-400/10"
+                    : "border-violet-400/50 bg-violet-400/10"
+                }`}
+              >
+                <p className="text-2xl" aria-hidden="true">
+                  {node.icon}
+                </p>
                 <p
-                  key={line}
-                  className={`text-sm leading-relaxed ${
-                    i === lesson.summary.recall.length - 1
-                      ? "mt-1 font-semibold text-sky-300"
-                      : "text-slate-300"
+                  className={`mt-1 text-sm font-extrabold tracking-widest ${
+                    index % 2 === 0 ? "text-sky-300" : "text-violet-300"
                   }`}
                 >
-                  {line}
+                  {node.label}
                 </p>
-              ))}
-            </div>
+                <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  {node.action}
+                </p>
+              </div>
+              {index < lesson.final.chain.length - 1 && (
+                <span className="self-center text-xl text-slate-500" aria-hidden="true">
+                  →
+                </span>
+              )}
+            </Fragment>
+          ))}
+        </div>
 
-            <div className="grid gap-3 sm:grid-cols-2">
-              {lesson.summary.cards.map((card) => (
-                <div
-                  key={card.title}
-                  className="rounded-xl border border-slate-800 bg-slate-900 p-4"
-                >
-                  <h3 className="text-sm font-semibold text-white">
-                    {card.title}
-                  </h3>
-                  <p className="mt-1 text-xs leading-relaxed text-slate-400">
-                    {card.body}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            <div className="rounded-xl border border-indigo-500/30 bg-indigo-500/10 p-4 text-sm leading-relaxed text-slate-300">
-              {lesson.summary.closing}
-            </div>
-
-            <div className="flex flex-wrap items-center gap-3">
-              <Link
-                to="/system-design/fundamentals"
-                className="rounded-lg bg-gradient-to-r from-sky-500 to-indigo-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:from-sky-400 hover:to-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
-              >
-                ← Back to Fundamentals
-              </Link>
-              <button
-                type="button"
-                onClick={() => setState({ ...INITIAL })}
-                className="rounded-lg border border-slate-700 px-4 py-2.5 text-sm font-medium text-slate-300 transition hover:border-slate-500 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
-              >
-                ↻ Replay lesson
-              </button>
-            </div>
-          </div>
-        )}
-      </section>
-
-      {/* Stage navigation */}
-      {stage.id !== "summary" && (
-        <nav
-          className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-slate-800 pt-4"
-          aria-label="Lesson steps"
-        >
-          <button
-            type="button"
-            onClick={() => goTo(state.stageIndex - 1)}
-            disabled={state.stageIndex === 0}
-            className="rounded-lg border border-slate-700 px-4 py-2 text-sm font-medium text-slate-300 transition hover:border-slate-500 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 disabled:cursor-not-allowed disabled:opacity-40"
+        <div className="mt-5">
+          <Link
+            to="/system-design/fundamentals"
+            className="inline-block rounded-lg bg-gradient-to-r from-sky-500 to-indigo-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:from-sky-400 hover:to-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
           >
-            ← Back
-          </button>
-
-          <div className="text-center">
-            <p className="text-xs font-medium text-slate-400">{stage.label}</p>
-            {continueHint && !canContinue && (
-              <p className="mt-0.5 text-[11px] text-amber-400/90">
-                {continueHint}
-              </p>
-            )}
-          </div>
-
-          <button
-            type="button"
-            onClick={() => goTo(state.stageIndex + 1)}
-            disabled={!canContinue}
-            className="rounded-lg bg-sky-500 px-5 py-2 text-sm font-semibold text-white transition hover:bg-sky-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            Continue →
-          </button>
-        </nav>
-      )}
+            ← Back to Fundamentals
+          </Link>
+        </div>
+      </Section>
     </div>
   );
 }

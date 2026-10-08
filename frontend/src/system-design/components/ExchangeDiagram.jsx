@@ -1,20 +1,30 @@
-// ExchangeDiagram - Lesson 3's core client/server animation.
+// ExchangeDiagram - Lesson 3's core client/server story animation.
 //
 // Two nodes (client top/left, server bottom/right) joined by one lane. A
-// glowing packet - the request - travels down, the server works, and the
-// response glows back. Learners can Play, Pause, Step through five beats,
-// or Replay. When `serverOff` is true the request stops mid-lane, waits,
-// and fails with "no response", so the lesson can break and repair it.
+// glowing packet - the request - travels across, the server works, and the
+// response glows back. Stories can carry optional lead scenes (narration
+// frames shown before the packet leaves, e.g. "You're hungry.") and play
+// slowly: scroll into view, Play, Pause, or Replay. When `serverOff` is
+// true the request stops mid-lane, waits, and fails with "no response",
+// so the lesson can break and repair it.
 //
 // Layout reuses the Lesson 1 sim-* CSS (row on >=768px, column below).
 // All state is local; parents only receive onDone/onFail.
 import { useEffect, useRef, useState } from "react";
 
-const TRAVEL_MS = 900; // must match the sim-pkt-* CSS keyframes
-const PAUSE_MS = 450;
-const WORK_MS = 700;
-const RECEIVE_MS = 400;
-const WAIT_MS = 750;
+// Respect the user's motion preferences (WCAG): everything collapses to a
+// quick transition instead of the slow story pacing.
+const REDUCED =
+  typeof window !== "undefined" &&
+  typeof window.matchMedia === "function" &&
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+const SCENE_MS = REDUCED ? 60 : 1800; // lead scene (narration frame)
+const TRAVEL_MS = REDUCED ? 60 : 1200; // must match the .cs-story CSS timing
+const PAUSE_MS = REDUCED ? 30 : 700; // breath between beats
+const WORK_MS = REDUCED ? 60 : 1100; // server working
+const RECEIVE_MS = REDUCED ? 60 : 600; // request landing
+const WAIT_MS = REDUCED ? 300 : 1400; // offline waiting before failure
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -31,15 +41,14 @@ export default function ExchangeDiagram({
   request,
   response,
   copy,
-  playLabel,
-  controls = "simple",
+  controls = "player",
   serverOff = false,
   autoPlay = false,
   runKey = 0,
   onDone,
   onFail,
 }) {
-  const [phase, setPhase] = useState("idle"); // idle | 1..5 | waiting | failed
+  const [phase, setPhase] = useState("idle"); // idle | L0..Ln | 1..5 | waiting | failed
   const [moving, setMoving] = useState(null); // { dir: "fwd" | "back", half }
   const [busy, setBusy] = useState(false);
   const [paused, setPaused] = useState(false);
@@ -49,6 +58,7 @@ export default function ExchangeDiagram({
   const busyRef = useRef(busy);
   const pausedRef = useRef(paused);
   const serverOffRef = useRef(serverOff);
+  const copyRef = useRef(copy);
   const onDoneRef = useRef(onDone);
   const onFailRef = useRef(onFail);
   const lastRunKeyRef = useRef(runKey);
@@ -58,6 +68,7 @@ export default function ExchangeDiagram({
   busyRef.current = busy;
   pausedRef.current = paused;
   serverOffRef.current = serverOff;
+  copyRef.current = copy;
   onDoneRef.current = onDone;
   onFailRef.current = onFail;
 
@@ -73,26 +84,45 @@ export default function ExchangeDiagram({
     setBusy(value);
   }
 
-  // One beat forward from the current phase (the five narrated steps).
+  // Travel from the client toward the server (the last lead scene hands
+  // control here, just like the idle phase does when there is no lead).
+  async function startTravel(token) {
+    setPhaseBoth(1);
+    setMovingBoth({
+      dir: "fwd",
+      half: Boolean(serverOffRef.current),
+    });
+    await sleep(TRAVEL_MS);
+    if (tokenRef.current !== token) return;
+    setMovingBoth(null);
+    if (serverOffRef.current) {
+      setPhaseBoth("waiting");
+      await sleep(WAIT_MS);
+      if (tokenRef.current !== token) return;
+      setPhaseBoth("failed");
+      onFailRef.current?.();
+    }
+  }
+
+  function isLead(p) {
+    return typeof p === "string" && p.startsWith("L");
+  }
+
+  // One beat forward from the current phase (lead scenes, then the five
+  // narrated steps).
   async function advanceOnce(token) {
     const p = phaseRef.current;
+    const lead = copyRef.current.lead || [];
 
-    if (p === "idle") {
-      setPhaseBoth(1);
-      setMovingBoth({
-        dir: "fwd",
-        half: Boolean(serverOffRef.current),
-      });
-      await sleep(TRAVEL_MS);
-      if (tokenRef.current !== token) return;
-      setMovingBoth(null);
-      if (serverOffRef.current) {
-        setPhaseBoth("waiting");
-        await sleep(WAIT_MS);
+    if (p === "idle" || isLead(p)) {
+      const idx = p === "idle" ? -1 : Number(p.slice(1));
+      if (idx + 1 < lead.length) {
+        setPhaseBoth(`L${idx + 1}`);
+        await sleep(SCENE_MS);
         if (tokenRef.current !== token) return;
-        setPhaseBoth("failed");
-        onFailRef.current?.();
+        return;
       }
+      await startTravel(token);
       return;
     }
 
@@ -162,18 +192,6 @@ export default function ExchangeDiagram({
     setPaused(true);
   }
 
-  // Step: exactly one beat, then hand control back.
-  async function step() {
-    if (busyRef.current) return;
-    if (isEnd(phaseRef.current)) return;
-    pausedRef.current = false;
-    setPaused(false);
-    const token = ++tokenRef.current;
-    setBusyBoth(true);
-    await advanceOnce(token);
-    if (tokenRef.current === token) setBusyBoth(false);
-  }
-
   function reset() {
     tokenRef.current += 1;
     setBusyBoth(false);
@@ -188,7 +206,8 @@ export default function ExchangeDiagram({
     run();
   }
 
-  // Parent-triggered runs (job picked, "Try Again", etc).
+  // Parent-triggered runs ("Try Again", etc). Scroll-led stories bump this
+  // from 0 to 1 when their section scrolls into view.
   useEffect(() => {
     if (runKey !== lastRunKeyRef.current) {
       lastRunKeyRef.current = runKey;
@@ -215,7 +234,9 @@ export default function ExchangeDiagram({
 
   const isFailed = phase === "failed";
   const isWaiting = phase === "waiting";
+  const inLead = isLead(phase);
   const atEnd = isEnd(phase);
+  const lead = copy.lead || [];
 
   // The packet: travelling, parked at the server, parked mid-lane, or back
   // at the client.
@@ -236,11 +257,12 @@ export default function ExchangeDiagram({
   } else if (phase === 4 || phase === 5) {
     packet = { cls: "", label: response };
   } else {
-    packet = { cls: "", label: request }; // idle: waiting at the client
+    packet = { cls: "", label: request }; // idle/lead: waiting at the client
   }
 
-  const beat =
-    phase === "idle"
+  const beat = inLead
+    ? lead[Number(phase.slice(1))]
+    : phase === "idle"
       ? { title: copy.idle, body: "" }
       : isWaiting
         ? copy.waiting
@@ -248,31 +270,23 @@ export default function ExchangeDiagram({
           ? copy.fail
           : copy.steps[phase - 1];
 
-  const stepChip =
-    phase === "idle"
-      ? "READY"
-      : isWaiting
-        ? "WAITING"
-        : isFailed
-          ? "NO RESPONSE"
-          : paused
-            ? `PAUSED - step ${phase} of 5`
-            : `Step ${phase} of 5`;
+  // Status chip: only real states, no numbered steps.
+  let statusChip = "";
+  if (isFailed) statusChip = "NO RESPONSE";
+  else if (isWaiting) statusChip = "WAITING";
+  else if (paused) statusChip = "⏸ PAUSED";
+  else if (phase === "idle") statusChip = "READY";
+  else if (atEnd) statusChip = "DONE";
 
-  const clientActive = phase === 1 || phase === 4 || phase === 5;
+  const clientActive = inLead || phase === 1 || phase === 4 || phase === 5;
   const serverActive = phase === 1 || phase === 2 || phase === 3;
   const working = phase === 3;
 
-  const primaryLabel = playLabel || copy.controls.play;
-  const showFull = controls === "full";
-  const showSimple = controls === "simple";
-  const ctrl = {
-    play: "▶ Play",
-    pause: "⏸ Pause",
-    replay: "↻ Replay",
-    step: "⏭ Step",
-    ...(copy.controls || {}),
-  };
+  // While the last lead scene plays, the client "speaks" its request.
+  const showQuote =
+    lead.length > 0 && phase === `L${lead.length - 1}`;
+
+  const showPlayer = controls === "player";
 
   return (
     <div
@@ -280,8 +294,8 @@ export default function ExchangeDiagram({
       role="group"
       aria-label="Client and server exchange"
     >
-      {/* Controls */}
-      {showFull && (
+      {/* Controls - the story player */}
+      {showPlayer && (
         <div className="flex flex-wrap items-center justify-center gap-2">
           <button
             type="button"
@@ -289,7 +303,7 @@ export default function ExchangeDiagram({
             disabled={busy && !paused}
             className="rounded-lg bg-gradient-to-r from-sky-500 to-indigo-500 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-sky-500/20 transition hover:from-sky-400 hover:to-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {paused ? "▶ Resume" : ctrl.play}
+            {paused ? "▶ Resume" : "▶ Play"}
           </button>
           <button
             type="button"
@@ -297,45 +311,20 @@ export default function ExchangeDiagram({
             disabled={!busy || paused}
             className="rounded-lg border border-slate-700 px-4 py-2 text-sm font-medium text-slate-300 transition hover:border-slate-500 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {ctrl.pause}
+            ⏸ Pause
           </button>
           <button
             type="button"
             onClick={restart}
             className="rounded-lg border border-slate-700 px-4 py-2 text-sm font-medium text-slate-400 transition hover:border-slate-500 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
           >
-            {ctrl.replay}
-          </button>
-          <button
-            type="button"
-            onClick={step}
-            disabled={busy || atEnd}
-            className="rounded-lg border border-slate-700 px-4 py-2 text-sm font-medium text-slate-300 transition hover:border-slate-500 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {ctrl.step}
-          </button>
-        </div>
-      )}
-
-      {showSimple && (
-        <div className="flex flex-wrap items-center justify-center gap-2">
-          <button
-            type="button"
-            onClick={run}
-            disabled={busy}
-            className="rounded-lg bg-gradient-to-r from-sky-500 to-indigo-500 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-sky-500/20 transition hover:from-sky-400 hover:to-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 disabled:cursor-wait disabled:opacity-60"
-          >
-            {busy
-              ? "⏳ Working..."
-              : atEnd
-                ? ctrl.replay
-                : primaryLabel}
+            ↻ Replay
           </button>
         </div>
       )}
 
       {/* The stage: Client -> lane -> Server */}
-      <div className="sim-stage rounded-xl border border-slate-800 bg-slate-900 p-4 sm:p-5">
+      <div className="cs-story sim-stage rounded-xl border border-slate-800 bg-slate-900 p-4 sm:p-5">
         {/* Client node */}
         <div
           className={`sim-node rounded-xl border p-4 transition ${
@@ -358,6 +347,11 @@ export default function ExchangeDiagram({
             <p className="text-[11px] leading-snug text-slate-400">
               {clientLine}
             </p>
+            {showQuote && (
+              <p className="sim-pop mt-2 rounded-lg border border-sky-400/40 bg-sky-400/10 px-2 py-1 text-xs font-semibold text-sky-200">
+                “{request}”
+              </p>
+            )}
             {phase === 5 && (
               <p className="sim-pop mt-2 text-xs font-bold text-emerald-400">
                 ✓ {response}
@@ -439,23 +433,27 @@ export default function ExchangeDiagram({
         <p className="text-center text-[11px] text-slate-500">{serverNote}</p>
       )}
 
-      {/* Narration (aria-live so Step/Play users hear each beat) */}
+      {/* Narration (aria-live so Play/Pause users hear each beat) */}
       <div
         className="rounded-xl border border-slate-800 bg-slate-950/70 p-4"
         aria-live="polite"
       >
         <div className="flex flex-wrap items-center gap-2">
-          <span
-            className={`rounded border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
-              isFailed
-                ? "border-red-400/40 bg-red-500/10 text-red-300"
-                : atEnd
-                  ? "border-emerald-400/40 bg-emerald-500/10 text-emerald-300"
-                  : "border-sky-400/40 bg-sky-400/10 text-sky-300"
-            }`}
-          >
-            {stepChip}
-          </span>
+          {statusChip && (
+            <span
+              className={`rounded border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
+                isFailed
+                  ? "border-red-400/40 bg-red-500/10 text-red-300"
+                  : atEnd
+                    ? "border-emerald-400/40 bg-emerald-500/10 text-emerald-300"
+                    : paused
+                      ? "border-amber-400/40 bg-amber-500/10 text-amber-300"
+                      : "border-sky-400/40 bg-sky-400/10 text-sky-300"
+              }`}
+            >
+              {statusChip}
+            </span>
+          )}
           <span className="text-[11px] text-slate-500">
             glowing dot = the message traveling
           </span>

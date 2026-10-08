@@ -1,6 +1,6 @@
-// RoleSwitch - Lesson 3 stage 7: client/server are roles, not devices.
+// RoleSwitch - Lesson 3: client/server are roles, not devices.
 // Two computers; whichever one ASKS plays the client. Switching the asker
-// flips both badges and sends a REQUEST packet the other way.
+// flips both badges and sends the request packet the other way.
 import { useRef, useState } from "react";
 
 const TRAVEL_MS = 900;
@@ -125,9 +125,13 @@ export default function RoleSwitch({ copy, a, b, onSwitch }) {
         <p className="text-sm font-semibold text-white">
           {asker === null
             ? copy.first
-            : `${asker === "a" ? "Computer A" : "Computer B"} is now the CLIENT (asking).`}
+            : asker === "a"
+              ? copy.narrationA
+              : copy.narrationB}
         </p>
-        <p className="mt-1 text-xs leading-relaxed text-slate-400">{copy.note}</p>
+        {copy.note && (
+          <p className="mt-1 text-xs leading-relaxed text-slate-400">{copy.note}</p>
+        )}
       </div>
     </div>
   );

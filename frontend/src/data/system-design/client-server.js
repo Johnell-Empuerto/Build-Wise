@@ -1,11 +1,13 @@
 // System Design - Level 1, Lesson 3: "Client and Server"
-// Frontend-only static content. Teaches through a restaurant story first
-// (customer asks, kitchen answers), then transforms it into software:
-// CLIENT = asks, SERVER = answers. Every animation copy lives here.
+// Frontend-only static content for a scroll-led lesson: explain the two
+// roles, tell the burger story, transform it into software, then let the
+// learner switch roles, answer a short check, and break + repair the
+// connection. Every animation copy lives here.
 
-function exchangeCopy(overrides = {}) {
+function storyCopy(overrides = {}) {
   return {
-    idle: "Ready when you are - press Play and watch the glowing dot.",
+    idle:
+      "Ready - press Play, or keep scrolling and the story starts itself.",
     steps: [
       {
         title: "1. Client sends a request.",
@@ -35,15 +37,14 @@ function exchangeCopy(overrides = {}) {
     waiting: {
       title: "⏳ Waiting...",
       body:
-        "The request stopped on the way. The client is waiting for an answer that never comes.",
+        "The server is not available. The client keeps waiting for an answer...",
     },
     fail: {
-      title: "❌ No response",
+      title: "No response came back.",
       body:
-        "The client asked, but the server did not answer. Nothing came back.",
+        "The client asked, but the server did not answer. This is what \"the website is down\" feels like.",
     },
     done: "✓ Got a response!",
-    controls: { play: "▶ Play", pause: "⏸ Pause", replay: "↻ Replay", step: "⏭ Step" },
     ...overrides,
   };
 }
@@ -52,601 +53,495 @@ export const CLIENT_SERVER_LESSON = {
   id: "client-server",
   title: "Client and Server",
 
-  stages: [
-    { id: "intro", label: "A Burger Story", chip: "See it" },
-    { id: "kitchen", label: "The Kitchen Answers", chip: "See it" },
-    { id: "rolesIntro", label: "Meet Client & Server", chip: "Understand it" },
-    { id: "firstLook", label: "First Diagram", chip: "See it" },
-    { id: "whoClient", label: "Who Is the Client?", chip: "Understand it" },
-    { id: "whoServer", label: "Who Is the Server?", chip: "Understand it" },
-    { id: "roleSwitch", label: "Roles Can Switch", chip: "Understand it" },
-    { id: "exchange", label: "Request & Response", chip: "Interact with it" },
-    { id: "website", label: "A Real Website", chip: "See it" },
-    { id: "todo", label: "Todos Again", chip: "See it" },
-    { id: "notDb", label: "Not the Database", chip: "Learn from mistakes" },
-    { id: "offline", label: "Server Offline", chip: "Interact with it" },
-    { id: "online", label: "Server Back On", chip: "Interact with it" },
-    { id: "roleGame", label: "Role Game", chip: "Interact with it" },
-    { id: "classify", label: "Client or Server?", chip: "Learn from mistakes" },
-    { id: "finalFlow", label: "The Full Flow", chip: "See it" },
-    { id: "summary", label: "Summary", chip: "Wrap up" },
-  ],
-
   intro: {
-    heading: "What happens when you want a burger?",
+    heading: "Client and Server",
+    paragraphs: [
+      "Almost every app you use needs to communicate with something else.",
+      "For example, when you open a website, save a Todo, or log in, something has to receive your request and do some work.",
+      "Two important roles are involved: the client and the server.",
+    ],
+  },
+
+  whoClient: {
+    heading: "What is a Client?",
+    paragraphs: [
+      "A client is the part of a system that asks for something.",
+      "The client is usually the thing the user is using - the part that starts the conversation.",
+    ],
+    examples: ["💻 Web browser", "📱 Mobile app", "🖥️ Desktop app", "⌚ Smart watch"],
+    exampleNote:
+      "Example: you open your Todo app and ask to see your Todos. The app is acting as the client because it is asking for information.",
+    visual: { you: "👤 YOU", client: "💻 CLIENT", line: "Give me my Todos" },
+  },
+
+  whoServer: {
+    heading: "What is a Server?",
+    paragraphs: [
+      "A server is the part of a system that receives requests and does the work.",
+      "It can check information, calculate something, save information, or send information back.",
+    ],
+    abilities: [
+      "✔ Check information (like a password)",
+      "✔ Calculate something",
+      "✔ Save information",
+      "✔ Send information back",
+    ],
+    example: {
+      client: "💻 CLIENT",
+      request: "Give me my Todos",
+      server: "🖥️ SERVER",
+      line: "The server receives the request and gets the Todos.",
+    },
+  },
+
+  vs: {
+    heading: "Client vs Server",
+    clientCard: {
+      icon: "💻",
+      name: "CLIENT",
+      tag: "ASKS",
+      body: "Usually asks for something. It starts the conversation.",
+    },
+    serverCard: {
+      icon: "🖥️",
+      name: "SERVER",
+      tag: "WORKS + ANSWERS",
+      body: "Receives the request and provides an answer.",
+    },
+    loop: ["CLIENT", "SERVER", "CLIENT"],
+    loopNote:
+      "The client asks - the server answers - the client shows the result. Then it happens again.",
+  },
+
+  roles: {
+    heading: "Client and Server are Roles",
+    paragraphs: [
+      "Client and server describe roles in a system - not permanent labels.",
+      "The important question is not what device it is.",
+      "The important question is: Who is asking? And who is answering?",
+    ],
+    note:
+      "Later in the lesson you will switch both roles yourself. For now, remember the question.",
+  },
+
+  bridge:
+    "Now let's see this idea in action - through a burger, long before any software words.",
+
+  burger: {
+    heading: "The Burger Story",
     body:
-      "You are hungry. Somewhere across the street there is a restaurant. That is the whole scene - one hungry customer, one restaurant. Nothing else matters yet.",
-    prompt: "Press the button and watch your words travel.",
-    playLabel: "🍔 Ask for a burger",
+      "Watch the story first: a customer asks, the restaurant answers. No tech words yet - just watch who asks and who does the work.",
     customer: { icon: "👤", name: "Customer", sub: "that is you" },
     restaurant: { icon: "🍔", name: "Restaurant", sub: "where you order" },
     customerLine: "I'm hungry...",
     restaurantLine: "Ordering is open!",
     request: "Can I have a burger?",
-    response: "Sure - one burger!",
-    copy: exchangeCopy({
-      idle:
-        "Hungry? Press the button and watch your message travel to the restaurant.",
-      steps: [
+    response: "🍔 Burger ready!",
+    after:
+      "That is the whole trick: your message went out, and an answer came back.",
+    copy: storyCopy({
+      idle: "The story begins when you reach it - or press Play.",
+      lead: [
         {
-          title: "Your words fly to the restaurant!",
+          title: "You're hungry.",
           body:
-            "That glowing dot is your message: \"Can I have a burger?\" - it crosses the street to the restaurant.",
+            "One hungry customer, one restaurant across the street. That is the whole scene.",
         },
         {
-          title: "The restaurant got your words.",
-          body: "Your message arrived. Somebody on the other side heard you.",
-        },
-        {
-          title: "The restaurant starts working.",
-          body: "Behind the counter, work begins because you asked.",
-        },
-        {
-          title: "Something comes back to you.",
-          body: "The restaurant sends an answer your way.",
-        },
-        {
-          title: "You got it!",
+          title: "So you ask the restaurant for a burger.",
           body:
-            "You asked - something answered. Remember this feeling: a message goes out, an answer comes back.",
+            "Your words leave your mouth and start crossing the street.",
         },
       ],
-      controls: {},
-    }),
-    after:
-      "That is the whole trick: your message went out, and an answer came back. No tech words yet - just watching.",
-  },
-
-  kitchen: {
-    heading: "Now watch the kitchen do the work",
-    body:
-      "Your words reached the restaurant. Inside the kitchen, the cook reads the order, prepares the burger, and hands it back. The customer only waits - the kitchen does the work.",
-    playLabel: "🧑‍🍳 Watch the kitchen",
-    customer: { icon: "👤", name: "Customer", sub: "waits at the table" },
-    restaurant: { icon: "🍳", name: "Kitchen", sub: "does the work" },
-    customerLine: "Waiting... hungry...",
-    restaurantLine: "Order received!",
-    request: "Burger please!",
-    response: "🍔 Burger ready!",
-    copy: exchangeCopy({
-      idle: "The kitchen is ready. Press the button to watch it work.",
       steps: [
         {
-          title: "Your order flies to the kitchen.",
-          body: "\"Burger please!\" travels from your table to the kitchen.",
-        },
-        {
-          title: "The kitchen received the order.",
-          body: "The cook hears your ask and gets ready to work.",
-        },
-        {
-          title: "The kitchen prepares the burger.",
+          title: "Your message travels to the restaurant.",
           body:
-            "Chopping, cooking, plating - this is the WORK part, and only the kitchen can do it.",
+            "Watch the glowing dot - that is your words crossing the street.",
         },
         {
-          title: "🍔 The burger comes back to you.",
+          title: "The restaurant receives your request.",
+          body: "Somebody on the other side heard you.",
+        },
+        {
+          title: "The restaurant does the work.",
+          body:
+            "Cooking and plating - only the kitchen can do this.",
+        },
+        {
+          title: "Then the answer comes back.",
           body: "The finished burger travels back to your table.",
         },
         {
-          title: "You received the result.",
+          title: "You got what you asked for.",
           body:
-            "The customer asked. The kitchen did the work. The customer received the result. Simple, right?",
+            "You asked - and something answered. A message goes out, an answer comes back.",
         },
       ],
-      controls: {},
+      done: "✓ One burger, one full round trip.",
     }),
-    after:
-      "The customer asked. The kitchen did the work. The customer received the result. Software works in a similar way.",
   },
 
-  rolesIntro: {
-    heading: "Software calls them something else",
+  transition: {
+    heading: "From Restaurant to Software",
     body:
-      "Same story, new names. In software, the customer has a special role - and so does the kitchen. Watch the words transform.",
-    morphLabel: "✨ Transform the story",
-    fromCustomer: { icon: "👤", name: "CUSTOMER", sub: "the one who wants something" },
-    fromRestaurant: { icon: "🍔", name: "RESTAURANT", sub: "the place that serves" },
-    toClient: { icon: "💻", name: "CLIENT", sub: "The one that asks." },
-    toServer: { icon: "🖥️", name: "SERVER", sub: "Receives the request and does the work." },
-    bridge: "These are two important roles in software:",
-    cardClient:
-      "The client is the one that ASKS - it wants something and starts the conversation.",
-    cardServer:
-      "The server is the one that RECEIVES the request and does the work.",
-    after:
-      "Client asks. Server does the work. Same restaurant - just software words now.",
+      "Software can work in a similar way. Watch the words transform - same story, software names.",
+    from: [
+      { icon: "👤", name: "CUSTOMER", sub: "the one who wants something" },
+      { icon: "🍔", name: "RESTAURANT", sub: "the place that serves" },
+    ],
+    to: [
+      { icon: "💻", name: "CLIENT", sub: "The one that asks." },
+      {
+        icon: "🖥️",
+        name: "SERVER",
+        sub: "Receives the request and does the work.",
+      },
+    ],
+    lines: [
+      "Software can work in a similar way.",
+      "You ask.",
+      "Something receives your request.",
+      "It does some work.",
+      "And an answer comes back.",
+    ],
   },
 
-  firstLook: {
-    heading: "See the two roles talk",
+  software: {
+    heading: "The Same Idea in Software",
     body:
-      "A client box on top, a server box below, and one glowing dot between them. The dot going down is the request; the dot coming back is the response.",
+      "The restaurant is now a server, the customer is now a client - and the glowing dot is the same message. Watch each beat.",
     client: { icon: "💻", name: "Client", sub: "the one that asks" },
     server: { icon: "🖥️", name: "Server", sub: "the one that answers" },
-    clientLine: "I need...",
-    serverLine: "I'll help.",
+    clientLine: "\"I need something...\"",
+    serverLine: "\"I can help.\"",
     request: "REQUEST",
     response: "RESPONSE",
-    copy: exchangeCopy({
-      idle:
-        "Press Play: watch the REQUEST travel down, and the RESPONSE travel back up.",
-      done: "✓ One full conversation!",
-    }),
-    after:
-      "Down: the request. Up: the response. Every client/server chat looks like this.",
-  },
-
-  whoClient: {
-    heading: "Which one can be a client?",
-    body: "Tap each example and watch it light up.",
-    hint: "A client is usually the thing the user interacts with that asks another system for something.",
-    roleNote:
-      "The important idea is the ROLE - not every client must be a physical device.",
-    done:
-      "Nice - a phone, a browser, a desktop app, a smart watch: any of them can be the one asking.",
-    examples: [
-      {
-        id: "phone",
-        icon: "📱",
-        name: "Phone app",
-        line: "Load my feed!",
-        why:
-          "The app asks another system for something: \"Show me new posts!\" It starts the conversation, so it acts as the client.",
-      },
-      {
-        id: "browser",
-        icon: "💻",
-        name: "Web browser",
-        line: "Give me example.com",
-        why:
-          "Your browser asks a server for a webpage. It wants something, so it is acting as the client.",
-      },
-      {
-        id: "desktop",
-        icon: "🖥️",
-        name: "Desktop app",
-        line: "Check for updates",
-        why:
-          "A desktop program asks the maker's server \"Is there a newer version?\" Asking means client.",
-      },
-      {
-        id: "watch",
-        icon: "⌚",
-        name: "Smart device",
-        line: "What's the weather?",
-        why:
-          "Even a tiny watch can ask a big server for the weather. Small size does not matter - asking does.",
-      },
-    ],
-  },
-
-  whoServer: {
-    heading: "What does a server do?",
-    body: "Tap a job and watch the server receive it.",
-    hint: "The server receives requests and does work for the client.",
-    done:
-      "Four jobs, one pattern: somebody asks, the server receives it and does the work.",
-    client: { icon: "📱", name: "App", sub: "sends the job" },
-    clientLine: "I need something...",
-    server: { icon: "🖥️", name: "Server", sub: "receives and works" },
-    serverLine: "Got it - working on it!",
-    jobs: [
-      {
-        id: "login",
-        text: "Check my login",
-        request: "Check my login",
-        response: "✓ Logged in!",
-      },
-      {
-        id: "todos",
-        text: "Give me my Todos",
-        request: "Give me my Todos",
-        response: "✓ Here are your Todos",
-      },
-      {
-        id: "save",
-        text: "Save this Todo",
-        request: "Save: Buy milk",
-        response: "✓ Saved!",
-      },
-      {
-        id: "profile",
-        text: "Show me my profile",
-        request: "Show me my profile",
-        response: "✓ Profile: John, ⭐ 12 lessons",
-      },
-    ],
-    copy: exchangeCopy({
-      idle: "Tap a job above - watch the server receive it and answer.",
-      done: "✓ The server received the request and did the work.",
+    copy: storyCopy({
+      idle: "Ready - this story plays when you reach it.",
+      steps: [
+        {
+          title: "The client asks the server for something.",
+          body: "The request leaves the client and travels to the server.",
+        },
+        {
+          title: "The server receives the request.",
+          body: "The ask landed - the server knows what you want.",
+        },
+        {
+          title: "The server does the work.",
+          body:
+            "Checking, calculating, saving - this is the WORK part.",
+        },
+        {
+          title: "The server sends an answer back.",
+          body: "The response glows back to whoever asked.",
+        },
+        {
+          title: "The client shows the result.",
+          body: "The answer arrived and the client displays it.",
+        },
+      ],
+      done: "✓ One complete round trip.",
     }),
   },
 
-  roleSwitch: {
-    heading: "Client and server are roles",
-    body:
-      "Never think \"client = phone\" or \"server = a big computer.\" Two plain computers: who is asking, and who is answering?",
-    actionA: "Computer A asks Computer B",
-    actionB: "Computer B asks Computer A",
-    first: "Pick who asks first.",
-    bothDone:
-      "You did both directions! The roles depend on what is happening right now - whoever asks is the client, whoever answers is the server.",
-    note: 'The important question is: "Who is asking?" and "Who is answering?"',
-    a: { icon: "💻", name: "Computer A" },
-    b: { icon: "🖧", name: "Computer B" },
-    request: "REQUEST",
+  terms: {
+    heading: "Request and Response",
+    lines: [
+      "The message going from the client to the server is called a REQUEST.",
+      "The answer coming back is called a RESPONSE.",
+    ],
+    diagram: ["CLIENT", "REQUEST", "SERVER", "RESPONSE", "CLIENT"],
   },
 
-  exchange: {
-    heading: "Request and Response - the two official words",
+  rr: {
+    heading: "Watch a Request and Response",
     body:
-      "REQUEST: the client asks for something. RESPONSE: the server answers. Watch the loop, or step through it one beat at a time.",
-    requestDef: "REQUEST - the client asks for something.",
-    responseDef: "RESPONSE - the server answers.",
+      "Two official words, one loop. Watch the request travel down, the server work, and the response travel back.",
     client: { icon: "💻", name: "Client", sub: "the one that asks" },
     server: { icon: "🖥️", name: "Server", sub: "the one that answers" },
     clientLine: "\"I need something...\"",
     serverLine: "\"I'll help.\"",
     request: "REQUEST",
     response: "RESPONSE",
-    copy: exchangeCopy({
-      idle:
-        "Use Play, Pause, Replay or Step. Watch the request go down and the response come back.",
-      done: "✓ Five steps - that is the heartbeat of all software.",
+    copy: storyCopy({
+      idle: "Ready - this story plays when you reach it.",
+      lead: [
+        {
+          title: "The client is asking.",
+          body: "Every conversation in software starts with a question.",
+        },
+      ],
+      steps: [
+        {
+          title: "The request is traveling.",
+          body: "The message moves from the client to the server.",
+        },
+        {
+          title: "The server received it.",
+          body: "The request landed at the server.",
+        },
+        {
+          title: "The server is working.",
+          body: "The server does the work it was asked to do.",
+        },
+        {
+          title: "The response is coming back.",
+          body: "The answer travels back to whoever asked.",
+        },
+        {
+          title: "The client received the answer.",
+          body: "The client shows the result. One full round trip!",
+        },
+      ],
+      done: "✓ One full round trip.",
     }),
-    after:
-      "Client sends a request. Server works. Server sends a response. Client shows the result. Forever.",
   },
 
   website: {
-    heading: "You do this a hundred times a day",
+    heading: "Opening a Website",
     body:
-      "Type example.com and hit Enter. Your browser becomes a client, some server becomes the server, and the page flies back to you.",
-    playLabel: "🌐 Visit example.com",
+      "When your browser asks for a website, the browser is acting as the client. The server receives the request and sends something back.",
+    note:
+      "Later lessons cover how the words travel. Today: browser asks, server responds.",
     client: { icon: "🌐", name: "Browser", sub: "client" },
     server: { icon: "🖥️", name: "Website Server", sub: "server" },
     clientLine: "example.com",
     serverLine: "I have that page.",
     request: "Give me this website",
-    response: "Here it is",
-    copy: exchangeCopy({
-      idle: "Press the button - just like typing an address and hitting Enter.",
-      done: "✓ The page is on your screen!",
+    response: "Here is the website.",
+    copy: storyCopy({
+      idle: "Ready - this trip plays when you reach it.",
+      lead: [
+        {
+          title: "You type an address and hit Enter.",
+          body: "That single Enter starts a whole conversation.",
+        },
+      ],
+      steps: [
+        {
+          title: "Your browser asks for the page.",
+          body: "\"Give me this website\" leaves your machine.",
+        },
+        {
+          title: "The server received the request.",
+          body: "The website server heard the ask.",
+        },
+        {
+          title: "The server does the work.",
+          body: "It gathers the page it was asked for.",
+        },
+        {
+          title: "The response comes back.",
+          body: "The page travels back to your browser.",
+        },
+        {
+          title: "The page is on your screen!",
+          body: "Browser asked, server answered - that is a website.",
+        },
+      ],
+      done: "✓ Website loaded.",
     }),
-    simple: true,
-    note:
-      "No deep tech here - later lessons cover how the words travel. Today: browser asks, server responds.",
-    after:
-      "Browser asks. Server responds. Websites, games, videos - same story.",
   },
 
   todo: {
-    heading: "Back to your Todo app",
+    heading: "Your Todo App, Again",
     body:
-      "The app you know from Lesson 1 also talks this way. Two little conversations - watch who asks each time.",
+      "This is only about the client and the server. The app you know from Lesson 1 talks this way too - two little conversations, watch who asks each time.",
     trips: [
       {
-        id: "get",
-        label: "📥 Get my Todos",
-        request: "Give me my Todos",
+        id: "show",
+        label: "📥 Show my Todos",
+        request: "Show my Todos",
         response: "✓ Here are your Todos",
-        step1: "The app asks: \"Give me my Todos.\"",
+        step1: "The app asks: \"Show my Todos.\"",
         step5: "Your list appears on screen.",
       },
       {
         id: "save",
-        label: "💾 Save \"Buy milk\"",
+        label: "💾 Save Buy milk",
         request: "Save: Buy milk",
         response: "✓ Saved!",
         step1: "The app asks: \"Save Buy milk.\"",
-        step5: "\"Buy milk\" is saved - and shown back to you.",
+        step5: "\"Buy milk\" is saved!",
       },
     ],
     client: { icon: "📱", name: "App", sub: "client" },
     server: { icon: "🖥️", name: "Server", sub: "server" },
-    serverNote: "🗄️ the server may ask a database to remember things",
-    done: "Both trips done - client asked twice, server answered twice.",
-    copy: exchangeCopy({
-      idle: "Pick a conversation to watch.",
-    }),
-    note:
-      "Focus on the glowing dot between the two boxes - that is the client/server relationship.",
+    serverLine: "\"Let me handle that.\"",
+    copy: (() => {
+      const base = storyCopy();
+      return storyCopy({
+        idle: "Pick a conversation to watch.",
+        steps: [
+          {
+            title: "The app sends the request.",
+            body: "The request leaves the app - watch it travel.",
+          },
+          base.steps[1],
+          base.steps[2],
+          base.steps[3],
+          {
+            title: "The app shows the result.",
+            body: "The response arrived and the screen updated.",
+          },
+        ],
+      });
+    })(),
   },
 
-  notDb: {
-    heading: "The server is NOT the database",
+  roleSwitch: {
+    heading: "Roles Can Switch",
     body:
-      "A very common mix-up: beginners glue these two together. Tap each card and hear the difference.",
-    cards: [
-      {
-        id: "client",
-        icon: "💻",
-        name: "Client",
-        line: "Asks for something.",
-        tap: false,
-      },
-      {
-        id: "server",
-        icon: "🖥️",
-        name: "Server",
-        line: "Does the work and applies rules.",
-        tap: true,
-        why:
-          "The server receives the request, checks the rules, and decides what to do. It is the DOER.",
-      },
-      {
-        id: "database",
-        icon: "🗄️",
-        name: "Database",
-        line: "Remembers the information.",
-        tap: true,
-        why:
-          "The database keeps the information safe. It never answers users - it remembers. That is its whole job.",
-      },
-    ],
-    analogy:
-      "Restaurant: the customer orders, the waiter/kitchen does the work, and the storage room remembers what ingredients you have.",
-    done:
-      "Server does the work. Database remembers. Different jobs - that mix-up never comes back.",
+      "Two plain computers - no phones, no big server racks. Whichever computer ASKS is the client. Pick who asks and watch the badges flip.",
+    actionA: "Computer A asks Computer B",
+    actionB: "Computer B asks Computer A",
+    first: "Pick who asks: Computer A or Computer B?",
+    narrationA: "Computer A is the client because it is asking.",
+    narrationB:
+      "The roles changed because the direction of the request changed. Computer B is now the client.",
+    bothDone:
+      "Client and server are roles, not permanent labels.",
+    note: "",
+    a: { icon: "💻", name: "Computer A" },
+    b: { icon: "🖧", name: "Computer B" },
+    request: "Give me some data.",
+  },
+
+  check: {
+    heading: "Quick Check: Who Is Asking?",
+    intro:
+      "Two computers, one arrow. Look at who sends the request - then who sends the answer back.",
+    diagram: { from: "💻 A", to: "💻 B", label: "REQUEST ●" },
+    q1: {
+      prompt: "Who is asking?",
+      options: [
+        { id: "a", label: "💻 A is Client", correct: true },
+        { id: "b", label: "💻 B is Client", correct: false },
+      ],
+      right: "A is the client because A is asking.",
+      wrong:
+        "Look at the arrow - A is the one sending the request, so A is asking.",
+    },
+    q2: {
+      prompt: "Who is answering?",
+      options: [
+        { id: "a", label: "🖥️ A is Server", correct: false },
+        { id: "b", label: "🖥️ B is Server", correct: true },
+      ],
+      right: "B is the server because B is answering.",
+      wrong:
+        "Look at who sends the answer back - that is B, so B is answering.",
+    },
+    solved: "Exactly - A asks, B answers. That is the whole pattern.",
   },
 
   offline: {
-    heading: "What if the server does not answer?",
+    heading: "When the Server Is Offline",
     body:
-      "Right now the server is OFFLINE. Send the request anyway and see what the client experiences.",
-    playLabel: "📡 Send the request",
+      "Now watch what happens when the server is unavailable. The client sends its request anyway - watch closely.",
     client: { icon: "💻", name: "Client", sub: "asking into the void" },
     server: { icon: "🖥️", name: "Server", sub: "offline" },
     clientLine: "Hello? Anyone?",
     serverLine: "💤 zzz... nobody is listening.",
     request: "REQUEST",
     response: "(never comes)",
-    copy: exchangeCopy({
-      idle:
-        "The server is offline. Send a request and watch what happens - or predict it first!",
+    copy: storyCopy({
+      idle: "Ready - this trip plays when you reach it.",
+      lead: [
+        {
+          title: "The server is offline.",
+          body: "The client sends its request anyway - watch closely.",
+        },
+      ],
+      steps: [
+        {
+          title: "The client sent a request.",
+          body:
+            "The glowing dot starts its journey - but nobody is listening on the other side.",
+        },
+        {
+          title: "The server received it.",
+          body: "",
+        },
+        {
+          title: "The server does some work.",
+          body: "",
+        },
+        {
+          title: "Server sends a response.",
+          body: "",
+        },
+        {
+          title: "Client shows the result.",
+          body: "",
+        },
+      ],
       waiting: {
         title: "⏳ Waiting...",
         body:
-          "The request stopped halfway. The client keeps waiting for an answer...",
+          "The server is not available. The client keeps waiting for an answer...",
       },
       fail: {
-        title: "❌ No response",
+        title: "No response came back.",
         body:
           "The client asked, but the server did not answer. This is what \"the website is down\" feels like.",
       },
-      controls: {},
     }),
-    after:
-      "No server, no answer. The client can shout into the void forever - nothing comes back.",
   },
 
   online: {
-    heading: "Turn the server back on",
-    body: "Bring the server online, then try the same request again.",
+    heading: "Bring the Server Back",
+    body:
+      "No server, no answer. Bring the server online, then try the same request again.",
     turnOnLabel: "🟢 Turn Server On",
     tryLabel: "🔁 Try Again",
-    turnedOn: "Server is online - now the client's request can land.",
+    turnedOn: "Now the server is available.",
+    after: "The request can be answered - bringing the server back was the whole fix.",
     client: { icon: "💻", name: "Client", sub: "ready to ask again" },
     server: { icon: "🖥️", name: "Server", sub: "listening again" },
     clientLine: "Ready when you are!",
     serverLine: "🟢 ONLINE - listening",
     request: "REQUEST",
     response: "✓ I'm back!",
-    copy: exchangeCopy({
+    copy: storyCopy({
       idle: "Turn the server on first, then press Try Again.",
       steps: [
-        { title: "1. Client sends a request.", body: "Same request as before." },
-        { title: "2. Server receives it.", body: "This time - it lands!" },
-        { title: "3. Server does some work.", body: "The server wakes up and works." },
-        { title: "4. Server sends a response.", body: "The answer flies back." },
-        { title: "5. Client shows the result.", body: "✓ Got a response!" },
+        {
+          title: "The client sends the request again.",
+          body: "Same request as before.",
+        },
+        {
+          title: "The server receives it.",
+          body: "This time - it lands!",
+        },
+        {
+          title: "The server does the work.",
+          body: "The server wakes up and works.",
+        },
+        {
+          title: "The answer comes back.",
+          body: "The response flies back to the client.",
+        },
+        {
+          title: "The client received the answer.",
+          body: "The screen can update again.",
+        },
       ],
-      done: "✓ Got a response! The same request worked as soon as the server came back.",
+      done: "✓ Success - the request was answered.",
     }),
-    after:
-      "Server back on, request retried, answer received. Sometimes that is all \"fixing it\" takes.",
   },
 
-  roleGame: {
-    heading: "You are the roles now",
-    body: "Two rounds. First you ask, then you answer. Pick the choice a good client or server would make.",
-    rounds: [
-      {
-        id: "asClient",
-        role: "You are the CLIENT.",
-        roleIcon: "💻",
-        askedBy: "The server asks you:",
-        prompt: "\"What do you want?\"",
-        options: [
-          {
-            id: "todos",
-            text: "📋 Get my Todos",
-            correct: true,
-            teach:
-              "Yes! A client ASKS for what it wants - \"get my todos\" is a perfect client move.",
-          },
-          {
-            id: "code",
-            text: "🛠️ Change the server's code",
-            correct: false,
-            teach:
-              "Not quite. Clients do not rewrite servers - they only ASK for things. Asking is your whole job as the client.",
-          },
-          {
-            id: "power",
-            text: "🔌 Turn off the computer",
-            correct: false,
-            teach:
-              "Not quite. A client does not switch the other side off - it asks politely and waits for an answer.",
-          },
-        ],
-        solved: "Perfect client move: you ASKED for what you want.",
-      },
-      {
-        id: "asServer",
-        role: "You are now the SERVER.",
-        roleIcon: "🖥️",
-        askedBy: "The client asks you:",
-        prompt: "\"Give me my Todos.\"",
-        options: [
-          {
-            id: "send",
-            text: "📤 Send the requested data",
-            correct: true,
-            teach:
-              "Yes! The server answers: it does the requested work and sends the response back.",
-          },
-          {
-            id: "ignore",
-            text: "🙈 Ignore the client",
-            correct: false,
-            teach:
-              "Not quite. A server that never answers leaves the client waiting forever. Answering is the deal.",
-          },
-          {
-            id: "delete",
-            text: "🗑️ Delete everything",
-            correct: false,
-            teach:
-              "Not quite! The server does the work it was ASKED to do - deleting everything is the opposite of answering.",
-          },
-        ],
-        solved: "Perfect server move: you ANSWERED with the work.",
-      },
+  final: {
+    heading: "The Basic Idea",
+    body: "One sentence to take with you:",
+    sentence:
+      "That's the basic idea behind client and server communication.",
+    chain: [
+      { icon: "💻", label: "CLIENT", action: "ASKS" },
+      { icon: "🖥️", label: "SERVER", action: "WORKS + ANSWERS" },
+      { icon: "💻", label: "CLIENT", action: "SHOWS THE RESULT" },
     ],
-    done:
-      "You lived both roles! Client asks, server answers - that is the whole partnership.",
-  },
-
-  classify: {
-    heading: "Client or Server?",
-    body: "Four situations, one at a time. Look at who is asking - or who is answering.",
-    buttons: { client: "🙋 CLIENT", server: "🖥️ SERVER" },
-    nextLabel: "Next →",
-    finishLabel: "✓ Finish",
-    wrongBase:
-      "Not quite. Look at who is asking - if it asks another system for something, it is acting as the client.",
-    items: [
-      {
-        id: "web",
-        text: "Web browser asking for a webpage",
-        answer: "client",
-        right:
-          "Correct! The browser is asking the server for something, so it is acting as the client.",
-        wrong:
-          "Not quite. Look at who is asking - the browser WANTS a page from somewhere else, so it is acting as the client.",
-      },
-      {
-        id: "password",
-        text: "Backend checking a password",
-        answer: "server",
-        right:
-          "Correct! It received a request and does the work - that is exactly the server's job.",
-        wrong:
-          "Not quite. Look at who is answering - checking the password is work done AFTER being asked, so it is acting as the server.",
-      },
-      {
-        id: "profile",
-        text: "Phone app asking for user profile",
-        answer: "client",
-        right:
-          "Correct! The app wants data from another system, so it is acting as the client.",
-        wrong:
-          "Not quite. The app WANTS something - it asks another system, so it is acting as the client.",
-      },
-      {
-        id: "returning",
-        text: "Server returning data",
-        answer: "server",
-        right:
-          "Correct! It answers a request with data - that is the server role in action.",
-        wrong:
-          "Not quite. Look at who is answering - handing data back after being asked is the server's move.",
-      },
-    ],
-    done: "4 out of 4 - you can spot the roles in the wild now!",
-  },
-
-  finalFlow: {
-    heading: "The complete flow",
-    body:
-      "Watch the whole journey, top to bottom and back: a user asks, the client sends, the server works, the answer returns.",
-    playLabel: "▶ Play the full flow",
-    steps: [
-      { id: "user1", label: "USER", body: "A person wants something." },
-      { id: "client1", label: "CLIENT", body: "The client turns it into a request." },
-      { id: "request", label: "REQUEST", body: "The glowing dot leaves the client.", dot: "r" },
-      { id: "server", label: "SERVER", body: "The server receives it." },
-      { id: "work", label: "WORK", body: "The server does the work.", spin: true },
-      { id: "response", label: "RESPONSE", body: "The answer travels back.", dot: "l" },
-      { id: "client2", label: "CLIENT", body: "The client gets the response." },
-      { id: "user2", label: "USER", body: "The user sees the result. Done!" },
-    ],
-    done: "✓ The full flow - request down, response up, user happy.",
-    after:
-      "Every app you use does this loop, over and over: user, client, request, server, work, response, you.",
-  },
-
-  summary: {
-    congrats: "Client asks. Server answers.",
-    definition: "Client and server are two roles in a system.",
-    definitionBody: [
-      "The client asks for something.",
-      "The server receives the request, does the work, and sends a response.",
-    ],
-    equation: [
-      { key: "CLIENT", value: "ASKS", icon: "💻" },
-      { key: "SERVER", value: "ANSWERS", icon: "🖥️" },
-    ],
-    recall: [
-      "Earlier, we saw a Todo system.",
-      "Now you know one important relationship inside that system.",
-      "The client asks. The server answers.",
-    ],
-    cards: [
-      {
-        title: "Roles, not devices",
-        body:
-          "Any machine can play either part. Your phone is a client to YouTube's servers - and a server when it shares photos with your laptop.",
-      },
-      {
-        title: "Who is asking?",
-        body:
-          "That is the only question worth memorizing. Asking = client. Answering = server.",
-      },
-      {
-        title: "Request and response",
-        body:
-          "The glowing dot you watched all lesson: down = request, up = response. It never starts any other way.",
-      },
-      {
-        title: "Server ≠ database",
-        body:
-          "The server does the work and applies rules. The database remembers. Two different jobs.",
-      },
-    ],
-    closing:
-      "Next, we split the pair by location: the frontend is the client you can see, the backend is the server you cannot - and the API is the messenger carrying their words. Same two roles, sharper names.",
   },
 };
