@@ -1,4 +1,5 @@
-import { Link, Navigate, Route, Routes } from "react-router-dom";
+import { Link, Route, Routes } from "react-router-dom";
+import HomePage from "./pages/HomePage.jsx";
 import TopicsPage from "./pages/TopicsPage.jsx";
 import SectionsPage from "./pages/SectionsPage.jsx";
 import ConceptsPage from "./pages/ConceptsPage.jsx";
@@ -14,7 +15,7 @@ function Header() {
   return (
     <header className="sticky top-0 z-10 border-b border-slate-800 bg-slate-950/95 backdrop-blur">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
-        <Link to="/topics" className="flex items-center gap-2">
+        <Link to="/" className="flex items-center gap-2">
           <span className="rounded-md bg-emerald-500 px-2 py-0.5 text-xs font-bold text-slate-950">
             BW
           </span>
@@ -60,7 +61,7 @@ export default function App() {
       <main className="mx-auto max-w-6xl px-4 py-8">
         <SystemDesignProgress>
           <Routes>
-            <Route path="/" element={<Navigate to="/topics" replace />} />
+            <Route path="/" element={<HomePage />} />
             <Route path="/topics" element={<TopicsPage />} />
             <Route path="/topics/:topicId" element={<SectionsPage />} />
             <Route path="/sections/:sectionId" element={<ConceptsPage />} />

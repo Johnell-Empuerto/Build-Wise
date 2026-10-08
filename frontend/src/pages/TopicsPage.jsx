@@ -32,10 +32,13 @@ export default function TopicsPage() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-white">Topics</h1>
+        <h1 className="text-2xl font-bold text-white">
+          Learn to Code with JavaScript
+        </h1>
         <p className="mt-1 text-sm text-slate-400">
-          Pick a topic to start learning JavaScript step by step. Then apply
-          what you learn to real-world scenarios in JavaScript Problem Solving.
+          New to programming? Start here. Work through each topic step by
+          step, then apply what you learn to real-world scenarios in
+          JavaScript Problem Solving.
         </p>
       </div>
 
